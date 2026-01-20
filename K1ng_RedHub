@@ -4,7 +4,7 @@ local Window = Rayfield:CreateWindow({
    Name = "K1ng_RedHub",
    Icon = "activity",
    LoadingTitle = "Loading",
-   LoadingSubtitle = "coded by: K1ng_Red | SUPER EDITION",
+   LoadingSubtitle = "coded by: K1ng_RedHub | SUPER EDITION",
    ShowText = "Rayfield",
    Theme = "AmberGlow",
    ToggleUIKeybind = "K",
@@ -69,8 +69,6 @@ local Button5 = UniversalTab:CreateButton({
 })
 
 
-local AutoFarmSection = UniversalTab:CreateSection("Script 2")
-
 local Button6 = UniversalTab:CreateButton({
    Name = "Fe Sonic Exe R15",
    Callback = function()
@@ -78,8 +76,6 @@ local Button6 = UniversalTab:CreateButton({
    end,
 })
 
-
-local AnimationSection = UniversalTab:CreateSection("Script 3")
 
 local Button7 = UniversalTab:CreateButton({
    Name = "Fe Sonic R15",
@@ -95,9 +91,9 @@ local GameTab = Window:CreateTab("Specific Game", "rewind")
 local GameSection = GameTab:CreateSection("Script 4")
 
 local Button8 = GameTab:CreateButton({
-   Name = "System broken",
+   Name = "R4d Revamp",
    Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/H20CalibreYT/SystemBroken/main/script"))()
+      loadstring(game:HttpGet('https://raw.githubusercontent.com/M1ZZ001/R4D-Revamp/refs/heads/main/Official%20R4D%20Revamp'))()
    end,
 })
 
@@ -363,81 +359,6 @@ local InfiniteJumpToggle = PlayerTab:CreateToggle({
    end,
 })
 
--- =============================================
--- VISUAL TAB
--- =============================================
-local VisualTab = Window:CreateTab("Visual", "eye")
-local VisualSection = VisualTab:CreateSection("VISUAL FEATURES")
-
--- ESP PLAYER YANG DIPERBAIKI
-local espEnabled = false
-local espObjects = {}
-
-local function CreateEsp(player)
-   if espObjects[player] then return end
-   
-   local highlight = Instance.new("Highlight")
-   highlight.Name = "JF4_ESP_" .. player.Name
-   highlight.FillColor = Color3.fromRGB(255, 0, 0)
-   highlight.FillTransparency = 0.5
-   highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-   highlight.OutlineTransparency = 0
-   
-   if player.Character then
-       highlight.Parent = player.Character
-   end
-   
-   player.CharacterAdded:Connect(function(character)
-       wait(1)
-       highlight.Parent = character
-   end)
-   
-   espObjects[player] = highlight
-end
-
-local function RemoveEsp(player)
-   if espObjects[player] then
-       espObjects[player]:Destroy()
-       espObjects[player] = nil
-   end
-end
-
-local function ToggleEsp(value)
-   espEnabled = value
-    
-   if value then
-       for _, player in pairs(game.Players:GetPlayers()) do
-           if player ~= game.Players.LocalPlayer then
-               CreateEsp(player)
-           end
-       end
-       
-       game.Players.PlayerAdded:Connect(function(player)
-           CreateEsp(player)
-       end)
-       
-       game.Players.PlayerRemoving:Connect(function(player)
-           RemoveEsp(player)
-       end)
-       
-       Rayfield:Notify({
-          Title = "ESP Diaktifkan",
-          Content = "Semua player sekarang terlihat",
-          Duration = 3,
-       })
-   else
-       for player, highlight in pairs(espObjects) do
-           highlight:Destroy()
-       end
-       espObjects = {}
-       
-       Rayfield:Notify({
-          Title = "ESP Dimatikan",
-          Content = "ESP telah dinonaktifkan",
-          Duration = 3,
-       })
-   end
-end
 
 local EspToggle = VisualTab:CreateToggle({
    Name = " ESP Players",
@@ -465,18 +386,7 @@ local Button16 = VisualTab:CreateButton({
    end,
 })
 
--- =============================================
--- R15 TO R6 CONVERTER TAB
--- =============================================
-local ConverterTab = Window:CreateTab("R15 to R6", "refresh-cw")
-local ConverterSection = ConverterTab:CreateSection("R15 TO R6 CONVERTER")
 
-local Button17 = ConverterTab:CreateButton({
-   Name = " Convert R15 to R6",
-   Callback = function()
-      loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-r6-script-56753"))()
-   end,
-})
 
 
 -- =============================================
@@ -497,12 +407,6 @@ local Button19 = UtilTab:CreateButton({
    end,
 })
 
-local Button20 = UtilTab:CreateButton({
-   Name = "Server Hop",
-   Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/FE-Scripts/main/ServerHop"))()
-   end,
-})
 
 -- =============================================
 -- FINAL NOTIFICATION & AUTO SETUP
@@ -528,12 +432,3 @@ Rayfield:Notify({
 
 -- Load configuration
 Rayfield:LoadConfiguration()
-
-print("============================================")
-print("🔥 K1ng_RedHub Loaded!")
-print("📊 TOTAL FEATURES: FE SCRIPTS")
-print("🎮 GAME SPECIFIC: 7 Games")
-print("👁️ VISUAL: 3 Features") 
-print("🔄 CONVERTER: 2 Tools")
-print("🛠️ UTILITIES: 2 Features")
-print("============================================")
