@@ -1,27 +1,45 @@
-local args = {
-	"RolePlayName",
-	"[ K E N Z • H U B ]"
-}
-game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eTex1t"):FireServer(unpack(args))
-local args2 = {
-	"PickingRPNameColor",
-	Color3.new(1, 0.08512109518051147, 0)
-}
-game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args2))
+task.spawn(function()
+    pcall(function()
+        local args = {
+            "RolePlayName",
+            "[ K E N Z • H U B ]"
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("RE", 5):WaitForChild("1RPNam1eTex1t", 5):FireServer(unpack(args))
+        
+        local args2 = {
+            "PickingRPNameColor",
+            Color3.new(1, 0, 0)
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("RE", 5):WaitForChild("1RPNam1eColo1r", 5):FireServer(unpack(args2))
+    end)
+end)
 
 local UserInputService = game:GetService("UserInputService")
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local localPlayer = Players.LocalPlayer
+local playerGui = localPlayer:WaitForChild("PlayerGui")
+local Camera = Workspace.CurrentCamera
 
 local executor = "Unknown"
 if type(identifyexecutor) == "function" then
     executor = identifyexecutor()
 end
 
-local deathHubGui = Instance.new("ScreenGui")
-deathHubGui.Name = "DeathHubGui"
-deathHubGui.Parent = playerGui
-deathHubGui.ResetOnSpawn = false
+pcall(function()
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Kenz Hub",
+        Text = "script di remake oleh: D_ForDeath1",
+        Duration = 5
+    })
+end)
+
+local kenzHubGui = Instance.new("ScreenGui")
+kenzHubGui.Name = "KenzHubGui"
+kenzHubGui.Parent = playerGui
+kenzHubGui.ResetOnSpawn = false
 
 local function makeDraggable(guiObject)
     local dragging, dragInput, dragStart, startPos
@@ -50,7 +68,7 @@ end
 
 local toggleButton = Instance.new("ImageButton")
 toggleButton.Name = "ToggleButton"
-toggleButton.Parent = deathHubGui
+toggleButton.Parent = kenzHubGui
 toggleButton.Size = UDim2.new(0, 50, 0, 50)
 toggleButton.Position = UDim2.new(0, 20, 0, 20)
 toggleButton.Image = "rbxassetid://12623079242"
@@ -69,7 +87,7 @@ makeDraggable(toggleButton)
 
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Parent = deathHubGui
+mainFrame.Parent = kenzHubGui
 mainFrame.Size = UDim2.new(0, 480, 0, 320)
 mainFrame.Position = UDim2.new(0.5, -240, 0.5, -160)
 mainFrame.BackgroundColor3 = Color3.fromRGB(20, 0, 0)
@@ -111,7 +129,7 @@ uiStrokeClose.Parent = closeButton
 
 local confirmFrame = Instance.new("Frame")
 confirmFrame.Name = "ConfirmFrame"
-confirmFrame.Parent = deathHubGui
+confirmFrame.Parent = kenzHubGui
 confirmFrame.Size = UDim2.new(0, 300, 0, 150)
 confirmFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
 confirmFrame.BackgroundColor3 = Color3.fromRGB(20, 0, 0)
@@ -171,7 +189,7 @@ uiStrokeNo.Color = Color3.fromRGB(255, 0, 0)
 uiStrokeNo.Thickness = 1
 
 closeButton.MouseButton1Click:Connect(function() confirmFrame.Visible = true end)
-yesButton.MouseButton1Click:Connect(function() deathHubGui:Destroy() end)
+yesButton.MouseButton1Click:Connect(function() kenzHubGui:Destroy() end)
 noButton.MouseButton1Click:Connect(function() confirmFrame.Visible = false end)
 
 local sideBar = Instance.new("Frame")
@@ -233,6 +251,7 @@ tabScrollFrame.BackgroundTransparency = 1
 tabScrollFrame.BorderSizePixel = 0
 tabScrollFrame.ScrollBarThickness = 3
 tabScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 50, 50)
+tabScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 tabScrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
 
 local tabListLayout = Instance.new("UIListLayout")
@@ -274,6 +293,7 @@ local function createTab(name, order)
     page.BorderSizePixel = 0
     page.ScrollBarThickness = 4
     page.ScrollBarImageColor3 = Color3.fromRGB(255, 50, 50)
+    page.CanvasSize = UDim2.new(0, 0, 0, 0)
     page.AutomaticCanvasSize = Enum.AutomaticSize.Y
     page.Visible = firstTab
     
@@ -352,11 +372,24 @@ local function MakeButton(parent, text, callback)
     btn.Size = UDim2.new(1, 0, 0, 35)
     btn.BackgroundColor3 = Color3.fromRGB(45, 0, 0)
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.Text = text
+    btn.Text = "  " .. text
     btn.Font = Enum.Font.GothamBold
     btn.TextSize = 14
+    btn.TextXAlignment = Enum.TextXAlignment.Left
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
     Instance.new("UIStroke", btn).Color = Color3.fromRGB(255, 0, 0)
+    
+    local clickIcon = Instance.new("TextLabel")
+    clickIcon.Parent = btn
+    clickIcon.Size = UDim2.new(0, 30, 1, 0)
+    clickIcon.Position = UDim2.new(1, -40, 0, 0)
+    clickIcon.BackgroundTransparency = 1
+    clickIcon.Text = "🖱️"
+    clickIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
+    clickIcon.Font = Enum.Font.GothamBold
+    clickIcon.TextSize = 14
+    clickIcon.TextXAlignment = Enum.TextXAlignment.Right
+    
     btn.MouseButton1Click:Connect(function() pcall(callback) end)
 end
 
@@ -466,13 +499,13 @@ local function MakeDropdown(parent, text, options, callback)
     local dropBtn = Instance.new("TextButton")
     dropBtn.Parent = parent
     dropBtn.Size = UDim2.new(1, 0, 0, 35)
-    dropBtn.BackgroundColor3 = Color3.fromRGB(45, 0, 0)
+    dropBtn.BackgroundColor3 = Color3.fromRGB(80, 0, 0) 
     dropBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     dropBtn.Text = text .. ": Select"
     dropBtn.Font = Enum.Font.GothamBold
     dropBtn.TextSize = 14
     Instance.new("UICorner", dropBtn).CornerRadius = UDim.new(0, 6)
-    Instance.new("UIStroke", dropBtn).Color = Color3.fromRGB(255, 0, 0)
+    Instance.new("UIStroke", dropBtn).Color = Color3.fromRGB(255, 100, 100) 
     
     local dropFrame = Instance.new("Frame")
     dropFrame.Parent = parent
@@ -513,40 +546,38 @@ local function MakeDropdown(parent, text, options, callback)
         dropFrame.Visible = not dropFrame.Visible
     end)
     
-    return {Refresh = refreshOptions}
+    return {
+        Refresh = refreshOptions,
+        Reset = function()
+            dropBtn.Text = text .. ": Select"
+        end
+    }
 end
 
 local infoTab = createTab("Info", 1)
 
 MakeSection(infoTab, "Script Information")
-MakeParagraph(infoTab, "Owner / Developer:", "Death & Kenz")
-MakeParagraph(infoTab, "Collaboration:", "Kenz")
-MakeParagraph(infoTab, "Leaked by:", "Death")
-MakeParagraph(infoTab, "You are using:", "Kenz Hub Brookhaven")
+MakeParagraph(infoTab, "Developer/Owner:", "D_ForDeath1")
+MakeParagraph(infoTab, "You are using:", "Kenz Hub Brookhaven🏡")
 MakeParagraph(infoTab, "Your executor:", executor)
 
 MakeSection(infoTab, "Rejoin")
 MakeButton(infoTab, "Rejoin", function()
     local TeleportService = game:GetService("TeleportService")
-    TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, game.Players.LocalPlayer)
+    TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, localPlayer)
 end)
 
 local playerTab   = createTab("Player", 2)
 local avatarTab   = createTab("Avatar", 3)
-local worldTab    = createTab("Protection", 4)
-local teleportsTab= createTab("Teleports", 5)
-local espTab      = createTab("ESP", 6)
-local vehiclesTab = createTab("Vehicles", 7)
-local housesTab   = createTab("Houses", 8)
+local housesTab   = createTab("Houses", 4)
+local worldTab    = createTab("Protection", 5)
+local teleportsTab= createTab("Teleports", 6)
+local espTab      = createTab("ESP", 7)
+local childTab    = createTab("Child", 8)
 local itemsTab    = createTab("Items", 9)
-local settingsTab = createTab("Settings", 10)
-
-toggleButton.MouseButton1Click:Connect(function() mainFrame.Visible = not mainFrame.Visible end)
+local nukeTab     = createTab("Nuke", 10)
 
 MakeSection(playerTab, "Player Character")
-
-local Players = game:GetService("Players")
-local localPlayer = Players.LocalPlayer
 
 local selectedPlayerName = nil
 local headsitActive = false
@@ -556,13 +587,11 @@ local function headsitOnPlayer(targetPlayer)
     local humanoid = character:FindFirstChildOfClass("Humanoid")
 
     if not targetPlayer.Character or not targetPlayer.Character:FindFirstChild("Head") then
-        warn("Target player without a head or character.")
         return false
     end
     local targetHead = targetPlayer.Character.Head
     local localRoot = character:FindFirstChild("HumanoidRootPart")
     if not localRoot then
-        warn("Your character does not have a HumanoidRootPart.")
         return false
     end
 
@@ -583,7 +612,6 @@ local function headsitOnPlayer(targetPlayer)
         humanoid.Sit = true
     end
 
-    print("Headsit activated on " .. targetPlayer.Name)
     return true
 end
 
@@ -601,7 +629,6 @@ local function removeHeadsit()
     if humanoid then
         humanoid.Sit = false
     end
-    print("Headsit deactivated.")
 end
 
 local function findPlayerByPartialName(partial)
@@ -620,12 +647,14 @@ local function notifyPlayerSelected(plyr)
     local thumbSize = Enum.ThumbnailSize.Size100x100
     local content, _ = Players:GetUserThumbnailAsync(plyr.UserId, thumbType, thumbSize)
 
-    StarterGui:SetCore("SendNotification", {
-        Title = "Player Selected",
-        Text = plyr.Name .. " was selected!",
-        Icon = content,
-        Duration = 5
-    })
+    pcall(function()
+        StarterGui:SetCore("SendNotification", {
+            Title = "Player Selected",
+            Text = plyr.Name .. " was selected!",
+            Icon = content,
+            Duration = 5
+        })
+    end)
 end
 
 MakeTextBox(playerTab, "Type player name (Press Enter)...", function(Value)
@@ -633,8 +662,6 @@ MakeTextBox(playerTab, "Type player name (Press Enter)...", function(Value)
     if foundPlayer then
         selectedPlayerName = foundPlayer.Name
         notifyPlayerSelected(foundPlayer)
-    else
-        warn("No player found with that name.")
     end
 end)
 
@@ -669,11 +696,11 @@ MakeSlider(playerTab, "Jumppower", 50, 500, 50, function(Value)
 end)
 
 MakeSlider(playerTab, "Gravity", 0, 10000, 196, function(Value)
-    game.Workspace.Gravity = Value
+    Workspace.Gravity = Value
 end)
 
 local InfiniteJumpEnabled = false
-game:GetService("UserInputService").JumpRequest:Connect(function()
+UserInputService.JumpRequest:Connect(function()
     if InfiniteJumpEnabled then
        local character = localPlayer.Character
        if character and character:FindFirstChild("Humanoid") then
@@ -689,7 +716,7 @@ MakeButton(playerTab, "Reset Speed/Gravity/Jumppower ✅", function()
         humanoid.WalkSpeed = 16 
         humanoid.JumpPower = 50 
     end
-    game.Workspace.Gravity = 196.2 
+    Workspace.Gravity = 196.2 
     InfiniteJumpEnabled = false
 end)
 
@@ -704,8 +731,6 @@ local UltimateNoclip = {
     Connections = {},
     SoccerBalls = {}
 }
-local RunService = game:GetService("RunService")
-local Workspace = game:GetService("Workspace")
 
 local function managePlayerCollisions(character)
     if not character then return end
@@ -832,122 +857,196 @@ MakeButton(playerTab, "Enable Fly GUI", function()
     local success, _ = pcall(function()
         loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Fly-gui-v3-30439"))()
     end)
-    game.StarterGui:SetCore("SendNotification", {
-        Title = success and "Success" or "Error",
-        Text = success and "Fly GUI loaded!" or "Failed to load the Fly GUI.",
-        Duration = 5
-    })
+    pcall(function()
+        game.StarterGui:SetCore("SendNotification", {
+            Title = success and "Success" or "Error",
+            Text = success and "Fly GUI loaded!" or "Failed to load the Fly GUI.",
+            Duration = 5
+        })
+    end)
 end)
 
-MakeSection(playerTab, "ESP")
-
-local billboardGuis = {}
-local espConnections = {}
-local espEnabled = false
-local selectedColor = "RGB"
-
-MakeDropdown(playerTab, "ESP Color", {"RGB", "White", "Black", "Red", "Green", "Blue", "Yellow", "Pink", "Purple"}, function(value)
-    selectedColor = value
-end)
+local ESPData = {
+    espEnabled = false,
+    espType = "Name + age",
+    selectedColor = "RGB",
+    billboardGuis = {},
+    highlights = {},
+    lines = {},
+    connections = {}
+}
 
 local function getESPColor()
-    if selectedColor == "RGB" then
-        local h = (tick() % 5) / 5
-        return Color3.fromHSV(h, 1, 1)
-    elseif selectedColor == "Black" then return Color3.fromRGB(0, 0, 0)
-    elseif selectedColor == "White" then return Color3.fromRGB(255, 255, 255)
-    elseif selectedColor == "Red" then return Color3.fromRGB(255, 0, 0)
-    elseif selectedColor == "Green" then return Color3.fromRGB(0, 255, 0)
-    elseif selectedColor == "Blue" then return Color3.fromRGB(0, 170, 255)
-    elseif selectedColor == "Yellow" then return Color3.fromRGB(255, 255, 0)
-    elseif selectedColor == "Pink" then return Color3.fromRGB(255, 105, 180)
-    elseif selectedColor == "Purple" then return Color3.fromRGB(128, 0, 128)
+    local colors = {
+        RGB = function()
+            local h = (tick() % 5) / 5
+            return Color3.fromHSV(h, 1, 1)
+        end,
+        Black = Color3.fromRGB(0,0,0), White = Color3.fromRGB(255,255,255), Red = Color3.fromRGB(255,0,0), Green = Color3.fromRGB(0,255,0), Blue = Color3.fromRGB(0,170,255), Yellow = Color3.fromRGB(255,255,0), Pink = Color3.fromRGB(255,105,180), Purple = Color3.fromRGB(128,0,128) 
+    }
+    local c = colors[ESPData.selectedColor]
+    if type(c) == "function" then
+        return c()
     end
-    return Color3.new(1, 1, 1)
+    return c or Color3.new(1,1,1)
 end
 
-local function updateESP(targetPlayer)
-    if targetPlayer == localPlayer then return end
-    if not espEnabled then return end
+local function clearAllESP()
+    for _, gui in pairs(ESPData.billboardGuis) do
+        pcall(function() gui:Destroy() end)
+    end
+    for _, h in pairs(ESPData.highlights) do
+        pcall(function() h:Destroy() end)
+    end
+    for _, l in pairs(ESPData.lines) do
+        pcall(function() l:Remove() end)
+    end
+    for _, c in pairs(ESPData.connections) do
+        pcall(function() c:Disconnect() end)
+    end
+    
+    ESPData.billboardGuis = {}
+    ESPData.highlights = {}
+    ESPData.lines = {}
+    ESPData.connections = {}
+end
 
-    local character = targetPlayer.Character
-    if character then
-        local head = character:FindFirstChild("Head")
-        if head then
-            if billboardGuis[targetPlayer] then
-                billboardGuis[targetPlayer]:Destroy()
-            end
+local function createNameESP(player)
+    if player == localPlayer then return end
+    if not player.Character or not player.Character:FindFirstChild("Head") then return end
+    
+    local head = player.Character.Head
+    if ESPData.billboardGuis[player] then
+        ESPData.billboardGuis[player]:Destroy()
+    end
+    
+    local gui = Instance.new("BillboardGui", head)
+    gui.Size = UDim2.new(0, 200, 0, 50)
+    gui.StudsOffset = Vector3.new(0, 3, 0)
+    gui.AlwaysOnTop = true
+    
+    local txt = Instance.new("TextLabel", gui)
+    txt.Size = UDim2.new(1, 0, 1, 0)
+    txt.BackgroundTransparency = 1
+    txt.TextStrokeTransparency = 0.5
+    txt.Font = Enum.Font.SourceSansBold
+    txt.TextSize = 14
+    txt.Text = player.Name .. " | " .. player.AccountAge .. " dias"
+    txt.TextColor3 = getESPColor()
+    
+    ESPData.billboardGuis[player] = gui
+end
 
-            local billboard = Instance.new("BillboardGui")
-            billboard.Name = "ESP_Billboard"
-            billboard.Parent = head
-            billboard.Adornee = head
-            billboard.Size = UDim2.new(0, 200, 0, 50)
-            billboard.StudsOffset = Vector3.new(0, 3, 0)
-            billboard.AlwaysOnTop = true
+local function createHighlightESP(player)
+    if player == localPlayer then return end
+    if not player.Character then return end
+    
+    if ESPData.highlights[player] then
+        ESPData.highlights[player]:Destroy()
+    end
+    
+    local h = Instance.new("Highlight", player.Character)
+    h.FillColor = getESPColor()
+    h.FillTransparency = 0.5
+    h.OutlineTransparency = 0
+    h.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    
+    ESPData.highlights[player] = h
+end
 
-            local textLabel = Instance.new("TextLabel")
-            textLabel.Name = "TextLabel"
-            textLabel.Parent = billboard
-            textLabel.Size = UDim2.new(1, 0, 1, 0)
-            textLabel.BackgroundTransparency = 1
-            textLabel.TextStrokeTransparency = 0.5
-            textLabel.Font = Enum.Font.SourceSansBold
-            textLabel.TextSize = 14
-            textLabel.Text = targetPlayer.Name .. " | " .. targetPlayer.AccountAge .. " days"
-            textLabel.TextColor3 = getESPColor()
+local function createLineESP(player)
+    if player == localPlayer then return end
+    
+    if ESPData.lines[player] then
+        pcall(function() ESPData.lines[player]:Remove() end)
+    end
+    
+    local l = Drawing.new("Line")
+    l.Thickness = 2
+    l.Transparency = 1
+    l.Visible = false
+    
+    ESPData.lines[player] = l
+end
 
-            billboardGuis[targetPlayer] = billboard
+local function applyCurrentESP()
+    clearAllESP()
+    if not ESPData.espEnabled then return end
+    
+    for _, p in pairs(Players:GetPlayers()) do
+        if ESPData.espType == "Name + age" then
+            createNameESP(p)
+        elseif ESPData.espType == "Highlight" then
+            createHighlightESP(p)
+        elseif ESPData.espType == "Lines" then
+            createLineESP(p)
         end
     end
-end
-
-local function removeESP(targetPlayer)
-    if billboardGuis[targetPlayer] then
-        billboardGuis[targetPlayer]:Destroy()
-        billboardGuis[targetPlayer] = nil
-    end
-end
-
-MakeToggle(playerTab, "Enable ESP", false, function(value)
-    espEnabled = value
-    if espEnabled then
-        for _, plyr in pairs(Players:GetPlayers()) do updateESP(plyr) end
-
-        local updateConnection = RunService.Heartbeat:Connect(function()
-            for _, plyr in pairs(Players:GetPlayers()) do updateESP(plyr) end
-            if selectedColor == "RGB" then
-                for _, plyr in pairs(Players:GetPlayers()) do
-                    local gui = billboardGuis[plyr]
-                    if gui and gui:FindFirstChild("TextLabel") then
-                        gui.TextLabel.TextColor3 = getESPColor()
-                    end
+    
+    table.insert(ESPData.connections, RunService.RenderStepped:Connect(function()
+        if not ESPData.espEnabled then return end
+        local color = getESPColor()
+        
+        if ESPData.espType == "Name + age" then
+            for _, gui in pairs(ESPData.billboardGuis) do
+                if gui:FindFirstChildOfClass("TextLabel") then
+                    gui.TextLabel.TextColor3 = color
                 end
             end
+        elseif ESPData.espType == "Highlight" then
+            for _, h in pairs(ESPData.highlights) do
+                h.FillColor = color
+            end
+        elseif ESPData.espType == "Lines" then
+            for p, l in pairs(ESPData.lines) do
+                if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                    local pos, on = Camera:WorldToViewportPoint(p.Character.HumanoidRootPart.Position)
+                    l.Visible = on
+                    if on then
+                        l.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
+                        l.To = Vector2.new(pos.X, pos.Y)
+                        l.Color = color
+                    end
+                else
+                    l.Visible = false
+                end
+            end
+        end
+    end))
+    
+    table.insert(ESPData.connections, Players.PlayerAdded:Connect(function(plyr)
+        plyr.CharacterAdded:Connect(function()
+            task.wait(1)
+            if ESPData.espEnabled then applyCurrentESP() end
         end)
-        table.insert(espConnections, updateConnection)
+    end))
+end
 
-        local playerAdded = Players.PlayerAdded:Connect(function(plyr)
-            updateESP(plyr)
-            local charConn = plyr.CharacterAdded:Connect(function() updateESP(plyr) end)
-            table.insert(espConnections, charConn)
-        end)
-        table.insert(espConnections, playerAdded)
+MakeSection(espTab, "ESP")
 
-        local playerRemoving = Players.PlayerRemoving:Connect(function(plyr) removeESP(plyr) end)
-        table.insert(espConnections, playerRemoving)
+MakeDropdown(espTab, "ESP Type", {"Name + age", "Highlight", "Lines"}, function(v)
+    ESPData.espType = v
+    if ESPData.espEnabled then
+        applyCurrentESP()
+    end
+end)
+
+MakeDropdown(espTab, "ESP color", {"RGB", "White", "Black", "Red", "Green", "Blue", "Yellow", "Pink", "Purple"}, function(v)
+    ESPData.selectedColor = v
+end)
+
+MakeToggle(espTab, "ESP Enabled", false, function(v)
+    ESPData.espEnabled = v
+    if v then
+        applyCurrentESP()
     else
-        for _, plyr in pairs(Players:GetPlayers()) do removeESP(plyr) end
-        for _, conn in pairs(espConnections) do conn:Disconnect() end
-        espConnections = {}
-        billboardGuis = {}
+        clearAllESP()
     end
 end)
 
 MakeSection(avatarTab, "Copy Avatar")
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+local Remotes = ReplicatedStorage:WaitForChild("Remotes", 5)
 local targetAvatarPlayer = nil
 
 local function getPlayerNames()
@@ -964,18 +1063,33 @@ local playerDropdown = MakeDropdown(avatarTab, "Players List", getPlayerNames(),
     targetAvatarPlayer = playerName
 end)
 
-local function updatePlayerDropdown()
+local playerChildDropdown = nil
+local chasingplayer = nil
+
+local function updateAllPlayerDropdowns()
+    local names = getPlayerNames()
     if playerDropdown then
-        playerDropdown.Refresh(getPlayerNames())
+        playerDropdown.Refresh(names)
+    end
+    if playerChildDropdown then
+        playerChildDropdown.Refresh(names)
     end
 end
 
 MakeButton(avatarTab, "Refresh Player List", function()
-    updatePlayerDropdown()
+    updateAllPlayerDropdowns()
 end)
 
-Players.PlayerAdded:Connect(updatePlayerDropdown)
-Players.PlayerRemoving:Connect(updatePlayerDropdown)
+Players.PlayerAdded:Connect(updateAllPlayerDropdowns)
+Players.PlayerRemoving:Connect(function(player)
+    updateAllPlayerDropdowns()
+    if chasingplayer == player.Name then
+        chasingplayer = nil
+        if playerChildDropdown then
+            playerChildDropdown.Reset()
+        end
+    end
+end)
 
 local function showAvatarNotification(message)
     pcall(function()
@@ -995,7 +1109,7 @@ MakeButton(avatarTab, "Copy Avatar", function()
         local localHumanoid = localPlayer.Character and localPlayer.Character:FindFirstChildOfClass("Humanoid")
         local targetHumanoid = targetPlayerInstance.Character:FindFirstChildOfClass("Humanoid")
 
-        if localHumanoid and targetHumanoid then
+        if localHumanoid and targetHumanoid and Remotes then
             local localDesc = localHumanoid:GetAppliedDescription()
 
             for _, acc in ipairs(localDesc:GetAccessories(true)) do
@@ -1093,7 +1207,7 @@ end)
 
 MakeSection(avatarTab, "3D Outfits")
 
-local 3D_AvatarsList = {
+local AvatarsList3D = {
     { Nome = "Manga Cat", ID = 124948425515124 },
     { Nome = "Tung Saur", ID = 117098257036480 },
     { Nome = "Tralaleiro", ID = 99459753608381 },
@@ -1124,7 +1238,7 @@ local 3D_AvatarsList = {
 
 local function getAvatarNamesList()
     local names = {}
-    for _, item in ipairs(3D_AvatarsList) do
+    for _, item in ipairs(AvatarsList3D) do
         table.insert(names, item.Nome)
     end
     return names
@@ -1140,7 +1254,9 @@ MakeButton(avatarTab, "Equip Selected Outfit", function()
         showAvatarNotification("No outfit selected!")
         return
     end
-    for _, avatar in ipairs(3D_AvatarsList) do
+    if not Remotes then return end
+    
+    for _, avatar in ipairs(AvatarsList3D) do
         if avatar.Nome == selectedAvatarName then
             local args3d = { avatar.ID }
             local success, _ = pcall(function()
@@ -1161,6 +1277,7 @@ MakeSection(avatarTab, "Avatar Editor")
 MakeParagraph(avatarTab, "Warning:", "Your avatar will be reset when selecting morph components.")
 
 MakeButton(avatarTab, "Mini REPO", function()
+    if not Remotes then return end
     local argsRepo = {
         {
             117101023704825,
@@ -1175,6 +1292,7 @@ MakeButton(avatarTab, "Mini REPO", function()
 end)
 
 MakeButton(avatarTab, "Mini Stallion", function()
+    if not Remotes then return end
     local argsStallion = {
         {
             124355047456535,
@@ -1189,6 +1307,7 @@ MakeButton(avatarTab, "Mini Stallion", function()
 end)
 
 MakeButton(avatarTab, "Stickman", function()
+    if not Remotes then return end
     local argsStick = {
         {
             14731384498,
@@ -1203,6 +1322,7 @@ MakeButton(avatarTab, "Stickman", function()
 end)
 
 MakeButton(avatarTab, "Chunky Bug", function()
+    if not Remotes then return end
     local argsBug = {
         {
             15527827600,
@@ -1217,6 +1337,7 @@ MakeButton(avatarTab, "Chunky Bug", function()
 end)
 
 MakeButton(avatarTab, "Cursed Spider", function()
+    if not Remotes then return end
     local argsSpider = {
         {
             134555168634906,
@@ -1231,6 +1352,7 @@ MakeButton(avatarTab, "Cursed Spider", function()
 end)
 
 MakeButton(avatarTab, "Possessed Horror", function()
+    if not Remotes then return end
     local argsHorror = {
         {
             122800511983371,
@@ -1244,4 +1366,642 @@ MakeButton(avatarTab, "Possessed Horror", function()
     Remotes:WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(argsHorror))
 end)
 
-MakeParagraph(avatarTab, "Development Notice:", "More character presets and modification properties will be added in the upcoming configuration update.")
+MakeParagraph(housesTab, "Functions for you to use on yourself", "")
+
+MakeButton(housesTab, "Remove Ban from All Homes", function()
+    local successCount = 0
+    local failCount = 0
+    
+    for i = 1, 37 do
+        local bannedBlockName = "BannedBlock" .. i
+        local bannedBlock = Workspace:FindFirstChild(bannedBlockName, true)
+        if bannedBlock then
+            local success, _ = pcall(function()
+                bannedBlock:Destroy()
+            end)
+            if success then
+                successCount = successCount + 1
+            else
+                failCount = failCount + 1
+            end
+        end
+    end
+    
+    for _, house in pairs(Workspace:GetDescendants()) do
+        if house.Name:match("BannedBlock") then
+            local success, _ = pcall(function()
+                house:Destroy()
+            end)
+            if success then
+                successCount = successCount + 1
+            else
+                failCount = failCount + 1
+            end
+        end
+    end
+    
+    pcall(function()
+        if successCount > 0 then
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Success",
+                Text = "Bans removed from " .. successCount .. " houses!",
+                Duration = 5
+            })
+        end
+        
+        if failCount > 0 then
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Warning",
+                Text = "Failed to remove bans from " .. failCount .. " houses.",
+                Duration = 5
+            })
+        end
+        
+        if successCount == 0 and failCount == 0 then
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Notice",
+                Text = "No bans found to remove.",
+                Duration = 5
+            })
+        end
+    end)
+end)
+
+MakeParagraph(housesTab, "I have no ideas what to put here._.", "")
+
+MakeSection(worldTab, "Anti-Fling Protections")
+
+local backupTables = {
+    Vehicles = {},
+    Canoes = {},
+    Jets = {},
+    Helis = {},
+    Balls = {}
+}
+
+local function AntiFlingLoop(name, getFolderFunc)
+    local active = false
+    task.spawn(function()
+        while true do
+            if active and localPlayer.Character then
+                local folder = getFolderFunc()
+                if folder then
+                    for _, item in ipairs(folder:GetChildren()) do
+                        local isMine = false
+                        if name == "Vehicles" then
+                            for _, seat in ipairs(item:GetDescendants()) do
+                                if (seat:IsA("VehicleSeat") or seat:IsA("Seat")) and seat.Occupant and seat.Occupant.Parent == localPlayer.Character then
+                                    isMine = true
+                                    break
+                                end
+                            end
+                        elseif name == "Canoes" then
+                            local owner = item:FindFirstChild("Owner")
+                            isMine = owner and owner.Value == localPlayer
+                        elseif name == "Jets" or name == "Helis" then
+                            isMine = item.Name == localPlayer.Name
+                        end
+                        if not isMine then
+                            table.insert(backupTables[name], item:Clone())
+                            item:Destroy()
+                        end
+                    end
+                end
+            end
+            task.wait(0.03)
+        end
+    end)
+    return function(state)
+        active = state
+        if not state then
+            for _, item in ipairs(backupTables[name]) do
+                local parentFolder = getFolderFunc()
+                if parentFolder then item.Parent = parentFolder end
+            end
+            backupTables[name] = {}
+        end
+    end
+end
+
+local antiCanoe = AntiFlingLoop("Canoes", function()
+    local workspaceCom = Workspace:FindFirstChild("WorkspaceCom")
+    return workspaceCom and workspaceCom:FindFirstChild("001_CanoeStorage")
+end)
+MakeToggle(worldTab, "Anti Canoe Fling", false, antiCanoe)
+
+local antiJet = AntiFlingLoop("Jets", function()
+    local folder = Workspace:FindFirstChild("WorkspaceCom")
+    if folder and folder:FindFirstChild("001_Airport") then
+        local storage = folder["001_Airport"]:FindFirstChild("AirportHanger")
+        if storage then return storage:FindFirstChild("001_JetStorage") and storage["001_JetStorage"]:FindFirstChild("JetAirport") end
+    end
+end)
+MakeToggle(worldTab, "Anti Fling Jets", false, antiJet)
+
+local antiHeli = AntiFlingLoop("Helis", function()
+    local folder = Workspace:FindFirstChild("WorkspaceCom")
+    return folder and folder:FindFirstChild("001_HeliStorage") and folder["001_HeliStorage"]:FindFirstChild("PoliceStationHeli")
+end)
+MakeToggle(worldTab, "Anti Fling Helicopteros", false, antiHeli)
+
+local antiBall = AntiFlingLoop("Balls", function()
+    local folder = Workspace:FindFirstChild("WorkspaceCom")
+    return folder and folder:FindFirstChild("001_SoccerBalls")
+end)
+MakeToggle(worldTab, "Anti Fling Ball", false, antiBall)
+
+local antiSitActiveWorld = false
+MakeToggle(worldTab, "Anti Sit", false, function(state)
+    antiSitActiveWorld = state
+    task.spawn(function()
+        while antiSitActiveWorld and localPlayer.Character do
+            local humanoid = localPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+                if humanoid:GetState() == Enum.HumanoidStateType.Seated then
+                    humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+                end
+            end
+            task.wait(0.05)
+        end
+        if not antiSitActiveWorld then
+            local humanoid = localPlayer.Character and localPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
+            end
+        end
+    end)
+end)
+
+local antiLagLoopActive = false
+MakeToggle(worldTab, "Anti-Lag", false, function(state)
+    antiLagLoopActive = state
+    
+    if antiLagLoopActive then
+        task.spawn(function()
+            while antiLagLoopActive do
+                for _, plr in ipairs(Players:GetPlayers()) do
+                    if plr ~= localPlayer then
+                        pcall(function()
+                            local foundTools = {}
+                            if plr.Character then
+                                for _, child in ipairs(plr.Character:GetChildren()) do
+                                    if child:IsA("Tool") then table.insert(foundTools, child) end
+                                end
+                            end
+                            local backpack = plr:FindFirstChildOfClass("Backpack")
+                            if backpack then
+                                for _, child in ipairs(backpack:GetChildren()) do
+                                    if child:IsA("Tool") then table.insert(foundTools, child) end
+                                end
+                            end
+                            if #foundTools > 1 then
+                                for i = 2, #foundTools do
+                                    foundTools[i]:Destroy()
+                                end
+                            end
+                        end)
+                    end
+                end
+                task.wait(2)
+            end
+        end)
+    end
+end)
+
+MakeSection(teleportsTab, "Brookhaven Teleports")
+
+local teleportLocation = "Hill"
+local locations = {
+    ["Hill"] = Vector3.new(-348.64, 65.94, -458.08),
+    ["Lobby"] = Vector3.new(-26.17, 3.48, -0.93),
+    ["Bank"] = Vector3.new(1.99, 3.32, 236.65),
+    ["Hospital"] = Vector3.new(-303.2, 3.40, 13.74),
+    ["Town Hall"] = Vector3.new(-354.65, 7.32, -102.16),
+    ["Farm"] = Vector3.new(-766.41, 2.92, -61.10),
+    ["Market"] = Vector3.new(16.31, 3.32, -107.07),
+    ["Shop"] = Vector3.new(151.05, 3.52, -190.64),
+    ["Airport"] = Vector3.new(290.23, 4.32, 42.57),
+    ["Hotel"] = Vector3.new(159.10, 3.32, 164.97),
+    ["Beach 1"] = Vector3.new(55.69, 2.94, -1403.60),
+    ["Beach 2"] = Vector3.new(42.39, 2.94, 1336.14)
+}
+
+MakeDropdown(teleportsTab, "Select Location", {"Hill", "Lobby", "Bank", "Hospital", "Town Hall", "Farm", "Market", "Shop", "Airport", "Hotel", "Beach 1", "Beach 2"}, function(value)
+    teleportLocation = value
+end)
+
+MakeButton(teleportsTab, "Teleport", function()
+    if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local humanoidRootPart = localPlayer.Character.HumanoidRootPart
+        local humanoid = localPlayer.Character:FindFirstChildOfClass("Humanoid")
+        local pos = locations[teleportLocation]
+        if pos then
+            pcall(function()
+                if humanoid then
+                    humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+                    humanoid.WalkSpeed = 0
+                end
+                humanoidRootPart.Anchored = true
+                humanoidRootPart.CFrame = CFrame.new(pos)
+                task.wait(0.4)
+                humanoidRootPart.Anchored = false
+                if humanoid then
+                    humanoid.WalkSpeed = 16
+                    humanoid:ChangeState(Enum.HumanoidStateType.Running)
+                end
+            end)
+        end
+    end
+end)
+
+MakeSection(childTab, "Child")
+
+playerChildDropdown = MakeDropdown(childTab, "Select a player to chase", getPlayerNames(), function(selected)
+    if Players:FindFirstChild(selected) then
+        chasingplayer = selected
+    else
+        chasingplayer = nil
+    end
+end)
+
+MakeButton(childTab, "Update Player List", function()
+    updateAllPlayerDropdowns()
+end)
+
+MakeButton(childTab, "Send child", function()
+    if not chasingplayer then
+        warn("No player selected!")
+        return
+    end
+    if not Workspace:FindFirstChild(localPlayer.Name) or not Workspace[localPlayer.Name]:FindFirstChild("FollowCharacter") then
+        local args = {
+            [1] = "CharacterFollowSpawnPlayer",
+            [2] = "BabyBoy"
+        }
+        local success, err = pcall(function()
+            ReplicatedStorage:WaitForChild("RE", 5):WaitForChild("1Bab1yFollo1w", 5):FireServer(unpack(args))
+        end)
+        if not success then
+            warn("Error sending child: " .. err)
+        end
+    end
+    
+    task.wait(0.2)
+    
+    if Workspace:FindFirstChild(localPlayer.Name) then
+        for _, v in pairs(Workspace[localPlayer.Name]:GetChildren()) do
+            if v:IsA("BasePart") then
+                v.CanCollide = true
+            end
+        end
+    end
+
+    local target = chasingplayer
+    if Workspace:FindFirstChild(target) and Workspace:FindFirstChild(localPlayer.Name) and Workspace[localPlayer.Name]:FindFirstChild("FollowCharacter") then
+        Workspace[localPlayer.Name].FollowCharacter.Parent = Workspace[target]
+
+        if rawget(getgenv(), "RunServiceConnection") then
+            return
+        end
+
+        getgenv().RunServiceConnection = RunService.Heartbeat:Connect(function()
+            local followCharacter = Workspace[target]:FindFirstChild("FollowCharacter")
+            if followCharacter and followCharacter:FindFirstChild("Torso") and followCharacter.Torso:FindFirstChild("BodyPosition") then
+                local humanoidRootPart = Workspace[target]:FindFirstChild("HumanoidRootPart")
+                if humanoidRootPart then
+                    followCharacter.Torso.BodyPosition.Position = humanoidRootPart.Position - (humanoidRootPart.CFrame.LookVector * 3)
+                    followCharacter.Torso.BodyGyro.CFrame = humanoidRootPart.CFrame
+                end
+            end
+        end)
+    end
+end)
+
+MakeButton(childTab, "Return child", function()
+    if rawget(getgenv(), "RunServiceConnection") then
+        getgenv().RunServiceConnection:Disconnect()
+        getgenv().RunServiceConnection = nil
+    end
+
+    local args = { [1] = "DeleteFollowCharacter" }
+    local success, err = pcall(function()
+        ReplicatedStorage:WaitForChild("RE", 5):WaitForChild("1Bab1yFollo1w", 5):FireServer(unpack(args))
+    end)
+    if not success then
+        warn("Error returning child: " .. err)
+    end
+
+    local args1 = { [1] = "CharacterFollowSpawnPlayer", [2] = "BabyBoy" }
+    success, err = pcall(function()
+        ReplicatedStorage:WaitForChild("RE", 5):WaitForChild("1Bab1yFollo1w", 5):FireServer(unpack(args1))
+    end)
+    if not success then
+        warn("Error spawning child: " .. err)
+    end
+end)
+
+MakeToggle(childTab, "Spectar Player", false, function(Value)
+    if Value then
+        if not chasingplayer then
+            warn("No player selected to spectate!")
+            return false
+        end
+
+        if not rawget(getgenv(), "CameraConnection") then
+            getgenv().CameraConnection = RunService.Heartbeat:Connect(function()
+                local targetPlayer = Players:FindFirstChild(chasingplayer)
+                if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+                    Camera.CameraSubject = targetPlayer.Character.Humanoid
+                else
+                    if rawget(getgenv(), "CameraConnection") then
+                        getgenv().CameraConnection:Disconnect()
+                        getgenv().CameraConnection = nil
+                    end
+                    Camera.CameraSubject = localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") or nil
+                end
+            end)
+        end
+    else
+        if rawget(getgenv(), "CameraConnection") then
+            getgenv().CameraConnection:Disconnect()
+            getgenv().CameraConnection = nil
+        end
+        if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") then
+            Camera.CameraSubject = localPlayer.Character.Humanoid
+        end
+    end
+end)
+
+MakeParagraph(childTab, "FE", "Funcionalidades FE")
+
+MakeSection(itemsTab, "Items")
+
+MakeButton(itemsTab, "Snowboard", function()
+    local args = {
+        "AcceptedToolToServer",
+        "Snowboard",
+        localPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end)
+
+MakeButton(itemsTab, "Money Gun", function()
+    local args = {
+        "AcceptedToolToServer",
+        "MoneyGun",
+        localPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end)
+
+MakeButton(itemsTab, "Skis", function()
+    local args = {
+        "AcceptedToolToServer",
+        "Skis",
+        localPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end)
+
+MakeButton(itemsTab, "Crystals", function()
+    local args = {
+        "AcceptedToolToServer",
+        "Crystals",
+        localPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end)
+
+MakeButton(itemsTab, "Couch", function()
+    local args = {
+        "AcceptedToolToServer",
+        "Couch",
+        localPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end)
+
+toggleButton.MouseButton1Click:Connect(function() mainFrame.Visible = not mainFrame.Visible end)
+
+MakeSection(nukeTab, "Nuke Features")
+
+local skyboxEnabled = false
+local savedNukeBody = {}
+local skyboxTrack = nil
+local rigidTrack = nil
+
+local function stopAllAnimations()
+    if rigidTrack then
+        pcall(function()
+            rigidTrack:Stop()
+            rigidTrack:Destroy()
+        end)
+        rigidTrack = nil
+    end
+    if skyboxTrack then
+        pcall(function()
+            skyboxTrack:Stop()
+            skyboxTrack:Destroy()
+        end)
+        skyboxTrack = nil
+    end
+end
+
+MakeToggle(nukeTab, "Nuke Skybox", false, function(value)
+    skyboxEnabled = value
+    
+    if value then
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                local description = humanoid:GetAppliedDescription()
+                
+                savedNukeBody = {
+                    Torso = description.Torso,
+                    RightArm = description.RightArm,
+                    LeftArm = description.LeftArm,
+                    RightLeg = description.RightLeg,
+                    LeftLeg = description.LeftLeg,
+                    Head = description.Head
+                }
+                
+                task.wait(0.2)
+                
+                local args = {
+                    123402086843885,
+                    100839513065432,
+                    78300682916056,
+                    86276701020724,
+                    78409653958165,
+                    15093053680
+                }
+                
+                pcall(function()
+                    game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({args})
+                end)
+                
+                task.wait(0.3)
+                
+                local newAnim = Instance.new("Animation")
+                newAnim.AnimationId = "rbxassetid://70883871260184"
+                
+                skyboxTrack = humanoid:LoadAnimation(newAnim)
+                skyboxTrack.Priority = Enum.AnimationPriority.Action4
+                skyboxTrack:Play(0.1, 1, 0.01)
+                
+                task.wait(0.5)
+                
+                local plankAnim = Instance.new("Animation")
+                plankAnim.AnimationId = "rbxassetid://3695333486"
+                rigidTrack = humanoid:LoadAnimation(plankAnim)
+                rigidTrack.Priority = Enum.AnimationPriority.Movement
+                rigidTrack:Play(0.1, 1, 0)
+            end
+        end
+    else
+        stopAllAnimations()
+        
+        task.wait(0.2)
+        
+        if next(savedNukeBody) then
+            local player = game.Players.LocalPlayer
+            local character = player.Character
+            
+            if character then
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    local restoreBody = {
+                        savedNukeBody.Torso,
+                        savedNukeBody.RightArm,
+                        savedNukeBody.LeftArm,
+                        savedNukeBody.RightLeg,
+                        savedNukeBody.LeftLeg,
+                        savedNukeBody.Head
+                    }
+                    
+                    pcall(function()
+                        game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({restoreBody})
+                    end)
+                    
+                    savedNukeBody = {}
+                end
+            end
+        end
+    end
+end)
+
+local nukeFlashEnabled = false
+local nukeFlashTrack = nil
+local flashRigidTrack = nil
+local savedNukeFlashBody = {}
+
+local function stopFlashAnimations()
+    if flashRigidTrack then
+        pcall(function()
+            flashRigidTrack:Stop()
+            flashRigidTrack:Destroy()
+        end)
+        flashRigidTrack = nil
+    end
+    
+    if nukeFlashTrack then
+        pcall(function()
+            nukeFlashTrack:Stop()
+            nukeFlashTrack:Destroy()
+        end)
+        nukeFlashTrack = nil
+    end
+end
+
+MakeToggle(nukeTab, "Nuke FlashBack", false, function(value)
+    nukeFlashEnabled = value
+    
+    if value then
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                local description = humanoid:GetAppliedDescription()
+                
+                savedNukeFlashBody = {
+                    Torso = description.Torso,
+                    RightArm = description.RightArm,
+                    LeftArm = description.LeftArm,
+                    RightLeg = description.RightLeg,
+                    LeftLeg = description.LeftLeg,
+                    Head = description.Head
+                }
+                
+                task.wait(0.2)
+                
+                local args = {
+                    123402086843885,
+                    100839513065432,
+                    78300682916056,
+                    86276701020724,
+                    78409653958165,
+                    15093053680
+                }
+                
+                pcall(function()
+                    game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({args})
+                end)
+                
+                task.wait(0.3)
+                
+                local newAnim = Instance.new("Animation")
+                newAnim.AnimationId = "rbxassetid://70883871260184"
+                
+                nukeFlashTrack = humanoid:LoadAnimation(newAnim)
+                nukeFlashTrack.Priority = Enum.AnimationPriority.Action4
+                nukeFlashTrack:Play(0.1, 1, 1)
+                
+                task.wait(0.1)
+                nukeFlashTrack:AdjustSpeed(5)
+                
+                task.wait(0.3)
+                
+                local plankAnim = Instance.new("Animation")
+                plankAnim.AnimationId = "rbxassetid://3695333486"
+                flashRigidTrack = humanoid:LoadAnimation(plankAnim)
+                flashRigidTrack.Priority = Enum.AnimationPriority.Movement
+                flashRigidTrack:Play(0.1, 1, 0)
+            end
+        end
+    else
+        stopFlashAnimations()
+        
+        task.wait(0.2)
+        
+        if next(savedNukeFlashBody) then
+            local player = game.Players.LocalPlayer
+            local character = player.Character
+            
+            if character then
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    local restoreBody = {
+                        savedNukeFlashBody.Torso,
+                        savedNukeFlashBody.RightArm,
+                        savedNukeFlashBody.LeftArm,
+                        savedNukeFlashBody.RightLeg,
+                        savedNukeFlashBody.LeftLeg,
+                        savedNukeFlashBody.Head
+                    }
+                    
+                    pcall(function()
+                        game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({restoreBody})
+                    end)
+                    
+                    savedNukeFlashBody = {}
+                end
+            end
+        end
+    end
+end)
