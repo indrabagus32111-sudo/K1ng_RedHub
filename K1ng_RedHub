@@ -1784,30 +1784,6 @@ end)
 
 toggleButton.MouseButton1Click:Connect(function() mainFrame.Visible = not mainFrame.Visible end)
 
-MakeSection(nukeTab, "Nuke Features")
-
-local skyboxEnabled = false
-local savedNukeBody = {}
-local skyboxTrack = nil
-local rigidTrack = nil
-
-local function stopAllAnimations()
-    if rigidTrack then
-        pcall(function()
-            rigidTrack:Stop()
-            rigidTrack:Destroy()
-        end)
-        rigidTrack = nil
-    end
-    if skyboxTrack then
-        pcall(function()
-            skyboxTrack:Stop()
-            skyboxTrack:Destroy()
-        end)
-        skyboxTrack = nil
-    end
-end
-
 MakeToggle(nukeTab, "Nuke Skybox", false, function(value)
     skyboxEnabled = value
     
@@ -1832,8 +1808,15 @@ MakeToggle(nukeTab, "Nuke Skybox", false, function(value)
                 task.wait(0.2)
                 
                 pcall(function()
-                    local args = {202715985021897}
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("WearBundle"):InvokeServer(unpack(args))
+                    local args = {
+                        123402086843885,
+                        100839513065432,
+                        78300682916056,
+                        86276701020724,
+                        78409653958165,
+                        15093053680
+                    }
+                    game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({args})
                 end)
                 
                 task.wait(0.3)
@@ -1933,8 +1916,15 @@ MakeToggle(nukeTab, "Nuke FlashBack", false, function(value)
                 task.wait(0.2)
                 
                 pcall(function()
-                    local args = {202715985021897}
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("WearBundle"):InvokeServer(unpack(args))
+                    local args = {
+                        123402086843885,
+                        100839513065432,
+                        78300682916056,
+                        86276701020724,
+                        78409653958165,
+                        15093053680
+                    }
+                    game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({args})
                 end)
                 
                 task.wait(0.3)
