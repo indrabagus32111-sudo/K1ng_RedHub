@@ -1831,17 +1831,9 @@ MakeToggle(nukeTab, "Nuke Skybox", false, function(value)
                 
                 task.wait(0.2)
                 
-                local args = {
-                    123402086843885,
-                    100839513065432,
-                    78300682916056,
-                    86276701020724,
-                    78409653958165,
-                    15093053680
-                }
-                
                 pcall(function()
-                    game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({args})
+                    local args = {202715985021897}
+                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("WearBundle"):InvokeServer(unpack(args))
                 end)
                 
                 task.wait(0.3)
@@ -1940,17 +1932,9 @@ MakeToggle(nukeTab, "Nuke FlashBack", false, function(value)
                 
                 task.wait(0.2)
                 
-                local args = {
-                    123402086843885,
-                    100839513065432,
-                    78300682916056,
-                    86276701020724,
-                    78409653958165,
-                    15093053680
-                }
-                
                 pcall(function()
-                    game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({args})
+                    local args = {202715985021897}
+                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("WearBundle"):InvokeServer(unpack(args))
                 end)
                 
                 task.wait(0.3)
