@@ -1773,10 +1773,91 @@ MakeButton(itemsTab, "Crystals", function()
     ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
 end)
 
+MakeButton(itemsTab, "Egg Launcher", function()
+    local args = {
+        "AcceptedToolToServer",
+        "EggLauncher",
+        localPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end)
+
+MakeButton(itemsTab, "Cannon", function()
+    local args = {
+        "AcceptedToolToServer",
+        "Cannon",
+        localPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end)
+
+MakeButton(itemsTab, "Chainsaw", function()
+    local args = {
+        "AcceptedToolToServer",
+        "Chainsaw",
+        localPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end)
+
 MakeButton(itemsTab, "Couch", function()
     local args = {
         "AcceptedToolToServer",
         "Couch",
+        localPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end)
+
+MakeButton(itemsTab, "Water Balloon", function()
+    local args = {
+        "AcceptedToolToServer",
+        "WaterBalloon",
+        localPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end)
+
+MakeButton(itemsTab, "Uranium Rod", function()
+    local args = {
+        "AcceptedToolToServer",
+        "UraniumRod",
+        localPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end)
+
+MakeButton(itemsTab, "Golden Basketball", function()
+    local args = {
+        "AcceptedToolToServer",
+        "GoldenBasketball",
+        localPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end)
+
+MakeButton(itemsTab, "Glider", function()
+    local args = {
+        "AcceptedToolToServer",
+        "Glider",
+        localPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end)
+
+MakeButton(itemsTab, "Candy Basket", function()
+    local args = {
+        "AcceptedToolToServer",
+        "CandyBasket",
+        localPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end)
+
+MakeButton(itemsTab, "Snowball Canon", function()
+    local args = {
+        "AcceptedToolToServer",
+        "SnowballCanon",
         localPlayer
     }
     ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
