@@ -1,4 +1,4 @@
-Task.spawn(function()
+task.spawn(function()
     pcall(function()
         local args = {
             "RolePlayName",
