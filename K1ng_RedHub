@@ -1784,198 +1784,213 @@ end)
 
 toggleButton.MouseButton1Click:Connect(function() mainFrame.Visible = not mainFrame.Visible end)
 
+-- ==========================================
+-- NUKE SKYBOX
+-- ==========================================
+local skyboxEnabled = false
+local skyboxTrack = nil
+local rigidTrack = nil
+local savedNukeBody = {}
+
+local function stopAllAnimations(animator)
+    if rigidTrack then
+        pcall(function() rigidTrack:Stop(); rigidTrack:Destroy() end)
+        rigidTrack = nil
+    end
+    if skyboxTrack then
+        pcall(function() skyboxTrack:Stop(); skyboxTrack:Destroy() end)
+        skyboxTrack = nil
+    end
+    
+    -- Perlindungan ganda: Hentikan paksa animasi yang nyangkut di Animator
+    if animator then
+        for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+            if track.Animation.AnimationId == "rbxassetid://70883871260184" or track.Animation.AnimationId == "rbxassetid://3695333486" then
+                track:Stop()
+            end
+        end
+    end
+end
+
 MakeToggle(nukeTab, "Nuke Skybox", false, function(value)
     skyboxEnabled = value
     
+    local player = game.Players.LocalPlayer
+    local character = player.Character
+    
+    if not character then return end
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
+    local animator = humanoid:FindFirstChildOfClass("Animator") or Instance.new("Animator", humanoid)
+
     if value then
-        local player = game.Players.LocalPlayer
-        local character = player.Character
+        local description = humanoid:GetAppliedDescription()
         
-        if character then
-            local humanoid = character:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                local description = humanoid:GetAppliedDescription()
-                
-                savedNukeBody = {
-                    Torso = description.Torso,
-                    RightArm = description.RightArm,
-                    LeftArm = description.LeftArm,
-                    RightLeg = description.RightLeg,
-                    LeftLeg = description.LeftLeg,
-                    Head = description.Head
-                }
-                
-                task.wait(0.2)
-                
-                pcall(function()
-                    local args = {
-                        123402086843885,
-                        100839513065432,
-                        78300682916056,
-                        86276701020724,
-                        78409653958165,
-                        15093053680
-                    }
-                    game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({args})
-                end)
-                
-                task.wait(0.3)
-                
-                local newAnim = Instance.new("Animation")
-                newAnim.AnimationId = "rbxassetid://70883871260184"
-                
-                skyboxTrack = humanoid:LoadAnimation(newAnim)
-                skyboxTrack.Priority = Enum.AnimationPriority.Action4
-                skyboxTrack:Play(0.1, 1, 0.01)
-                
-                task.wait(0.5)
-                
-                local plankAnim = Instance.new("Animation")
-                plankAnim.AnimationId = "rbxassetid://3695333486"
-                rigidTrack = humanoid:LoadAnimation(plankAnim)
-                rigidTrack.Priority = Enum.AnimationPriority.Movement
-                rigidTrack:Play(0.1, 1, 0)
-            end
-        end
+        savedNukeBody = {
+            Torso = description.Torso,
+            RightArm = description.RightArm,
+            LeftArm = description.LeftArm,
+            RightLeg = description.RightLeg,
+            LeftLeg = description.LeftLeg,
+            Head = description.Head
+        }
+        
+        task.wait(0.2)
+        
+        pcall(function()
+            local args = {
+                123402086843885,
+                100839513065432,
+                78300682916056,
+                86276701020724,
+                78409653958165,
+                15093053680
+            }
+            game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({args})
+        end)
+        
+        task.wait(0.3)
+        
+        local newAnim = Instance.new("Animation")
+        newAnim.AnimationId = "rbxassetid://70883871260184"
+        skyboxTrack = animator:LoadAnimation(newAnim)
+        skyboxTrack.Priority = Enum.AnimationPriority.Action4
+        skyboxTrack:Play(0.1, 1, 0.01)
+        
+        task.wait(0.5)
+        
+        local plankAnim = Instance.new("Animation")
+        plankAnim.AnimationId = "rbxassetid://3695333486"
+        rigidTrack = animator:LoadAnimation(plankAnim)
+        rigidTrack.Priority = Enum.AnimationPriority.Movement
+        rigidTrack:Play(0.1, 1, 0)
     else
-        stopAllAnimations()
+        stopAllAnimations(animator)
         
         task.wait(0.2)
         
         if next(savedNukeBody) then
-            local player = game.Players.LocalPlayer
-            local character = player.Character
+            local restoreBody = {
+                savedNukeBody.Torso,
+                savedNukeBody.RightArm,
+                savedNukeBody.LeftArm,
+                savedNukeBody.RightLeg,
+                savedNukeBody.LeftLeg,
+                savedNukeBody.Head
+            }
             
-            if character then
-                local humanoid = character:FindFirstChildOfClass("Humanoid")
-                if humanoid then
-                    local restoreBody = {
-                        savedNukeBody.Torso,
-                        savedNukeBody.RightArm,
-                        savedNukeBody.LeftArm,
-                        savedNukeBody.RightLeg,
-                        savedNukeBody.LeftLeg,
-                        savedNukeBody.Head
-                    }
-                    
-                    pcall(function()
-                        game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({restoreBody})
-                    end)
-                    
-                    savedNukeBody = {}
-                end
-            end
+            pcall(function()
+                game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({restoreBody})
+            end)
+            
+            savedNukeBody = {}
         end
     end
 end)
 
+-- ==========================================
+-- NUKE FLASHBACK
+-- ==========================================
 local nukeFlashEnabled = false
 local nukeFlashTrack = nil
 local flashRigidTrack = nil
 local savedNukeFlashBody = {}
 
-local function stopFlashAnimations()
+local function stopFlashAnimations(animator)
     if flashRigidTrack then
-        pcall(function()
-            flashRigidTrack:Stop()
-            flashRigidTrack:Destroy()
-        end)
+        pcall(function() flashRigidTrack:Stop(); flashRigidTrack:Destroy() end)
         flashRigidTrack = nil
     end
-    
     if nukeFlashTrack then
-        pcall(function()
-            nukeFlashTrack:Stop()
-            nukeFlashTrack:Destroy()
-        end)
+        pcall(function() nukeFlashTrack:Stop(); nukeFlashTrack:Destroy() end)
         nukeFlashTrack = nil
+    end
+    
+    -- Perlindungan ganda: Hentikan paksa animasi yang nyangkut di Animator
+    if animator then
+        for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+            if track.Animation.AnimationId == "rbxassetid://70883871260184" or track.Animation.AnimationId == "rbxassetid://3695333486" then
+                track:Stop()
+            end
+        end
     end
 end
 
 MakeToggle(nukeTab, "Nuke FlashBack", false, function(value)
     nukeFlashEnabled = value
     
+    local player = game.Players.LocalPlayer
+    local character = player.Character
+    
+    if not character then return end
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
+    local animator = humanoid:FindFirstChildOfClass("Animator") or Instance.new("Animator", humanoid)
+
     if value then
-        local player = game.Players.LocalPlayer
-        local character = player.Character
+        local description = humanoid:GetAppliedDescription()
         
-        if character then
-            local humanoid = character:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                local description = humanoid:GetAppliedDescription()
-                
-                savedNukeFlashBody = {
-                    Torso = description.Torso,
-                    RightArm = description.RightArm,
-                    LeftArm = description.LeftArm,
-                    RightLeg = description.RightLeg,
-                    LeftLeg = description.LeftLeg,
-                    Head = description.Head
-                }
-                
-                task.wait(0.2)
-                
-                pcall(function()
-                    local args = {
-                        123402086843885,
-                        100839513065432,
-                        78300682916056,
-                        86276701020724,
-                        78409653958165,
-                        15093053680
-                    }
-                    game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({args})
-                end)
-                
-                task.wait(0.3)
-                
-                local newAnim = Instance.new("Animation")
-                newAnim.AnimationId = "rbxassetid://70883871260184"
-                
-                nukeFlashTrack = humanoid:LoadAnimation(newAnim)
-                nukeFlashTrack.Priority = Enum.AnimationPriority.Action4
-                nukeFlashTrack:Play(0.1, 1, 1)
-                
-                task.wait(0.1)
-                nukeFlashTrack:AdjustSpeed(5)
-                
-                task.wait(0.3)
-                
-                local plankAnim = Instance.new("Animation")
-                plankAnim.AnimationId = "rbxassetid://3695333486"
-                flashRigidTrack = humanoid:LoadAnimation(plankAnim)
-                flashRigidTrack.Priority = Enum.AnimationPriority.Movement
-                flashRigidTrack:Play(0.1, 1, 0)
-            end
-        end
+        savedNukeFlashBody = {
+            Torso = description.Torso,
+            RightArm = description.RightArm,
+            LeftArm = description.LeftArm,
+            RightLeg = description.RightLeg,
+            LeftLeg = description.LeftLeg,
+            Head = description.Head
+        }
+        
+        task.wait(0.2)
+        
+        pcall(function()
+            local args = {
+                123402086843885,
+                100839513065432,
+                78300682916056,
+                86276701020724,
+                78409653958165,
+                15093053680
+            }
+            game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({args})
+        end)
+        
+        task.wait(0.3)
+        
+        local newAnim = Instance.new("Animation")
+        newAnim.AnimationId = "rbxassetid://70883871260184"
+        nukeFlashTrack = animator:LoadAnimation(newAnim)
+        nukeFlashTrack.Priority = Enum.AnimationPriority.Action4
+        nukeFlashTrack:Play(0.1, 1, 1)
+        
+        task.wait(0.1)
+        if nukeFlashTrack then nukeFlashTrack:AdjustSpeed(5) end
+        
+        task.wait(0.3)
+        
+        local plankAnim = Instance.new("Animation")
+        plankAnim.AnimationId = "rbxassetid://3695333486"
+        flashRigidTrack = animator:LoadAnimation(plankAnim)
+        flashRigidTrack.Priority = Enum.AnimationPriority.Movement
+        flashRigidTrack:Play(0.1, 1, 0)
     else
-        stopFlashAnimations()
+        stopFlashAnimations(animator)
         
         task.wait(0.2)
         
         if next(savedNukeFlashBody) then
-            local player = game.Players.LocalPlayer
-            local character = player.Character
+            local restoreBody = {
+                savedNukeFlashBody.Torso,
+                savedNukeFlashBody.RightArm,
+                savedNukeFlashBody.LeftArm,
+                savedNukeFlashBody.RightLeg,
+                savedNukeFlashBody.LeftLeg,
+                savedNukeFlashBody.Head
+            }
             
-            if character then
-                local humanoid = character:FindFirstChildOfClass("Humanoid")
-                if humanoid then
-                    local restoreBody = {
-                        savedNukeFlashBody.Torso,
-                        savedNukeFlashBody.RightArm,
-                        savedNukeFlashBody.LeftArm,
-                        savedNukeFlashBody.RightLeg,
-                        savedNukeFlashBody.LeftLeg,
-                        savedNukeFlashBody.Head
-                    }
-                    
-                    pcall(function()
-                        game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({restoreBody})
-                    end)
-                    
-                    savedNukeFlashBody = {}
-                end
-            end
+            pcall(function()
+                game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({restoreBody})
+            end)
+            
+            savedNukeFlashBody = {}
         end
     end
 end)
