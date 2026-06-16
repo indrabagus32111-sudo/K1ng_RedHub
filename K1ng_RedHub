@@ -575,7 +575,7 @@ local teleportsTab= createTab("Teleports", 6)
 local espTab      = createTab("ESP", 7)
 local childTab    = createTab("Child", 8)
 local itemsTab    = createTab("Items", 9)
-local nukeTab     = createTab("Nuke", 10)
+local fireTab     = createTab("Fire", 10)
 
 MakeSection(playerTab, "Player Character")
 
@@ -1784,213 +1784,60 @@ end)
 
 toggleButton.MouseButton1Click:Connect(function() mainFrame.Visible = not mainFrame.Visible end)
 
--- ==========================================
--- NUKE SKYBOX
--- ==========================================
-local skyboxEnabled = false
-local skyboxTrack = nil
-local rigidTrack = nil
-local savedNukeBody = {}
+MakeSection(fireTab, "Fire Modifiers")
 
-local function stopAllAnimations(animator)
-    if rigidTrack then
-        pcall(function() rigidTrack:Stop(); rigidTrack:Destroy() end)
-        rigidTrack = nil
-    end
-    if skyboxTrack then
-        pcall(function() skyboxTrack:Stop(); skyboxTrack:Destroy() end)
-        skyboxTrack = nil
-    end
-    
-    -- Perlindungan ganda: Hentikan paksa animasi yang nyangkut di Animator
-    if animator then
-        for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
-            if track.Animation.AnimationId == "rbxassetid://70883871260184" or track.Animation.AnimationId == "rbxassetid://3695333486" then
-                track:Stop()
-            end
-        end
-    end
-end
+MakeDropdown(fireTab, "Fire Colors", {"White", "Orange", "Green", "Blue", "Purple", "Black"}, function(Value)
+    _G.selectedColor = Value
+    print("Selected Fire Color: " .. Value)
+end)
 
-MakeToggle(nukeTab, "Nuke Skybox", false, function(value)
-    skyboxEnabled = value
+MakeButton(fireTab, "Equip Fire Color", function()
+    local fireColors = {
+        ["White"] = { id = "18637074370", code = "030FireWhite" },
+        ["Orange"] = { id = "18637025451", code = "031FireOrange" },
+        ["Green"] = { id = "18637078598", code = "032FireGreen" },
+        ["Blue"] = { id = "18637076370", code = "033FireBlue" },
+        ["Purple"] = { id = "18637070174", code = "034FirePurple" },
+        ["Black"] = { id = "18637072603", code = "035FireBlack" }
+    }
     
-    local player = game.Players.LocalPlayer
-    local character = player.Character
+    local selectedColor = _G.selectedColor or "White"
     
-    if not character then return end
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    if not humanoid then return end
-    local animator = humanoid:FindFirstChildOfClass("Animator") or Instance.new("Animator", humanoid)
-
-    if value then
-        local description = humanoid:GetAppliedDescription()
-        
-        savedNukeBody = {
-            Torso = description.Torso,
-            RightArm = description.RightArm,
-            LeftArm = description.LeftArm,
-            RightLeg = description.RightLeg,
-            LeftLeg = description.LeftLeg,
-            Head = description.Head
-        }
-        
-        task.wait(0.2)
-        
-        pcall(function()
-            local args = {
-                123402086843885,
-                100839513065432,
-                78300682916056,
-                86276701020724,
-                78409653958165,
-                15093053680
-            }
-            game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({args})
-        end)
-        
-        task.wait(0.3)
-        
-        local newAnim = Instance.new("Animation")
-        newAnim.AnimationId = "rbxassetid://70883871260184"
-        skyboxTrack = animator:LoadAnimation(newAnim)
-        skyboxTrack.Priority = Enum.AnimationPriority.Action4
-        skyboxTrack:Play(0.1, 1, 0.01)
-        
-        task.wait(0.5)
-        
-        local plankAnim = Instance.new("Animation")
-        plankAnim.AnimationId = "rbxassetid://3695333486"
-        rigidTrack = animator:LoadAnimation(plankAnim)
-        rigidTrack.Priority = Enum.AnimationPriority.Movement
-        rigidTrack:Play(0.1, 1, 0)
+    if selectedColor and fireColors[selectedColor] then
+        local colorData = fireColors[selectedColor]
+        local args = { colorData.id, colorData.code }
+        game:GetService("ReplicatedStorage").Remotes.ApplyEmmiter:InvokeServer(unpack(args))
+        print("Equipped: " .. selectedColor .. " Fire")
     else
-        stopAllAnimations(animator)
-        
-        task.wait(0.2)
-        
-        if next(savedNukeBody) then
-            local restoreBody = {
-                savedNukeBody.Torso,
-                savedNukeBody.RightArm,
-                savedNukeBody.LeftArm,
-                savedNukeBody.RightLeg,
-                savedNukeBody.LeftLeg,
-                savedNukeBody.Head
-            }
-            
-            pcall(function()
-                game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({restoreBody})
-            end)
-            
-            savedNukeBody = {}
-        end
+        warn("Error: Color not found!")
     end
 end)
 
--- ==========================================
--- NUKE FLASHBACK
--- ==========================================
-local nukeFlashEnabled = false
-local nukeFlashTrack = nil
-local flashRigidTrack = nil
-local savedNukeFlashBody = {}
+MakeDropdown(fireTab, "Smoke Colors", {"White", "Yellow", "Orange", "Green", "Blue", "Purple", "Red", "Black"}, function(Value)
+    _G.selectedSmokeColor = Value
+    print("Selected Smoke Color: " .. Value)
+end)
 
-local function stopFlashAnimations(animator)
-    if flashRigidTrack then
-        pcall(function() flashRigidTrack:Stop(); flashRigidTrack:Destroy() end)
-        flashRigidTrack = nil
-    end
-    if nukeFlashTrack then
-        pcall(function() nukeFlashTrack:Stop(); nukeFlashTrack:Destroy() end)
-        nukeFlashTrack = nil
-    end
+MakeButton(fireTab, "Equip Smoke Color", function()
+    local smokeColors = {
+        ["White"] = { id = "18637791748", code = "080SmokeWhite" },
+        ["Yellow"] = { id = "18637800482", code = "081SmokeYellow" },
+        ["Orange"] = { id = "18637793920", code = "082SmokeOrange" },
+        ["Green"] = { id = "18637789299", code = "083SmokeGreen" },
+        ["Blue"] = { id = "18637803021", code = "084SmokeBlue" },
+        ["Purple"] = { id = "18637813360", code = "085SmokePurple" },
+        ["Red"] = { id = "18637796598", code = "086SmokeRed" },
+        ["Black"] = { id = "18637798529", code = "087SmokeBlack" }
+    }
     
-    -- Perlindungan ganda: Hentikan paksa animasi yang nyangkut di Animator
-    if animator then
-        for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
-            if track.Animation.AnimationId == "rbxassetid://70883871260184" or track.Animation.AnimationId == "rbxassetid://3695333486" then
-                track:Stop()
-            end
-        end
-    end
-end
-
-MakeToggle(nukeTab, "Nuke FlashBack", false, function(value)
-    nukeFlashEnabled = value
+    local selectedSmokeColor = _G.selectedSmokeColor or "White"
     
-    local player = game.Players.LocalPlayer
-    local character = player.Character
-    
-    if not character then return end
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    if not humanoid then return end
-    local animator = humanoid:FindFirstChildOfClass("Animator") or Instance.new("Animator", humanoid)
-
-    if value then
-        local description = humanoid:GetAppliedDescription()
-        
-        savedNukeFlashBody = {
-            Torso = description.Torso,
-            RightArm = description.RightArm,
-            LeftArm = description.LeftArm,
-            RightLeg = description.RightLeg,
-            LeftLeg = description.LeftLeg,
-            Head = description.Head
-        }
-        
-        task.wait(0.2)
-        
-        pcall(function()
-            local args = {
-                123402086843885,
-                100839513065432,
-                78300682916056,
-                86276701020724,
-                78409653958165,
-                15093053680
-            }
-            game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({args})
-        end)
-        
-        task.wait(0.3)
-        
-        local newAnim = Instance.new("Animation")
-        newAnim.AnimationId = "rbxassetid://70883871260184"
-        nukeFlashTrack = animator:LoadAnimation(newAnim)
-        nukeFlashTrack.Priority = Enum.AnimationPriority.Action4
-        nukeFlashTrack:Play(0.1, 1, 1)
-        
-        task.wait(0.1)
-        if nukeFlashTrack then nukeFlashTrack:AdjustSpeed(5) end
-        
-        task.wait(0.3)
-        
-        local plankAnim = Instance.new("Animation")
-        plankAnim.AnimationId = "rbxassetid://3695333486"
-        flashRigidTrack = animator:LoadAnimation(plankAnim)
-        flashRigidTrack.Priority = Enum.AnimationPriority.Movement
-        flashRigidTrack:Play(0.1, 1, 0)
+    if selectedSmokeColor and smokeColors[selectedSmokeColor] then
+        local colorData = smokeColors[selectedSmokeColor]
+        local args = { colorData.id, colorData.code }
+        game:GetService("ReplicatedStorage").Remotes.ApplyEmmiter:InvokeServer(unpack(args))
+        print("Equipped: " .. selectedSmokeColor .. " Smoke")
     else
-        stopFlashAnimations(animator)
-        
-        task.wait(0.2)
-        
-        if next(savedNukeFlashBody) then
-            local restoreBody = {
-                savedNukeFlashBody.Torso,
-                savedNukeFlashBody.RightArm,
-                savedNukeFlashBody.LeftArm,
-                savedNukeFlashBody.RightLeg,
-                savedNukeFlashBody.LeftLeg,
-                savedNukeFlashBody.Head
-            }
-            
-            pcall(function()
-                game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer({restoreBody})
-            end)
-            
-            savedNukeFlashBody = {}
-        end
+        warn("Error: Smoke color not found!")
     end
 end)
