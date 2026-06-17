@@ -1809,15 +1809,6 @@ MakeButton(itemsTab, "Couch", function()
     ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
 end)
 
-MakeButton(itemsTab, "Water Balloon", function()
-    local args = {
-        "AcceptedToolToServer",
-        "WaterBalloon",
-        localPlayer
-    }
-    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
-end)
-
 MakeButton(itemsTab, "Uranium Rod", function()
     local args = {
         "AcceptedToolToServer",
@@ -1849,15 +1840,6 @@ MakeButton(itemsTab, "Candy Basket", function()
     local args = {
         "AcceptedToolToServer",
         "CandyBasket",
-        localPlayer
-    }
-    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
-end)
-
-MakeButton(itemsTab, "Snowball Canon", function()
-    local args = {
-        "AcceptedToolToServer",
-        "SnowballCanon",
         localPlayer
     }
     ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
