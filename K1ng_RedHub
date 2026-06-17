@@ -276,14 +276,24 @@ local function createTab(name, order)
     local tabBtn = Instance.new("TextButton")
     tabBtn.Parent = tabScrollFrame
     tabBtn.Size = UDim2.new(1, -8, 0, 30)
-    tabBtn.BackgroundColor3 = Color3.fromRGB(35, 0, 0)
     tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     tabBtn.Text = name
     tabBtn.Font = Enum.Font.GothamSemibold
     tabBtn.TextSize = 14
     tabBtn.LayoutOrder = order
+    
     Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 6)
-    Instance.new("UIStroke", tabBtn).Color = Color3.fromRGB(255, 0, 0)
+    local uiStroke = Instance.new("UIStroke", tabBtn)
+    
+    if firstTab then
+        tabBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+        uiStroke.Color = Color3.fromRGB(255, 50, 50)
+        uiStroke.Thickness = 2
+    else
+        tabBtn.BackgroundColor3 = Color3.fromRGB(35, 0, 0)
+        uiStroke.Color = Color3.fromRGB(255, 0, 0)
+        uiStroke.Thickness = 1
+    end
     
     local page = Instance.new("ScrollingFrame")
     page.Name = name .. "Page"
@@ -316,6 +326,21 @@ local function createTab(name, order)
             end
         end
         page.Visible = true
+        
+        for _, child in ipairs(tabScrollFrame:GetChildren()) do
+            if child:IsA("TextButton") then
+                child.BackgroundColor3 = Color3.fromRGB(35, 0, 0)
+                local stroke = child:FindFirstChildOfClass("UIStroke")
+                if stroke then
+                    stroke.Color = Color3.fromRGB(255, 0, 0)
+                    stroke.Thickness = 1
+                end
+            end
+        end
+        
+        tabBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+        uiStroke.Color = Color3.fromRGB(255, 50, 50)
+        uiStroke.Thickness = 2
     end)
     
     firstTab = false
