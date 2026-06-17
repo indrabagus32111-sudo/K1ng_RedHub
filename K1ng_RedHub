@@ -2858,3 +2858,227 @@ MakeButton(trollTab, "Enable Legacy Auto Fling (Background)", function()
     end
 end)
                                                                 		                                  
+---------------------------------------------------------------------------------------------------------------------------------
+-- === Tab 12: RGB === --
+---------------------------------------------------------------------------------------------------------------------------------
+
+local rgbTab = createTab("RGB", 12)
+local LocalPlayer = game:GetService("Players").LocalPlayer
+local rgbSpeed = 3
+
+-- RGB Speed Control Slider
+MakeSlider(rgbTab, "RGB Speed", 1, 10, 3, function(Value)
+    rgbSpeed = Value
+end)
+
+-- Function to generate smooth RGB color via HSV
+local function getRainbowColor(speedMultiplier)
+    local h = (tick() * speedMultiplier % 5) / 5
+    return Color3.fromHSV(h, 1, 1)
+end
+
+-- Function to fire remote events safely
+local function fireServer(eventName, args)
+    local event = game:GetService("ReplicatedStorage"):FindFirstChild("RE")
+    if event and event:FindFirstChild(eventName) then
+        pcall(function()
+            event[eventName]:FireServer(unpack(args))
+        end)
+    end
+end
+
+-- ==================== Character RGB Section ====================
+MakeSection(rgbTab, "Character RGB")
+
+-- Name + Bio RGB
+local nameBioRGBActive = false
+MakeToggle(rgbTab, "Name + Bio RGB", false, function(state)
+    nameBioRGBActive = state
+    if state then
+        task.spawn(function()
+            while nameBioRGBActive and LocalPlayer.Character do
+                local color = getRainbowColor(rgbSpeed)
+                fireServer("1RPNam1eColo1r", { "PickingRPNameColor", color })
+                fireServer("1RPNam1eColo1r", { "PickingRPBioColor", color })
+                task.wait(0.03)
+            end
+        end)
+    end
+end)
+
+-- RGB Body
+MakeToggle(rgbTab, "RGB Body", false, function(Value)
+    getgenv().rgbCorpo = Value
+    task.spawn(function()
+        while getgenv().rgbCorpo do
+            local remote = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
+            if remote and remote:FindFirstChild("ChangeBodyColor") then
+                pcall(function()
+                    remote.ChangeBodyColor:FireServer({
+                        BrickColor.new(getRainbowColor(rgbSpeed))
+                    })
+                end)
+            end
+            task.wait(0.1)
+        end
+    end)
+end)
+
+-- RGB Hair
+MakeToggle(rgbTab, "RGB Hair", false, function(Value)
+    getgenv().rgbCabelo = Value
+    task.spawn(function()
+        while getgenv().rgbCabelo do
+            fireServer("1Max1y", {
+                "ChangeHairColor2",
+                getRainbowColor(rgbSpeed)
+            })
+            task.wait(0.5)
+        end
+    end)
+end)
+
+-- ==================== Vehicles & House Section ====================
+MakeSection(rgbTab, "Vehicles & House")
+
+-- RGB House
+MakeToggle(rgbTab, "RGB House", false, function(Value)
+    getgenv().rgbCasa = Value
+    task.spawn(function()
+        while getgenv().rgbCasa do
+            fireServer("1Player1sHous1e", {
+                "ColorPickHouse",
+                getRainbowColor(rgbSpeed)
+            })
+            task.wait(0.1)
+        end
+    end)
+end)
+
+-- Car RGB (Premium)
+local carRGBActive = false
+MakeToggle(rgbTab, "Car RGB (Premium)", false, function(state)
+    carRGBActive = state
+    if state then
+        task.spawn(function()
+            while carRGBActive and LocalPlayer.Character do
+                local color = getRainbowColor(rgbSpeed)
+                fireServer("1Player1sCa1r", { "PickingCarColor", color })
+                task.wait(0.03)
+            end
+        end)
+    end
+end)
+
+-- RGB Bicycle
+MakeToggle(rgbTab, "RGB Bicycle", false, function(Value)
+    getgenv().rgbBicicleta = Value
+    task.spawn(function()
+        while getgenv().rgbBicicleta do
+            fireServer("1Player1sCa1r", {
+                "NoMotorColor",
+                getRainbowColor(rgbSpeed)
+            })
+            task.wait(0.1)
+        end
+    end)
+end)
+
+-- ==================== Items & Tools Section ====================
+MakeSection(rgbTab, "Items & Tools")
+
+-- Radio RGB
+local radioRGBActive = false
+MakeToggle(rgbTab, "Radio RGB", false, function(state)
+    radioRGBActive = state
+    if state then
+        task.spawn(function()
+            while radioRGBActive and LocalPlayer.Character do
+                local color = getRainbowColor(rgbSpeed)
+
+                local success, remote = pcall(function()
+                    return LocalPlayer:WaitForChild("PlayerGui")
+                        :WaitForChild("ToolGui")
+                        :WaitForChild("ToolSettings")
+                        :WaitForChild("Settings")
+                        :WaitForChild("PropsColor")
+                        :WaitForChild("SetColor")
+                end)
+
+                if success and remote then
+                    pcall(function()
+                        remote:FireServer(color)
+                    end)
+                end
+
+                task.wait(0.03)
+            end
+        end)
+    end
+end)
+
+-- RGB Megaphone
+MakeToggle(rgbTab, "RGB Megaphone", false, function(Value)
+    getgenv().rgbMegafone = Value
+
+    task.spawn(function()
+        while getgenv().rgbMegafone do
+            local color = getRainbowColor(rgbSpeed)
+
+            local gui = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerGui")
+            if gui then
+                local toolGui = gui:FindFirstChild("ToolGui")
+
+                if toolGui then
+                    local settings = toolGui:FindFirstChild("ToolSettings")
+
+                    if settings then
+                        local props = settings:FindFirstChild("Settings")
+                            and settings.Settings:FindFirstChild("PropsColor")
+
+                        if props and props:FindFirstChild("SetColor") then
+                            pcall(function()
+                                props.SetColor:FireServer(color)
+                            end)
+                        end
+                    end
+                end
+            end
+
+            task.wait(0.1)
+        end
+    end)
+end)
+
+-- RGB Donut
+MakeToggle(rgbTab, "RGB Donut", false, function(Value)
+    getgenv().rgbDonut = Value
+
+    task.spawn(function()
+        while getgenv().rgbDonut do
+            local color = getRainbowColor(rgbSpeed)
+
+            local gui = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerGui")
+            if gui then
+                local toolGui = gui:FindFirstChild("ToolGui")
+
+                if toolGui then
+                    local settings = toolGui:FindFirstChild("ToolSettings")
+
+                    if settings then
+                        local props = settings:FindFirstChild("Settings")
+                            and settings.Settings:FindFirstChild("PropsColor")
+
+                        if props and props:FindFirstChild("SetColor") then
+                            pcall(function()
+                                props.SetColor:FireServer(color)
+                            end)
+                        end
+                    end
+                end
+            end
+
+            task.wait(0.1)
+        end
+    end)
+end)
