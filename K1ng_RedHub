@@ -1874,36 +1874,91 @@ toggleButton.MouseButton1Click:Connect(function() mainFrame.Visible = not mainFr
 
 MakeSection(fireTab, "Fire")
 
+local fireColors = {
+    ["White"] = { id = "18637074370", code = "030FireWhite" },
+    ["Orange"] = { id = "18637025451", code = "031FireOrange" },
+    ["Green"] = { id = "18637078598", code = "032FireGreen" },
+    ["Blue"] = { id = "18637076370", code = "033FireBlue" },
+    ["Purple"] = { id = "18637070174", code = "034FirePurple" },
+    ["Black"] = { id = "18637072603", code = "035FireBlack" }
+}
+
+local smokeColors = {
+    ["White"] = { id = "18637791748", code = "080SmokeWhite" },
+    ["Yellow"] = { id = "18637800482", code = "081SmokeYellow" },
+    ["Orange"] = { id = "18637793920", code = "082SmokeOrange" },
+    ["Green"] = { id = "18637789299", code = "083SmokeGreen" },
+    ["Blue"] = { id = "18637803021", code = "084SmokeBlue" },
+    ["Purple"] = { id = "18637813360", code = "085SmokePurple" },
+    ["Red"] = { id = "18637796598", code = "086SmokeRed" },
+    ["Black"] = { id = "18637798529", code = "087SmokeBlack" }
+}
+
+local currentFire = nil
+local currentSmoke = nil
+local fireEnabled = false
+local smokeEnabled = false
+
+MakeSection(fireTab, "Fire Modifiers")
+
 MakeDropdown(fireTab, "Fire Colors", {"White", "Orange", "Green", "Blue", "Purple", "Black"}, function(Value)
     _G.selectedColor = Value
     print("Selected Fire Color: " .. Value)
+    if fireEnabled and currentFire ~= Value then
+        currentFire = Value
+        local colorData = fireColors[Value]
+        if colorData then
+            game:GetService("ReplicatedStorage").Remotes.ApplyEmmiter:InvokeServer(unpack({ colorData.id, colorData.code }))
+        end
+    end
 end)
 
-MakeButton(fireTab, "Equip Fire Color", function()
-    local fireColors = {
-        ["White"] = { id = "18637074370", code = "030FireWhite" },
-        ["Orange"] = { id = "18637025451", code = "031FireOrange" },
-        ["Green"] = { id = "18637078598", code = "032FireGreen" },
-        ["Blue"] = { id = "18637076370", code = "033FireBlue" },
-        ["Purple"] = { id = "18637070174", code = "034FirePurple" },
-        ["Black"] = { id = "18637072603", code = "035FireBlack" }
-    }
-    
-    local selectedColor = _G.selectedColor or "White"
-    
-    if selectedColor and fireColors[selectedColor] then
-        local colorData = fireColors[selectedColor]
-        local args = { colorData.id, colorData.code }
-        game:GetService("ReplicatedStorage").Remotes.ApplyEmmiter:InvokeServer(unpack(args))
-        print("Equipped: " .. selectedColor .. " Fire")
+MakeToggle(fireTab, "Toggle Fire", false, function(Value)
+    fireEnabled = Value
+    if Value then
+        local selectedColor = _G.selectedColor or "White"
+        if currentFire ~= selectedColor then
+            currentFire = selectedColor
+            local colorData = fireColors[selectedColor]
+            if colorData then
+                game:GetService("ReplicatedStorage").Remotes.ApplyEmmiter:InvokeServer(unpack({ colorData.id, colorData.code }))
+                print("Equipped: " .. selectedColor .. " Fire")
+            end
+        end
     else
-        warn("Error: Color not found!")
+        currentFire = nil
+        print("Fire Disabled")
     end
 end)
 
 MakeDropdown(fireTab, "Smoke Colors", {"White", "Yellow", "Orange", "Green", "Blue", "Purple", "Red", "Black"}, function(Value)
     _G.selectedSmokeColor = Value
     print("Selected Smoke Color: " .. Value)
+    if smokeEnabled and currentSmoke ~= Value then
+        currentSmoke = Value
+        local colorData = smokeColors[Value]
+        if colorData then
+            game:GetService("ReplicatedStorage").Remotes.ApplyEmmiter:InvokeServer(unpack({ colorData.id, colorData.code }))
+        end
+    end
+end)
+
+MakeToggle(fireTab, "Toggle Smoke", false, function(Value)
+    smokeEnabled = Value
+    if Value then
+        local selectedSmokeColor = _G.selectedSmokeColor or "White"
+        if currentSmoke ~= selectedSmokeColor then
+            currentSmoke = selectedSmokeColor
+            local colorData = smokeColors[selectedSmokeColor]
+            if colorData then
+                game:GetService("ReplicatedStorage").Remotes.ApplyEmmiter:InvokeServer(unpack({ colorData.id, colorData.code }))
+                print("Equipped: " .. selectedSmokeColor .. " Smoke")
+            end
+        end
+    else
+        currentSmoke = nil
+        print("Smoke Disabled")
+    end
 end)
 
 local trollTab = createTab("Troll", 11)
