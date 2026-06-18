@@ -1874,48 +1874,6 @@ toggleButton.MouseButton1Click:Connect(function() mainFrame.Visible = not mainFr
 
 MakeSection(fireTab, "Fire")
 
-local function hapusEfek(char)
-    if not char then return end
-    for _, obj in ipairs(char:GetDescendants()) do
-        if obj:IsA("Fire") or obj:IsA("Smoke") then
-            obj:Destroy()
-        end
-    end
-end
-
-local function pasangEfek(jenisEfek)
-    local char = localPlayer.Character
-    if not char then return end
-    hapusEfek(char)
-    for _, part in ipairs(char:GetChildren()) do
-        if part:IsA("BasePart") then
-            local efek = Instance.new(jenisEfek)
-            if jenisEfek == "Fire" then
-                efek.Size = 7
-                efek.Heat = 9
-            elseif jenisEfek == "Smoke" then
-                efek.Size = 7
-                efek.RiseVelocity = 5
-            end
-            efek.Parent = part
-        end
-    end
-end
-
-MakeSection(fireTab, "Efek Karakter")
-
-MakeButton(fireTab, "Aktifkan Api (Fire)", function()
-    pasangEfek("Fire")
-end)
-
-MakeButton(fireTab, "Aktifkan Asap (Smoke)", function()
-    pasangEfek("Smoke")
-end)
-
-MakeButton(fireTab, "Hapus Semua Efek", function()
-    hapusEfek(localPlayer.Character)
-end)
-
 MakeDropdown(fireTab, "Fire Colors", {"White", "Orange", "Green", "Blue", "Purple", "Black"}, function(Value)
     _G.selectedColor = Value
     print("Selected Fire Color: " .. Value)
@@ -1946,30 +1904,6 @@ end)
 MakeDropdown(fireTab, "Smoke Colors", {"White", "Yellow", "Orange", "Green", "Blue", "Purple", "Red", "Black"}, function(Value)
     _G.selectedSmokeColor = Value
     print("Selected Smoke Color: " .. Value)
-end)
-
-MakeButton(fireTab, "Equip Smoke Color", function()
-    local smokeColors = {
-        ["White"] = { id = "18637791748", code = "080SmokeWhite" },
-        ["Yellow"] = { id = "18637800482", code = "081SmokeYellow" },
-        ["Orange"] = { id = "18637793920", code = "082SmokeOrange" },
-        ["Green"] = { id = "18637789299", code = "083SmokeGreen" },
-        ["Blue"] = { id = "18637803021", code = "084SmokeBlue" },
-        ["Purple"] = { id = "18637813360", code = "085SmokePurple" },
-        ["Red"] = { id = "18637796598", code = "086SmokeRed" },
-        ["Black"] = { id = "18637798529", code = "087SmokeBlack" }
-    }
-    
-    local selectedSmokeColor = _G.selectedSmokeColor or "White"
-    
-    if selectedSmokeColor and smokeColors[selectedSmokeColor] then
-        local colorData = smokeColors[selectedSmokeColor]
-        local args = { colorData.id, colorData.code }
-        game:GetService("ReplicatedStorage").Remotes.ApplyEmmiter:InvokeServer(unpack(args))
-        print("Equipped: " .. selectedSmokeColor .. " Smoke")
-    else
-        warn("Error: Smoke color not found!")
-    end
 end)
 
 local trollTab = createTab("Troll", 11)
