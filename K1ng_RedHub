@@ -1872,7 +1872,49 @@ end)
 
 toggleButton.MouseButton1Click:Connect(function() mainFrame.Visible = not mainFrame.Visible end)
 
-MakeSection(fireTab, "Fire Modifiers")
+MakeSection(fireTab, "Fire")
+
+local function hapusEfek(char)
+    if not char then return end
+    for _, obj in ipairs(char:GetDescendants()) do
+        if obj:IsA("Fire") or obj:IsA("Smoke") then
+            obj:Destroy()
+        end
+    end
+end
+
+local function pasangEfek(jenisEfek)
+    local char = localPlayer.Character
+    if not char then return end
+    hapusEfek(char)
+    for _, part in ipairs(char:GetChildren()) do
+        if part:IsA("BasePart") then
+            local efek = Instance.new(jenisEfek)
+            if jenisEfek == "Fire" then
+                efek.Size = 7
+                efek.Heat = 9
+            elseif jenisEfek == "Smoke" then
+                efek.Size = 7
+                efek.RiseVelocity = 5
+            end
+            efek.Parent = part
+        end
+    end
+end
+
+MakeSection(fireTab, "Efek Karakter")
+
+MakeButton(fireTab, "Aktifkan Api (Fire)", function()
+    pasangEfek("Fire")
+end)
+
+MakeButton(fireTab, "Aktifkan Asap (Smoke)", function()
+    pasangEfek("Smoke")
+end)
+
+MakeButton(fireTab, "Hapus Semua Efek", function()
+    hapusEfek(localPlayer.Character)
+end)
 
 MakeDropdown(fireTab, "Fire Colors", {"White", "Orange", "Green", "Blue", "Purple", "Black"}, function(Value)
     _G.selectedColor = Value
