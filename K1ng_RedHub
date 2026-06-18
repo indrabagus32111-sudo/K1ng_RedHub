@@ -31,7 +31,7 @@ end
 pcall(function()
     game.StarterGui:SetCore("SendNotification", {
         Title = "Kenz Hub",
-        Text = "script di remake oleh: D_ForDeath1",
+        Text = "Thank you for using Kenz Hub",
         Duration = 5
     })
 end)
@@ -582,7 +582,7 @@ end
 local infoTab = createTab("Info", 1)
 
 MakeSection(infoTab, "Script Information")
-MakeParagraph(infoTab, "Developer/Owner:", "D_ForDeath1")
+MakeParagraph(infoTab, "Developer/Owner:", "Kenz & Death")
 MakeParagraph(infoTab, "You are using:", "Kenz Hub Brookhaven🏡")
 MakeParagraph(infoTab, "Your executor:", executor)
 
