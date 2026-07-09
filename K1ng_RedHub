@@ -3439,7 +3439,7 @@ createSoundDropdown("Select an Effect/Horror", {
     }
 })
 
-local TabMusic = Window:CreateTab("Music", nil)
+local musicTab = createTab("Music", 13)
 
 local function playMusic(id)
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
