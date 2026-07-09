@@ -3438,3 +3438,47 @@ createSoundDropdown("Select an Effect/Horror", {
         {name = "fnaf jumpscare loadmode", id = "18911896588"}
     }
 })
+
+local TabMusic = Window:CreateTab("Music", nil)
+
+local function playMusic(id)
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    
+    local argsRadio = {
+        [1] = "ToolMusicText",
+        [2] = id
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("PlayerToolEvent"):FireServer(unpack(argsRadio))
+    
+    local argsHouse = {
+        [1] = "PickHouseMusicText",
+        [2] = id
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sHous1e"):FireServer(unpack(argsHouse))
+
+    local argsCar = {
+        [1] = "PickingCarMusicText",
+        [2] = id
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sCa1r"):FireServer(unpack(argsCar))
+
+    local argsScooter = {
+        [1] = "PickingScooterMusicText",
+        [2] = id
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer(unpack(argsScooter))
+end
+
+local function isValidMusicId(value)
+    return value and value ~= "" and value ~= "Option 1" and not value:match("new music added") and not value:match("Brazilian music") and not value:match("music of my interest") and not value:match("music dls por elas") and not value:match("meme below") and not value:match("burst")
+end
+
+TabMusic:AddTextBox({
+    Name = "Music ID",
+    PlaceholderText = "Enter ID",
+    Callback = function(value)
+        if value and value ~= "" then
+            playMusic(tostring(value))
+        end
+    end
+})
