@@ -3440,3 +3440,45 @@ createSoundDropdown("Select an Effect/Horror", {
 })
 
 local musicTab = createTab("Music", 13)
+
+local function tocarMusica(id)
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    
+    local argsRadio = {
+        [1] = "ToolMusicText",
+        [2] = id
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("PlayerToolEvent"):FireServer(unpack(argsRadio))
+    
+    local argsCasa = {
+        [1] = "PickHouseMusicText",
+        [2] = id
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sHous1e"):FireServer(unpack(argsCasa))
+
+    local argsCarro = {
+        [1] = "PickingCarMusicText",
+        [2] = id
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sCa1r"):FireServer(unpack(argsCarro))
+
+    local argsScooter = {
+        [1] = "PickingScooterMusicText",
+        [2] = id
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer(unpack(argsScooter))
+end
+
+local function isValidMusicId(value)
+    return value and value ~= "" and value ~= "Option 1" and not value:match("new music added") and not value:match("Brazilian music") and not value:match("music of my interest") and not value:match("music dls por elas") and not value:match("meme below") and not value:match("burst")
+end
+
+Tab8:AddTextBox({
+    Name = "ID Music",
+    PlaceholderText = "Enter ID",
+    Callback = function(value)
+        if isValidMusicId(value) then
+            tocarMusica(tostring(value))
+        end
+    end
+})
