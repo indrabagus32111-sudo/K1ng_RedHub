@@ -3444,24 +3444,28 @@ local musicTab = createTab("Music", 13)
 local function tocarMusica(id)
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     
+    -- RÃƒÂ¡dio (ToolMusicText)
     local argsRadio = {
         [1] = "ToolMusicText",
         [2] = id
     }
     ReplicatedStorage:WaitForChild("RE"):WaitForChild("PlayerToolEvent"):FireServer(unpack(argsRadio))
     
+    -- Casa (PickHouseMusicText)
     local argsCasa = {
         [1] = "PickHouseMusicText",
         [2] = id
     }
     ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sHous1e"):FireServer(unpack(argsCasa))
 
+    -- Carro (PickingCarMusicText)
     local argsCarro = {
         [1] = "PickingCarMusicText",
         [2] = id
     }
     ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sCa1r"):FireServer(unpack(argsCarro))
 
+    -- Scooter (PickingScooterMusicText)
     local argsScooter = {
         [1] = "PickingScooterMusicText",
         [2] = id
@@ -3477,7 +3481,7 @@ Tab8:AddTextBox({
     Name = "ID Music",
     PlaceholderText = "Enter ID",
     Callback = function(value)
-        if isValidMusicId(value) then
+        if value and value ~= "" then
             tocarMusica(tostring(value))
         end
     end
