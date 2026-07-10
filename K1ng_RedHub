@@ -3439,11 +3439,10 @@ createSoundDropdown("Select an Effect/Horror", {
     }
 })
 
-local musicTab = createTab("Music", 13) -- Menggunakan tab buatanmu
+local musicTab = createTab("Music", 13)
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
--- Fungsi memutar musik ke semua RemoteEvent
 local function tocarMusica(id)
     local argsRadio = {"ToolMusicText", id}
     ReplicatedStorage:WaitForChild("RE"):WaitForChild("PlayerToolEvent"):FireServer(unpack(argsRadio))
@@ -3458,22 +3457,19 @@ local function tocarMusica(id)
     ReplicatedStorage:WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer(unpack(argsScooter))
 end
 
--- Fungsi validasi ID musik
 local function isValidMusicId(value)
     return value and value ~= "" and value ~= "Option 1" and not value:match("new music added") and not value:match("Brazilian music") and not value:match("music of my interest") and not value:match("music dls por elas") and not value:match("meme below") and not value:match("burst")
 end
 
--- MENGISI KONTEN KE TAB MUSIC (Custom GUI)
 local Container = Instance.new("Frame")
 Container.Name = "MusicContainer"
 Container.Size = UDim2.new(1, 0, 1, 0)
 Container.BackgroundTransparency = 1
-Container.Parent = musicTab -- Memasukkan elemen ke frame musicTab
+Container.Parent = musicTab
 
--- Membuat TextBox untuk Input ID
 local IdInput = Instance.new("TextBox")
 IdInput.Parent = Container
-IdInput.BackgroundColor3 = Color3.fromRGB(20, 20, 20) -- Sesuaikan dengan tema GUI-mu
+IdInput.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 IdInput.Position = UDim2.new(0.5, -125, 0.15, 0)
 IdInput.Size = UDim2.new(0, 250, 0, 40)
 IdInput.Font = Enum.Font.GothamSemibold
@@ -3488,32 +3484,48 @@ InputCorner.CornerRadius = UDim.new(0, 6)
 InputCorner.Parent = IdInput
 
 local InputStroke = Instance.new("UIStroke")
-InputStroke.Color = Color3.fromRGB(255, 0, 0) -- Warna border merah (bisa diganti)
+InputStroke.Color = Color3.fromRGB(255, 0, 0)
 InputStroke.Thickness = 1.5
 InputStroke.Parent = IdInput
 
--- Membuat Tombol Play Music
 local PlayButton = Instance.new("TextButton")
 PlayButton.Parent = Container
 PlayButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 PlayButton.Position = UDim2.new(0.5, -125, 0.15, 55)
 PlayButton.Size = UDim2.new(0, 250, 0, 40)
-PlayButton.Font = Enum.Font.GothamBold
+PlayButton.Font = Enum.Font.GothamMedium
 PlayButton.Text = "PLAY MUSIC ◀"
 PlayButton.TextColor3 = Color3.fromRGB(255, 0, 0)
 PlayButton.TextSize = 14
 
-local ButtonCorner = Instance.new("UICorner")
-ButtonCorner.CornerRadius = UDim.new(0, 6)
-ButtonCorner.Parent = PlayButton
+local PlayButtonCorner = Instance.new("UICorner")
+PlayButtonCorner.CornerRadius = UDim.new(0, 6)
+PlayButtonCorner.Parent = PlayButton
 
-local ButtonStroke = Instance.new("UIStroke")
-ButtonStroke.Color = Color3.fromRGB(255, 0, 0)
-ButtonStroke.Thickness = 1.5
-ButtonStroke.Parent = PlayButton
+local PlayButtonStroke = Instance.new("UIStroke")
+PlayButtonStroke.Color = Color3.fromRGB(255, 0, 0)
+PlayButtonStroke.Thickness = 1.5
+PlayButtonStroke.Parent = PlayButton
 
--- EVENT LISTENER
--- Mengaktifkan fungsi lewat tombol klik
+local StopButton = Instance.new("TextButton")
+StopButton.Parent = Container
+StopButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+StopButton.Position = UDim2.new(0.5, -125, 0.15, 110)
+StopButton.Size = UDim2.new(0, 250, 0, 40)
+StopButton.Font = Enum.Font.GothamMedium
+StopButton.Text = "STOP MUSIC ◀"
+StopButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+StopButton.TextSize = 14
+
+local StopButtonCorner = Instance.new("UICorner")
+StopButtonCorner.CornerRadius = UDim.new(0, 6)
+StopButtonCorner.Parent = StopButton
+
+local StopButtonStroke = Instance.new("UIStroke")
+StopButtonStroke.Color = Color3.fromRGB(255, 0, 0)
+StopButtonStroke.Thickness = 1.5
+StopButtonStroke.Parent = StopButton
+
 PlayButton.MouseButton1Click:Connect(function()
     local value = IdInput.Text
     if isValidMusicId(value) then
@@ -3521,7 +3533,10 @@ PlayButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- Mengaktifkan fungsi otomatis saat menekan Enter di keyboard setelah mengetik ID
+StopButton.MouseButton1Click:Connect(function()
+    tocarMusica("0")
+end)
+
 IdInput.FocusLost:Connect(function(enterPressed)
     if enterPressed then
         local value = IdInput.Text
