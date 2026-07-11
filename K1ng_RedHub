@@ -3484,18 +3484,19 @@ InputCorner.CornerRadius = UDim.new(0, 6)
 InputCorner.Parent = IdInput
 
 local InputStroke = Instance.new("UIStroke")
-InputStroke.Color = Color3.fromRGB(255, 0, 0)
+InputStroke.Color = Color3.fromRGB(220, 40, 40) -- Disesuaikan dengan tema merah
 InputStroke.Thickness = 1.5
 InputStroke.Parent = IdInput
 
+-- Tombol Play Music
 local PlayButton = Instance.new("TextButton")
 PlayButton.Parent = Container
-PlayButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+PlayButton.BackgroundColor3 = Color3.fromRGB(220, 40, 40) -- Warna merah modern
 PlayButton.Position = UDim2.new(0.5, -125, 0.15, 55)
 PlayButton.Size = UDim2.new(0, 250, 0, 40)
-PlayButton.Font = Enum.Font.GothamMedium
+PlayButton.Font = Enum.Font.Gotham -- Font reguler agar tidak terlalu tebal
 PlayButton.Text = "PLAY MUSIC ◀"
-PlayButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+PlayButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Teks putih agar mudah dibaca di atas warna merah
 PlayButton.TextSize = 14
 
 local PlayButtonCorner = Instance.new("UICorner")
@@ -3503,18 +3504,19 @@ PlayButtonCorner.CornerRadius = UDim.new(0, 6)
 PlayButtonCorner.Parent = PlayButton
 
 local PlayButtonStroke = Instance.new("UIStroke")
-PlayButtonStroke.Color = Color3.fromRGB(255, 0, 0)
+PlayButtonStroke.Color = Color3.fromRGB(180, 20, 20) -- Merah gelap untuk outline
 PlayButtonStroke.Thickness = 1.5
 PlayButtonStroke.Parent = PlayButton
 
+-- Tombol Stop Music
 local StopButton = Instance.new("TextButton")
 StopButton.Parent = Container
-StopButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+StopButton.BackgroundColor3 = Color3.fromRGB(220, 40, 40) -- Warna merah modern
 StopButton.Position = UDim2.new(0.5, -125, 0.15, 110)
 StopButton.Size = UDim2.new(0, 250, 0, 40)
-StopButton.Font = Enum.Font.GothamMedium
+StopButton.Font = Enum.Font.Gotham -- Font reguler agar tidak terlalu tebal
 StopButton.Text = "STOP MUSIC ◀"
-StopButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+StopButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Teks putih agar mudah dibaca di atas warna merah
 StopButton.TextSize = 14
 
 local StopButtonCorner = Instance.new("UICorner")
@@ -3522,10 +3524,11 @@ StopButtonCorner.CornerRadius = UDim.new(0, 6)
 StopButtonCorner.Parent = StopButton
 
 local StopButtonStroke = Instance.new("UIStroke")
-StopButtonStroke.Color = Color3.fromRGB(255, 0, 0)
+StopButtonStroke.Color = Color3.fromRGB(180, 20, 20) -- Merah gelap untuk outline
 StopButtonStroke.Thickness = 1.5
 StopButtonStroke.Parent = StopButton
 
+-- Fungsionalitas Tombol
 PlayButton.MouseButton1Click:Connect(function()
     local value = IdInput.Text
     if isValidMusicId(value) then
