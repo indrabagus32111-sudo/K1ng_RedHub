@@ -3441,6 +3441,8 @@ createSoundDropdown("Select an Effect/Horror", {
 
 local musicTab = createTab("Music", 13)
 
+MakeSection(musicTab, "Music Id")
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local function tocarMusica(id)
