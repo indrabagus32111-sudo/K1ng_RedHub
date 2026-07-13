@@ -3550,3 +3550,109 @@ IdInput.FocusLost:Connect(function(enterPressed)
         end
     end
 end)
+
+local lagServerTab = createTab("Lag Server", 14)
+
+local selectedMethod = nil
+local methodActive = false
+
+local function clickNormally(object)
+    local clickDetector = object:FindFirstChildWhichIsA("ClickDetector")
+    if clickDetector then
+        fireclickdetector(clickDetector)
+    end
+end
+
+lagServerTab:AddDropdown({
+    Name = "Select Method",
+    Options = {"Laptop", "Phone", "Bomb"},
+    Default = "",
+    Callback = function(value)
+        selectedMethod = value
+    end
+})
+
+lagServerTab:AddToggle({
+    Name = "Activate Spam",
+    Default = false,
+    Callback = function(state)
+        methodActive = state
+
+        if not state then return end
+
+        if selectedMethod == "Laptop" then
+            local laptopPath = workspace:FindFirstChild("WorkspaceCom")
+                and workspace.WorkspaceCom:FindFirstChild("001_GiveTools")
+                and workspace.WorkspaceCom["001_GiveTools"]:FindFirstChild("Laptop")
+
+            if not laptopPath then warn("Laptop not found.") return end
+
+            task.spawn(function()
+                local count = 0
+                while methodActive and count < 999999999 do
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = laptopPath.CFrame
+                    clickNormally(laptopPath)
+                    count = count + 1
+                    task.wait(0.0001)
+                end
+            end)
+
+        elseif selectedMethod == "Phone" then
+            local phonePath = workspace:FindFirstChild("WorkspaceCom")
+                and workspace.WorkspaceCom:FindFirstChild("001_CommercialStores")
+                and workspace.WorkspaceCom["001_CommercialStores"]:FindFirstChild("CommercialStorage1")
+                and workspace.WorkspaceCom["001_CommercialStores"].CommercialStorage1:FindFirstChild("Store")
+                and workspace.WorkspaceCom["001_CommercialStores"].CommercialStorage1.Store:FindFirstChild("Tools")
+                and workspace.WorkspaceCom["001_CommercialStores"].CommercialStorage1.Store.Tools:FindFirstChild("Iphone")
+
+            if not phonePath then warn("Phone not found.") return end
+
+            task.spawn(function()
+                local count = 0
+                while methodActive and count < 999999 do
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = phonePath.CFrame
+                    clickNormally(phonePath)
+                    count = count + 1
+                    task.wait(0.01)
+                end
+            end)
+
+        elseif selectedMethod == "Bomb" then
+            local Player = game.Players.LocalPlayer
+            local Character = Player.Character or Player.CharacterAdded:Wait()
+            local RootPart = Character:WaitForChild("HumanoidRootPart")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+            local Bomb = workspace:WaitForChild("WorkspaceCom")
+                :WaitForChild("001_CriminalWeapons")
+                :WaitForChild("GiveTools")
+                :WaitForChild("Bomb")
+
+            task.spawn(function()
+                while methodActive do
+                    if Bomb and RootPart then
+                        RootPart.CFrame = Bomb.CFrame
+                        fireclickdetector(Bomb.ClickDetector)
+                        task.wait(0.00001)
+                    else
+                        task.wait(0.0001)
+                    end
+                end
+            end)
+
+            task.spawn(function()
+                local VirtualInputManager = game:GetService("VirtualInputManager")
+                while methodActive do
+                    if Bomb and RootPart then
+                        VirtualInputManager:SendMouseButtonEvent(500, 500, 0, true, game, 0)
+                        task.wait(1.5)
+                        VirtualInputManager:SendMouseButtonEvent(500, 500, 0, false, game, 0)
+
+                        local args = { [1] = "Bomb" .. Player.Name }
+                        ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Blo1wBomb1sServe1r"):FireServer(unpack(args))
+                    end
+                    task.wait(1.5)
+                end
+            end)
+        end
+    end
+})
