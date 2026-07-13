@@ -3552,8 +3552,6 @@ IdInput.FocusLost:Connect(function(enterPressed)
 end)
 
 local lagServerTab = createTab("Lag Server", 14)
-
-local selectedMethod = nil
 local methodActive = false
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -3572,103 +3570,10 @@ Container.Size = UDim2.new(1, 0, 1, 0)
 Container.BackgroundTransparency = 1
 Container.Parent = lagServerTab
 
-local MethodLabel = Instance.new("TextLabel")
-MethodLabel.Parent = Container
-MethodLabel.BackgroundTransparency = 1
-MethodLabel.Position = UDim2.new(0.5, -125, 0.05, 0)
-MethodLabel.Size = UDim2.new(0, 250, 0, 20)
-MethodLabel.Font = Enum.Font.Gotham
-MethodLabel.Text = "SELECT METHOD:"
-MethodLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-MethodLabel.TextSize = 12
-MethodLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-local LaptopBtn = Instance.new("TextButton")
-LaptopBtn.Parent = Container
-LaptopBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-LaptopBtn.Position = UDim2.new(0.5, -125, 0.05, 25)
-LaptopBtn.Size = UDim2.new(0, 75, 0, 35)
-LaptopBtn.Font = Enum.Font.Gotham
-LaptopBtn.Text = "Laptop"
-LaptopBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-LaptopBtn.TextSize = 12
-
-local LaptopCorner = Instance.new("UICorner")
-LaptopCorner.CornerRadius = UDim.new(0, 6)
-LaptopCorner.Parent = LaptopBtn
-
-local LaptopStroke = Instance.new("UIStroke")
-LaptopStroke.Color = Color3.fromRGB(50, 50, 50)
-LaptopStroke.Thickness = 1.5
-LaptopStroke.Parent = LaptopBtn
-
-local PhoneBtn = Instance.new("TextButton")
-PhoneBtn.Parent = Container
-PhoneBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-PhoneBtn.Position = UDim2.new(0.5, -40, 0.05, 25)
-PhoneBtn.Size = UDim2.new(0, 75, 0, 35)
-PhoneBtn.Font = Enum.Font.Gotham
-PhoneBtn.Text = "Phone"
-PhoneBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-PhoneBtn.TextSize = 12
-
-local PhoneCorner = Instance.new("UICorner")
-PhoneCorner.CornerRadius = UDim.new(0, 6)
-PhoneCorner.Parent = PhoneBtn
-
-local PhoneStroke = Instance.new("UIStroke")
-PhoneStroke.Color = Color3.fromRGB(50, 50, 50)
-PhoneStroke.Thickness = 1.5
-PhoneStroke.Parent = PhoneBtn
-
-local BombBtn = Instance.new("TextButton")
-BombBtn.Parent = Container
-BombBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-BombBtn.Position = UDim2.new(0.5, 45, 0.05, 25)
-BombBtn.Size = UDim2.new(0, 80, 0, 35)
-BombBtn.Font = Enum.Font.Gotham
-BombBtn.Text = "Bomb"
-BombBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-BombBtn.TextSize = 12
-
-local BombCorner = Instance.new("UICorner")
-BombCorner.CornerRadius = UDim.new(0, 6)
-BombCorner.Parent = BombBtn
-
-local BombStroke = Instance.new("UIStroke")
-BombStroke.Color = Color3.fromRGB(50, 50, 50)
-BombStroke.Thickness = 1.5
-BombStroke.Parent = BombBtn
-
-local function updateSelection(method)
-    selectedMethod = method
-    LaptopBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    LaptopStroke.Color = Color3.fromRGB(50, 50, 50)
-    PhoneBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    PhoneStroke.Color = Color3.fromRGB(50, 50, 50)
-    BombBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    BombStroke.Color = Color3.fromRGB(50, 50, 50)
-
-    if method == "Laptop" then
-        LaptopBtn.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
-        LaptopStroke.Color = Color3.fromRGB(180, 20, 20)
-    elseif method == "Phone" then
-        PhoneBtn.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
-        PhoneStroke.Color = Color3.fromRGB(180, 20, 20)
-    elseif method == "Bomb" then
-        BombBtn.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
-        BombStroke.Color = Color3.fromRGB(180, 20, 20)
-    end
-end
-
-LaptopBtn.MouseButton1Click:Connect(function() updateSelection("Laptop") end)
-PhoneBtn.MouseButton1Click:Connect(function() updateSelection("Phone") end)
-BombBtn.MouseButton1Click:Connect(function() updateSelection("Bomb") end)
-
 local ToggleBtn = Instance.new("TextButton")
 ToggleBtn.Parent = Container
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-ToggleBtn.Position = UDim2.new(0.5, -125, 0.15, 55)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
+ToggleBtn.Position = UDim2.new(0.5, -125, 0.05, 10)
 ToggleBtn.Size = UDim2.new(0, 250, 0, 40)
 ToggleBtn.Font = Enum.Font.Gotham
 ToggleBtn.Text = "ACTIVATE SPAM ◀"
@@ -3684,99 +3589,81 @@ ToggleStroke.Color = Color3.fromRGB(180, 20, 20)
 ToggleStroke.Thickness = 1.5
 ToggleStroke.Parent = ToggleBtn
 
+local ClearBtn = Instance.new("TextButton")
+ClearBtn.Parent = Container
+ClearBtn.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
+ClearBtn.Position = UDim2.new(0.5, -125, 0.05, 65)
+ClearBtn.Size = UDim2.new(0, 250, 0, 40)
+ClearBtn.Font = Enum.Font.Gotham
+ClearBtn.Text = "CLEAR TOOLS ◀"
+ClearBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ClearBtn.TextSize = 14
+
+local ClearCorner = Instance.new("UICorner")
+ClearCorner.CornerRadius = UDim.new(0, 6)
+ClearCorner.Parent = ClearBtn
+
+local ClearStroke = Instance.new("UIStroke")
+ClearStroke.Color = Color3.fromRGB(180, 20, 20)
+ClearStroke.Thickness = 1.5
+ClearStroke.Parent = ClearBtn
+
+ClearBtn.MouseButton1Click:Connect(function()
+    local player = game.Players.LocalPlayer
+    if player:FindFirstChild("Backpack") then
+        player.Backpack:ClearAllChildren()
+    end
+    if player.Character then
+        for _, child in pairs(player.Character:GetChildren()) do
+            if child:IsA("Tool") then
+                child:Destroy()
+            end
+        end
+    end
+end)
+
 ToggleBtn.MouseButton1Click:Connect(function()
     methodActive = not methodActive
     
     if methodActive then
         ToggleBtn.Text = "DEACTIVATE SPAM ◀"
-        ToggleBtn.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
+        ToggleBtn.BackgroundColor3 = Color3.fromRGB(150, 20, 20)
         
-        if selectedMethod == "Laptop" then
-            local laptopPath = workspace:FindFirstChild("WorkspaceCom")
-                and workspace.WorkspaceCom:FindFirstChild("001_GiveTools")
-                and workspace.WorkspaceCom["001_GiveTools"]:FindFirstChild("Laptop")
+        local Player = game.Players.LocalPlayer
+        local Character = Player.Character or Player.CharacterAdded:Wait()
+        local RootPart = Character:WaitForChild("HumanoidRootPart")
+        local Bomb = workspace:WaitForChild("WorkspaceCom")
+            :WaitForChild("001_CriminalWeapons")
+            :WaitForChild("GiveTools")
+            :WaitForChild("Bomb")
 
-            if not laptopPath then 
-                warn("Laptop not found.") 
-                methodActive = false 
-                ToggleBtn.Text = "ACTIVATE SPAM ◀" 
-                ToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30) 
-                return 
-            end
-
-            task.spawn(function()
-                local count = 0
-                while methodActive and count < 999999999 do
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = laptopPath.CFrame
-                    clickNormally(laptopPath)
-                    count = count + 1
+        task.spawn(function()
+            while methodActive do
+                if Bomb and RootPart then
+                    RootPart.CFrame = Bomb.CFrame
+                    fireclickdetector(Bomb.ClickDetector)
+                    task.wait(0.00001)
+                else
                     task.wait(0.0001)
                 end
-            end)
-
-        elseif selectedMethod == "Phone" then
-            local phonePath = workspace:FindFirstChild("WorkspaceCom")
-                and workspace.WorkspaceCom:FindFirstChild("001_CommercialStores")
-                and workspace.WorkspaceCom["001_CommercialStores"]:FindFirstChild("CommercialStorage1")
-                and workspace.WorkspaceCom["001_CommercialStores"].CommercialStorage1:FindFirstChild("Store")
-                and workspace.WorkspaceCom["001_CommercialStores"].CommercialStorage1.Store:FindFirstChild("Tools")
-                and workspace.WorkspaceCom["001_CommercialStores"].CommercialStorage1.Store.Tools:FindFirstChild("Iphone")
-
-            if not phonePath then 
-                warn("Phone not found.") 
-                methodActive = false 
-                ToggleBtn.Text = "ACTIVATE SPAM ◀" 
-                ToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30) 
-                return 
             end
+        end)
 
-            task.spawn(function()
-                local count = 0
-                while methodActive and count < 999999 do
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = phonePath.CFrame
-                    clickNormally(phonePath)
-                    count = count + 1
-                    task.wait(0.01)
-                end
-            end)
-
-        elseif selectedMethod == "Bomb" then
-            local Player = game.Players.LocalPlayer
-            local Character = Player.Character or Player.CharacterAdded:Wait()
-            local RootPart = Character:WaitForChild("HumanoidRootPart")
-            local Bomb = workspace:WaitForChild("WorkspaceCom")
-                :WaitForChild("001_CriminalWeapons")
-                :WaitForChild("GiveTools")
-                :WaitForChild("Bomb")
-
-            task.spawn(function()
-                while methodActive do
-                    if Bomb and RootPart then
-                        RootPart.CFrame = Bomb.CFrame
-                        fireclickdetector(Bomb.ClickDetector)
-                        task.wait(0.00001)
-                    else
-                        task.wait(0.0001)
-                    end
-                end
-            end)
-
-            task.spawn(function()
-                while methodActive do
-                    if Bomb and RootPart then
-                        VirtualInputManager:SendMouseButtonEvent(500, 500, 0, true, game, 0)
-                        task.wait(1.5)
-                        VirtualInputManager:SendMouseButtonEvent(500, 500, 0, false, game, 0)
-
-                        local args = { [1] = "Bomb" .. Player.Name }
-                        ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Blo1wBomb1sServe1r"):FireServer(unpack(args))
-                    end
+        task.spawn(function()
+            while methodActive do
+                if Bomb and RootPart then
+                    VirtualInputManager:SendMouseButtonEvent(500, 500, 0, true, game, 0)
                     task.wait(1.5)
+                    VirtualInputManager:SendMouseButtonEvent(500, 500, 0, false, game, 0)
+
+                    local args = { [1] = "Bomb" .. Player.Name }
+                    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Blo1wBomb1sServe1r"):FireServer(unpack(args))
                 end
-            end)
-        end
+                task.wait(1.5)
+            end
+        end)
     else
         ToggleBtn.Text = "ACTIVATE SPAM ◀"
-        ToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        ToggleBtn.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
     end
 end)
