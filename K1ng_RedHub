@@ -3,6 +3,7 @@ local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footag
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
 local identifyexecutor = identifyexecutor or function() return "Unknown Executor" end
 
@@ -425,6 +426,394 @@ playerTab:Button({
             Content = success and "Fly GUI loaded!" or "Failed to load Fly GUI.",
         })
     end
+})
+
+-- ==================== AVATAR TAB ====================
+avatarTab:Section({ Title = "Copy Avatar" })
+
+local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+local TargetPlayerCopy = nil
+
+local function GetPlayerNamesList()
+    local playerNames = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player.Name ~= LocalPlayer.Name then
+            table.insert(playerNames, player.Name)
+        end
+    end
+    return playerNames
+end
+
+local PlayerListDropdown = avatarTab:Dropdown({
+    Title = "Players List",
+    Desc = "Select a player to copy their avatar",
+    Values = GetPlayerNamesList(),
+    Default = "",
+    Callback = function(playername)
+        TargetPlayerCopy = playername
+    end
+})
+
+local function UpdatePlayersDropdown()
+    pcall(function()
+        -- Note: Depending on WindUI's exact methods, you might need to use the supported refresh function. 
+        -- If WindUI supports setting .Values dynamically:
+        if PlayerListDropdown and PlayerListDropdown.Refresh then
+            PlayerListDropdown:Refresh(GetPlayerNamesList())
+        end
+    end)
+end
+
+UpdatePlayersDropdown()
+
+avatarTab:Button({
+    Title = "Refresh List",
+    Callback = function()
+        UpdatePlayersDropdown()
+    end
+})
+
+Players.PlayerAdded:Connect(UpdatePlayersDropdown)
+Players.PlayerRemoving:Connect(UpdatePlayersDropdown)
+
+avatarTab:Button({
+    Title = "Copy Avatar",
+    Callback = function()
+        if not TargetPlayerCopy then return end
+
+        local LChar = LocalPlayer.Character
+        local TPlayer = Players:FindFirstChild(TargetPlayerCopy)
+
+        if TPlayer and TPlayer.Character then
+            local LHumanoid = LChar and LChar:FindFirstChildOfClass("Humanoid")
+            local THumanoid = TPlayer.Character:FindFirstChildOfClass("Humanoid")
+
+            if LHumanoid and THumanoid then
+                -- RESET LOCALPLAYER
+                local LDesc = LHumanoid:GetAppliedDescription()
+
+                -- Remove current accessories, shirts, pants, and face
+                for _, acc in ipairs(LDesc:GetAccessories(true)) do
+                    if acc.AssetId and tonumber(acc.AssetId) then
+                        Remotes.Wear:InvokeServer(tonumber(acc.AssetId))
+                        task.wait(0.2)
+                    end
+                end
+
+                if tonumber(LDesc.Shirt) then
+                    Remotes.Wear:InvokeServer(tonumber(LDesc.Shirt))
+                    task.wait(0.2)
+                end
+
+                if tonumber(LDesc.Pants) then
+                    Remotes.Wear:InvokeServer(tonumber(LDesc.Pants))
+                    task.wait(0.2)
+                end
+
+                if tonumber(LDesc.Face) then
+                    Remotes.Wear:InvokeServer(tonumber(LDesc.Face))
+                    task.wait(0.2)
+                end
+
+                local PDesc = THumanoid:GetAppliedDescription()
+
+                -- Send body parts
+                local argsBody = {
+                    [1] = {
+                        [1] = PDesc.Torso,
+                        [2] = PDesc.RightArm,
+                        [3] = PDesc.LeftArm,
+                        [4] = PDesc.RightLeg,
+                        [5] = PDesc.LeftLeg,
+                        [6] = PDesc.Head
+                    }
+                }
+                Remotes.ChangeCharacterBody:InvokeServer(unpack(argsBody))
+                task.wait(0.5)
+
+                if tonumber(PDesc.Shirt) then
+                    Remotes.Wear:InvokeServer(tonumber(PDesc.Shirt))
+                    task.wait(0.3)
+                end
+
+                if tonumber(PDesc.Pants) then
+                    Remotes.Wear:InvokeServer(tonumber(PDesc.Pants))
+                    task.wait(0.3)
+                end
+
+                if tonumber(PDesc.Face) then
+                    Remotes.Wear:InvokeServer(tonumber(PDesc.Face))
+                    task.wait(0.3)
+                end
+
+                for _, v in ipairs(PDesc:GetAccessories(true)) do
+                    if v.AssetId and tonumber(v.AssetId) then
+                        Remotes.Wear:InvokeServer(tonumber(v.AssetId))
+                        task.wait(0.3)
+                    end
+                end
+
+                local SkinColor = TPlayer.Character:FindFirstChild("Body Colors")
+                if SkinColor then
+                    Remotes.ChangeBodyColor:FireServer(tostring(SkinColor.HeadColor))
+                    task.wait(0.3)
+                end
+
+                if tonumber(PDesc.IdleAnimation) then
+                    Remotes.Wear:InvokeServer(tonumber(PDesc.IdleAnimation))
+                    task.wait(0.3)
+                end
+
+                -- Name, bio and color
+                local Bag = TPlayer:FindFirstChild("PlayersBag")
+                if Bag then
+                    if Bag:FindFirstChild("RPName") and Bag.RPName.Value ~= "" then
+                        Remotes.RPNameText:FireServer("RolePlayName", Bag.RPName.Value)
+                        task.wait(0.3)
+                    end
+                    if Bag:FindFirstChild("RPBio") and Bag.RPBio.Value ~= "" then
+                        Remotes.RPNameText:FireServer("RolePlayBio", Bag.RPBio.Value)
+                        task.wait(0.3)
+                    end
+                    if Bag:FindFirstChild("RPNameColor") then
+                        Remotes.RPNameColor:FireServer("PickingRPNameColor", Bag.RPNameColor.Value)
+                        task.wait(0.3)
+                    end
+                    if Bag:FindFirstChild("RPBioColor") then
+                        Remotes.RPNameColor:FireServer("PickingRPBioColor", Bag.RPBioColor.Value)
+                        task.wait(0.3)
+                    end
+                end
+            end
+        end
+    end
+})
+
+avatarTab:Section({ Title = "3D Clothes / Costumes" })
+
+local AvatarManager = {}
+AvatarManager.ReplicatedStorage = ReplicatedStorage
+
+function AvatarManager:ShowNotification(message)
+    WindUI:Notify({
+        Title = "Notice",
+        Content = message,
+    })
+end
+
+AvatarManager.Avatars = {
+    { Name = "Mango Cat", ID = 124948425515124 },
+    { Name = "Tung Saur", ID = 117098257036480 },
+    { Name = "Tralaleiro", ID = 99459753608381 },
+    { Name = "Monsters Inc", ID = 123609977175226 },
+    { Name = "Little Train", ID = 80468697076178 },
+    { Name = "Dino", ID = 11941741105 },
+    { Name = "Old Pou", ID = 15742966010  },
+    { Name = "Poop/Turd", ID = 77013984520332  },
+    { Name = "Rabbit", ID = 71797333686800  },
+    { Name = "Hippopotamus", ID = 73215892129281 },
+    { Name = "Ratatouille", ID = 108557570415453 },
+    { Name = "Chicken", ID = 71251793812515 },
+    { Name = "Peppa Pig", ID = 92979204778377 },
+    { Name = "Penguin", ID = 94944293759578 },
+    { Name = "Sid", ID = 87442757321244 },
+    { Name = "Big Flea", ID = 111436158728716 },
+    { Name = "CURSED SHREK", ID = 120960401202173 },
+    { Name = "Big Mosquito", ID = 108052868536435 },
+    { Name = "Inverted Noob", ID = 106596990206151 },
+    { Name = "Duck", ID = 135132836238349 },
+    { Name = "Chihuahua Dog", ID = 18656467256 },
+    { Name = "Idk Cat", ID = 18994959003 },
+    { Name = "Ugly Cat", ID = 77506186615650 },
+    { Name = "Impostor", ID = 18234669337 },
+    { Name = "Yellow Simon", ID = 75183593514657 },
+    { Name = "Blue Simon", ID = 76155710249925 }
+}
+
+function AvatarManager:GetAvatarNamesList()
+    local names = {}
+    for _, avatar in ipairs(self.Avatars) do
+        table.insert(names, avatar.Name)
+    end
+    return names
+end
+
+function AvatarManager:EquipAvatar(avatarName)
+    for _, avatar in ipairs(self.Avatars) do
+        if avatar.Name == avatarName then
+            local args = { avatar.ID }
+            local success, _ = pcall(function()
+                return self.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(unpack(args))
+            end)
+            if success then
+                self:ShowNotification("Avatar " .. avatarName .. " equipped successfully!")
+            else
+                self:ShowNotification("Failed to equip avatar " .. avatarName .. "!")
+            end
+            return
+        end
+    end
+    self:ShowNotification("Avatar " .. avatarName .. " not found!")
+end
+
+avatarTab:Dropdown({
+    Title = "3D Accessories",
+    Desc = "Select an accessory to equip",
+    Default = "",
+    Values = AvatarManager:GetAvatarNamesList(),
+    Callback = function(selectedAvatar)
+        _G.SelectedAvatar = selectedAvatar
+    end
+})
+
+avatarTab:Button({
+    Title = "Equip Accessory",
+    Desc = "Equip the selected accessory",
+    Callback = function()
+        if not _G.SelectedAvatar or _G.SelectedAvatar == "" then
+            AvatarManager:ShowNotification("No avatar selected!")
+            return
+        end
+        AvatarManager:EquipAvatar(_G.SelectedAvatar)
+    end
+})
+
+avatarTab:Section({ Title = "Avatar Editor" })
+
+avatarTab:Paragraph({
+    Title = "Warning: This will reset your avatar",
+    Desc = "Using these options will override your current body parts."
+})
+
+avatarTab:Button({
+    Title = "Mini REPO",
+    Callback = function()
+        local args = {
+            {
+                117101023704825, -- Right Leg
+                125767940563838,  -- Left Leg
+                137301494386930,  -- Right Arm
+                87357384184710,  -- Left Arm
+                133391239416999, -- Torso
+                111818794467824   -- Head
+            }
+        }
+        game:GetService("ReplicatedStorage")
+            :WaitForChild("Remotes")
+            :WaitForChild("ChangeCharacterBody")
+            :InvokeServer(unpack(args))
+        print("All body parts equipped!")
+    end
+})
+
+avatarTab:Button({
+    Title = "Mini Stallion",
+    Callback = function()
+        local args = {
+            {
+                124355047456535, -- Right Leg
+                120507500641962,  -- Left Leg
+                82273782655463,  -- Right Arm
+                113625313757230,  -- Left Arm
+                109182039511426, -- Torso
+                0   -- Head
+            }
+        }
+        game:GetService("ReplicatedStorage")
+            :WaitForChild("Remotes")
+            :WaitForChild("ChangeCharacterBody")
+            :InvokeServer(unpack(args))
+        print("All body parts equipped!")
+    end
+})
+
+avatarTab:Button({
+    Title = "Stick",
+    Callback = function()
+        local args = {
+            {
+                14731384498, -- Right Leg
+                14731377938,  -- Left Leg
+                14731377894,  -- Right Arm
+                14731377875,  -- Left Arm
+                14731377941, -- Torso
+                14731382899   -- Head
+            }
+        }
+        game:GetService("ReplicatedStorage")
+            :WaitForChild("Remotes")
+            :WaitForChild("ChangeCharacterBody")
+            :InvokeServer(unpack(args))
+        print("All body parts equipped!")
+    end
+})
+
+avatarTab:Button({
+    Title = "Chunky-Bug",
+    Callback = function()
+        local args = {
+            {
+                15527827600, -- Right Leg
+                15527827578,  -- Left Leg
+                15527831669,  -- Right Arm
+                15527836067,  -- Left Arm
+                15527827184, -- Torso
+                15527827599   -- Head
+            }
+        }
+        game:GetService("ReplicatedStorage")
+            :WaitForChild("Remotes")
+            :WaitForChild("ChangeCharacterBody")
+            :InvokeServer(unpack(args))
+        print("All body parts equipped!")
+    end
+})
+
+avatarTab:Button({
+    Title = "Cursed-Spider",
+    Callback = function()
+        local args = {
+            {
+                134555168634906, -- Right Leg
+                100269043793774,  -- Left Leg
+                125607053187319,  -- Right Arm
+                122504853343598,  -- Left Arm
+                95907982259204, -- Torso
+                91289185840375   -- Head
+            }
+        }
+        game:GetService("ReplicatedStorage")
+            :WaitForChild("Remotes")
+            :WaitForChild("ChangeCharacterBody")
+            :InvokeServer(unpack(args))
+        print("All body parts equipped!")
+    end
+})
+
+avatarTab:Button({
+    Title = "Possessed-Horror",
+    Callback = function()
+        local args = {
+            {
+                122800511983371, -- Right Leg
+                132465361516275,  -- Left Leg
+                125155800236527,  -- Right Arm
+                83070163355072,  -- Left Arm
+                102906187256945, -- Torso
+                78311422507297   -- Head
+            }
+        }
+        game:GetService("ReplicatedStorage")
+            :WaitForChild("Remotes")
+            :WaitForChild("ChangeCharacterBody")
+            :InvokeServer(unpack(args))
+        print("All body parts equipped!")
+    end
+})
+
+avatarTab:Paragraph({
+    Title = "More things will be added here in the next update",
+    Desc = "Stay tuned for more avatar modifiers!"
 })
 
 -- ==================== ESP TAB ====================
