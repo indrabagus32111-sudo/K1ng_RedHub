@@ -233,9 +233,14 @@ playerTab:Slider({
     Max = 888,
     Default = 16,
     Callback = function(Value)
-        local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-        if humanoid then humanoid.WalkSpeed = Value end
+        -- Hapus :Wait(), cukup cek apakah karakter sedang ada
+        local character = LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then 
+                humanoid.WalkSpeed = Value 
+            end
+        end
     end
 })
  
@@ -246,9 +251,13 @@ playerTab:Slider({
     Max = 500,
     Default = 50,
     Callback = function(Value)
-        local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-        if humanoid then humanoid.JumpPower = Value end
+        local character = LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then 
+                humanoid.JumpPower = Value 
+            end
+        end
     end
 })
  
@@ -267,8 +276,11 @@ local InfiniteJumpEnabled = false
 UserInputService.JumpRequest:Connect(function()
     if InfiniteJumpEnabled then
         local character = LocalPlayer.Character
-        if character and character:FindFirstChild("Humanoid") then
-            character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+        if character then
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
         end
     end
 end)
@@ -284,11 +296,13 @@ playerTab:Toggle({
 playerTab:Button({
     Title = "Reset Speed / Gravity / Jumppower",
     Callback = function()
-        local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            humanoid.WalkSpeed = 16
-            humanoid.JumpPower = 50
+        local character = LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.WalkSpeed = 16
+                humanoid.JumpPower = 50
+            end
         end
         game.Workspace.Gravity = 196.2
         InfiniteJumpEnabled = false
