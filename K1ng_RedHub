@@ -228,11 +228,13 @@ playerTab:Section({ Title = "Movement Modifiers" })
 
 playerTab:Slider({
     Title = "Speed Player",
+    Value = {
+    Min =0,
+    Max =500,
+    Default = 50,
     Step = 1,
-    Min = 16,
-    Max = 888,
-    Default = 16,
-    Callback = function(Value)
+},
+Callback =function(value)
         -- Hapus :Wait(), cukup cek apakah karakter sedang ada
         local character = LocalPlayer.Character
         if character then
@@ -246,11 +248,13 @@ playerTab:Slider({
  
 playerTab:Slider({
     Title = "Jumppower",
-    Step = 1,
-    Min = 50,
-    Max = 500,
+    Value = {
+    Min =0,
+    Max =500,
     Default = 50,
-    Callback = function(Value)
+    Step = 1,
+},
+Callback =function(value)
         local character = LocalPlayer.Character
         if character then
             local humanoid = character:FindFirstChildOfClass("Humanoid")
@@ -263,11 +267,13 @@ playerTab:Slider({
  
 playerTab:Slider({
     Title = "Gravity",
+    Value = {
+    Min =0,
+    Max =500,
+    Default = 50,
     Step = 1,
-    Min = 0,
-    Max = 1000,
-    Default = 196,
-    Callback = function(Value)
+},
+Callback =function(value)
         game.Workspace.Gravity = Value
     end
 })
