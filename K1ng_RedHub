@@ -26,12 +26,12 @@ WindUI:AddTheme({
 
 local Window = WindUI:CreateWindow({
     Title   = '<font color="rgb(255,0,0)">Death Hub</font>',
-    Author  = "Brookhaven RP🏡",
+    Author  = "Brookhaven RP",
     Folder  = "Kenz Hub",
     Icon    = "rbxassetid://589111610",
     Theme   = "Blood Red",
-    Acrylic = true,
-    Transparent = true,
+    Acrylic = false,
+    Transparent = false,
     Size    = UDim2.fromOffset(680, 460),
     MinSize = Vector2.new(560, 350),
     MaxSize = Vector2.new(850, 560),
@@ -40,7 +40,7 @@ local Window = WindUI:CreateWindow({
     AutoScale  = true,
     NewElements = true,
     HideSearchBar = false,
-    ScrollBarEnabled = true, -- [BAGIAN INI YANG DIPERBAIKI]
+    ScrollBarEnabled = true,
     SideBarWidth = 200,
     Topbar = {
         Height      = 44,
@@ -100,7 +100,6 @@ pcall(function()
     WindUI:SetNotificationLower(true)
 end)
 
--- ==================== TABS ====================
 local infoTab = Window:Tab({ Title = "Info", Icon = "info" })
 local playerTab = Window:Tab({ Title = "Player", Icon = "user" })
 local avatarTab = Window:Tab({ Title = "Avatar", Icon = "shirt" })
@@ -112,10 +111,9 @@ local childTab = Window:Tab({ Title = "Child", Icon = "users" })
 local itemsTab = Window:Tab({ Title = "Items", Icon = "package" })
 local fireTab = Window:Tab({ Title = "Fire", Icon = "flame" })
 
--- ==================== INFO TAB ====================
 infoTab:Section({ Title = "Script Information" })
 infoTab:Paragraph({ Title = "Developer/Owner:", Desc = "D_ForDeath1" })
-infoTab:Paragraph({ Title = "You are using:", Desc = "Kenz Hub Brookhaven🏡" })
+infoTab:Paragraph({ Title = "You are using:", Desc = "Kenz Hub Brookhaven" })
 infoTab:Paragraph({ Title = "Your executor:", Desc = identifyexecutor() })
 
 infoTab:Section({ Title = "Rejoin" })
@@ -127,7 +125,6 @@ infoTab:Button({
     end
 })
 
--- ==================== PLAYER TAB ====================
 playerTab:Section({ Title = "Player Character & Headsit" })
 
 local selectedPlayerName = nil
@@ -138,7 +135,6 @@ local function headsitOnPlayer(targetPlayer)
     local humanoid = character:FindFirstChildOfClass("Humanoid")
 
     if not targetPlayer.Character or not targetPlayer.Character:FindFirstChild("Head") then
-        warn("Target player is missing a head or character.")
         return false
     end
     local targetHead = targetPlayer.Character.Head
@@ -198,7 +194,7 @@ end
 
 playerTab:Input({
     Title = "Player Name",
-    Desc = "Enter part of the name (e.g. jo -> john)",
+    Desc = "Enter part of the name",
     PlaceholderText = "Name...",
     Callback = function(Value)
         local foundPlayer = findPlayerByPartialName(Value)
@@ -286,7 +282,7 @@ playerTab:Toggle({
 })
 
 playerTab:Button({
-    Title = "Reset Speed / Gravity / Jumppower ✅",
+    Title = "Reset Speed / Gravity / Jumppower",
     Callback = function()
         local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
         local humanoid = character:FindFirstChildOfClass("Humanoid")
@@ -428,7 +424,6 @@ playerTab:Button({
     end
 })
 
--- ==================== AVATAR TAB ====================
 avatarTab:Section({ Title = "Copy Avatar" })
 
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
@@ -487,10 +482,8 @@ avatarTab:Button({
             local THumanoid = TPlayer.Character:FindFirstChildOfClass("Humanoid")
 
             if LHumanoid and THumanoid then
-                -- RESET LOCALPLAYER
                 local LDesc = LHumanoid:GetAppliedDescription()
 
-                -- Remove current accessories, shirts, pants, and face
                 for _, acc in ipairs(LDesc:GetAccessories(true)) do
                     if acc.AssetId and tonumber(acc.AssetId) then
                         Remotes.Wear:InvokeServer(tonumber(acc.AssetId))
@@ -515,7 +508,6 @@ avatarTab:Button({
 
                 local PDesc = THumanoid:GetAppliedDescription()
 
-                -- Send body parts
                 local argsBody = {
                     [1] = {
                         [1] = PDesc.Torso,
@@ -562,7 +554,6 @@ avatarTab:Button({
                     task.wait(0.3)
                 end
 
-                -- Name, bio and color
                 local Bag = TPlayer:FindFirstChild("PlayersBag")
                 if Bag then
                     if Bag:FindFirstChild("RPName") and Bag.RPName.Value ~= "" then
@@ -688,19 +679,18 @@ avatarTab:Button({
     Callback = function()
         local args = {
             {
-                117101023704825, -- Right Leg
-                125767940563838,  -- Left Leg
-                137301494386930,  -- Right Arm
-                87357384184710,  -- Left Arm
-                133391239416999, -- Torso
-                111818794467824   -- Head
+                117101023704825,
+                125767940563838,
+                137301494386930,
+                87357384184710,
+                133391239416999,
+                111818794467824
             }
         }
         game:GetService("ReplicatedStorage")
             :WaitForChild("Remotes")
             :WaitForChild("ChangeCharacterBody")
             :InvokeServer(unpack(args))
-        print("All body parts equipped!")
     end
 })
 
@@ -709,19 +699,18 @@ avatarTab:Button({
     Callback = function()
         local args = {
             {
-                124355047456535, -- Right Leg
-                120507500641962,  -- Left Leg
-                82273782655463,  -- Right Arm
-                113625313757230,  -- Left Arm
-                109182039511426, -- Torso
-                0   -- Head
+                124355047456535,
+                120507500641962,
+                82273782655463,
+                113625313757230,
+                109182039511426,
+                0
             }
         }
         game:GetService("ReplicatedStorage")
             :WaitForChild("Remotes")
             :WaitForChild("ChangeCharacterBody")
             :InvokeServer(unpack(args))
-        print("All body parts equipped!")
     end
 })
 
@@ -730,19 +719,18 @@ avatarTab:Button({
     Callback = function()
         local args = {
             {
-                14731384498, -- Right Leg
-                14731377938,  -- Left Leg
-                14731377894,  -- Right Arm
-                14731377875,  -- Left Arm
-                14731377941, -- Torso
-                14731382899   -- Head
+                14731384498,
+                14731377938,
+                14731377894,
+                14731377875,
+                14731377941,
+                14731382899
             }
         }
         game:GetService("ReplicatedStorage")
             :WaitForChild("Remotes")
             :WaitForChild("ChangeCharacterBody")
             :InvokeServer(unpack(args))
-        print("All body parts equipped!")
     end
 })
 
@@ -751,19 +739,18 @@ avatarTab:Button({
     Callback = function()
         local args = {
             {
-                15527827600, -- Right Leg
-                15527827578,  -- Left Leg
-                15527831669,  -- Right Arm
-                15527836067,  -- Left Arm
-                15527827184, -- Torso
-                15527827599   -- Head
+                15527827600,
+                15527827578,
+                15527831669,
+                15527836067,
+                15527827184,
+                15527827599
             }
         }
         game:GetService("ReplicatedStorage")
             :WaitForChild("Remotes")
             :WaitForChild("ChangeCharacterBody")
             :InvokeServer(unpack(args))
-        print("All body parts equipped!")
     end
 })
 
@@ -772,19 +759,18 @@ avatarTab:Button({
     Callback = function()
         local args = {
             {
-                134555168634906, -- Right Leg
-                100269043793774,  -- Left Leg
-                125607053187319,  -- Right Arm
-                122504853343598,  -- Left Arm
-                95907982259204, -- Torso
-                91289185840375   -- Head
+                134555168634906,
+                100269043793774,
+                125607053187319,
+                122504853343598,
+                95907982259204,
+                91289185840375
             }
         }
         game:GetService("ReplicatedStorage")
             :WaitForChild("Remotes")
             :WaitForChild("ChangeCharacterBody")
             :InvokeServer(unpack(args))
-        print("All body parts equipped!")
     end
 })
 
@@ -793,19 +779,18 @@ avatarTab:Button({
     Callback = function()
         local args = {
             {
-                122800511983371, -- Right Leg
-                132465361516275,  -- Left Leg
-                125155800236527,  -- Right Arm
-                83070163355072,  -- Left Arm
-                102906187256945, -- Torso
-                78311422507297   -- Head
+                122800511983371,
+                132465361516275,
+                125155800236527,
+                83070163355072,
+                102906187256945,
+                78311422507297
             }
         }
         game:GetService("ReplicatedStorage")
             :WaitForChild("Remotes")
             :WaitForChild("ChangeCharacterBody")
             :InvokeServer(unpack(args))
-        print("All body parts equipped!")
     end
 })
 
@@ -814,7 +799,6 @@ avatarTab:Paragraph({
     Desc = "Stay tuned for more avatar modifiers!"
 })
 
--- ==================== ESP TAB ====================
 espTab:Section({ Title = "ESP Settings" })
 
 local billboardGuis = {}
@@ -852,28 +836,32 @@ local function updateESP(player)
     if character then
         local head = character:FindFirstChild("Head")
         if head then
-            if billboardGuis[player] then billboardGuis[player]:Destroy() end
+            if not billboardGuis[player] or not billboardGuis[player].Parent then
+                local billboard = Instance.new("BillboardGui")
+                billboard.Name = "ESP_Billboard"
+                billboard.Adornee = head
+                billboard.Size = UDim2.new(0, 200, 0, 50)
+                billboard.StudsOffset = Vector3.new(0, 3, 0)
+                billboard.AlwaysOnTop = true
 
-            local billboard = Instance.new("BillboardGui")
-            billboard.Name = "ESP_Billboard"
-            billboard.Parent = head
-            billboard.Adornee = head
-            billboard.Size = UDim2.new(0, 200, 0, 50)
-            billboard.StudsOffset = Vector3.new(0, 3, 0)
-            billboard.AlwaysOnTop = true
-
-            local textLabel = Instance.new("TextLabel")
-            textLabel.Name = "TextLabel"
-            textLabel.Parent = billboard
-            textLabel.Size = UDim2.new(1, 0, 1, 0)
-            textLabel.BackgroundTransparency = 1
-            textLabel.TextStrokeTransparency = 0.5
-            textLabel.Font = Enum.Font.SourceSansBold
-            textLabel.TextSize = 14
-            textLabel.Text = player.Name .. " | " .. player.AccountAge .. " days"
-            textLabel.TextColor3 = getESPColor()
-
-            billboardGuis[player] = billboard
+                local textLabel = Instance.new("TextLabel")
+                textLabel.Name = "TextLabel"
+                textLabel.Parent = billboard
+                textLabel.Size = UDim2.new(1, 0, 1, 0)
+                textLabel.BackgroundTransparency = 1
+                textLabel.TextStrokeTransparency = 0.5
+                textLabel.Font = Enum.Font.SourceSansBold
+                textLabel.TextSize = 14
+                
+                billboard.Parent = head
+                billboardGuis[player] = billboard
+            end
+            
+            local gui = billboardGuis[player]
+            if gui and gui:FindFirstChild("TextLabel") then
+                gui.TextLabel.Text = player.Name .. " | " .. player.AccountAge .. " days"
+                gui.TextLabel.TextColor3 = getESPColor()
+            end
         end
     end
 end
@@ -896,14 +884,6 @@ espTab:Toggle({
 
             local updateConnection = RunService.Heartbeat:Connect(function()
                 for _, player in pairs(Players:GetPlayers()) do updateESP(player) end
-                if selectedColor == "RGB" then
-                    for _, player in pairs(Players:GetPlayers()) do
-                        local gui = billboardGuis[player]
-                        if gui and gui:FindFirstChild("TextLabel") then
-                            gui.TextLabel.TextColor3 = getESPColor()
-                        end
-                    end
-                end
             end)
             table.insert(connections, updateConnection)
 
