@@ -40,7 +40,7 @@ local Window = WindUI:CreateWindow({
     AutoScale  = true,
     NewElements = true,
     HideSearchBar = false,
-    ScrollBarEnabled = false,
+    ScrollBarEnabled = true, -- [BAGIAN INI YANG DIPERBAIKI]
     SideBarWidth = 200,
     Topbar = {
         Height      = 44,
@@ -456,8 +456,6 @@ local PlayerListDropdown = avatarTab:Dropdown({
 
 local function UpdatePlayersDropdown()
     pcall(function()
-        -- Note: Depending on WindUI's exact methods, you might need to use the supported refresh function. 
-        -- If WindUI supports setting .Values dynamically:
         if PlayerListDropdown and PlayerListDropdown.Refresh then
             PlayerListDropdown:Refresh(GetPlayerNamesList())
         end
