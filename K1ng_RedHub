@@ -1,4 +1,4 @@
-Local pcall = pcall
+local pcall = pcall
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
@@ -108,9 +108,9 @@ local housesTab = Window:Tab({ Title = "Houses", Icon = "house" })
 local worldTab = Window:Tab({ Title = "Protection", Icon = "shield" })
 local teleportsTab = Window:Tab({ Title = "Teleports", Icon = "map" })
 local espTab = Window:Tab({ Title = "ESP", Icon = "eye" })
-local childTab = Window:Tab({ Title = "Child", Icon = "baby" })
 local itemsTab = Window:Tab({ Title = "Items", Icon = "package" })
 local fireTab = Window:Tab({ Title = "Fire", Icon = "flame" })
+local rgbTab = Window:Tab({ Title = "RGB", Icon = "palette" })
 
 infoTab:Section({ Title = "Script Information" })
 infoTab:Paragraph({ Title = "Developer/Owner:", Desc = "D_ForDeath1" })
@@ -1646,8 +1646,6 @@ itemsTab:Button({
         ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
     end
 })
-
-local rgbTab = Window:Tab({ Title = "RGB", Icon = "palette" })
 
 local rgbSpeed = 3
 
