@@ -228,54 +228,53 @@ playerTab:Section({ Title = "Movement Modifiers" })
 
 playerTab:Slider({
     Title = "Speed Player",
-    Value = {
-    Min =0,
-    Max =500,
-    Default = 50,
     Step = 1,
-},
-Callback =function(value)
-        -- Hapus :Wait(), cukup cek apakah karakter sedang ada
+    Value = {
+        Min = 0,
+        Max = 500,
+        Default = 50,
+    },
+    Callback = function(value)
         local character = LocalPlayer.Character
         if character then
             local humanoid = character:FindFirstChildOfClass("Humanoid")
-            if humanoid then 
-                humanoid.WalkSpeed = Value 
+            if humanoid then
+                humanoid.WalkSpeed = value
             end
         end
-    end
+    end,
 })
- 
+
 playerTab:Slider({
     Title = "Jumppower",
-    Value = {
-    Min =0,
-    Max =500,
-    Default = 50,
     Step = 1,
-},
-Callback =function(value)
+    Value = {
+        Min = 0,
+        Max = 500,
+        Default = 50,
+    },
+    Callback = function(value)
         local character = LocalPlayer.Character
         if character then
             local humanoid = character:FindFirstChildOfClass("Humanoid")
-            if humanoid then 
-                humanoid.JumpPower = Value 
+            if humanoid then
+                humanoid.JumpPower = value
             end
         end
-    end
+    end,
 })
- 
+
 playerTab:Slider({
     Title = "Gravity",
-    Value = {
-    Min =0,
-    Max =500,
-    Default = 50,
     Step = 1,
-},
-Callback =function(value)
-        game.Workspace.Gravity = Value
-    end
+    Value = {
+        Min = 0,
+        Max = 500,
+        Default = 50,
+    },
+    Callback = function(value)
+        game.Workspace.Gravity = value
+    end,
 })
 
 local InfiniteJumpEnabled = false
