@@ -1647,3 +1647,109 @@ itemsTab:Button({
         ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
     end
 })
+
+local rgbTab = Window:Tab({ Title = "RGB", Icon = "palette" })
+
+local function getRainbowColor(speed)
+    return Color3.fromHSV((tick() * (speed or 0.5)) % 1, 1, 1)
+end
+
+rgbTab:Section({ Title = "RGB Features" })
+
+local nameBioRGBActive = false
+rgbTab:Toggle({
+    Title = "Name + Bio RGB",
+    Desc = "Makes your RP Name and Bio RGB",
+    Value = false,
+    Callback = function(state)
+        nameBioRGBActive = state
+        if state then
+            task.spawn(function()
+                while nameBioRGBActive and LocalPlayer.Character do
+                    local color = getRainbowColor(0.5)
+                    local args1 = { "PickingRPNameColor", color }
+                    local args2 = { "PickingRPBioColor", color }
+                    pcall(function()
+                        ReplicatedStorage:WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args1))
+                        ReplicatedStorage:WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args2))
+                    end)
+                    task.wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+local rgbBicycleActive = false
+rgbTab:Toggle({
+    Title = "RGB Bicycle",
+    Desc = "Makes your bicycle RGB",
+    Value = false,
+    Callback = function(Value)
+        rgbBicycleActive = Value
+        if rgbBicycleActive then
+            task.spawn(function()
+                while rgbBicycleActive do
+                    local args = { "NoMotorColor", getRainbowColor(0.5) }
+                    pcall(function()
+                        ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sCa1r"):FireServer(unpack(args))
+                    end)
+                    task.wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+local rgbCharacterActive = false
+local characterColors = { "Bright red", "Lime green", "Bright blue", "Bright yellow", "Bright cyan", "Hot pink", "Royal purple" }
+
+rgbTab:Toggle({
+    Title = "RGB Character",
+    Desc = "Makes your character body RGB",
+    Value = false,
+    Callback = function(value)
+        rgbCharacterActive = value
+        if rgbCharacterActive then
+            task.spawn(function()
+                while rgbCharacterActive do
+                    for _, color in ipairs(characterColors) do
+                        if not rgbCharacterActive then break end
+                        pcall(function()
+                            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeBodyColor"):FireServer(color)
+                        end)
+                        task.wait(0.5)
+                    end
+                end
+            end)
+        end
+    end
+})
+
+local rgbHairActive = false
+local hairColors = {
+    Color3.new(1, 1, 0), Color3.new(0, 0, 1), Color3.new(1, 0, 1), Color3.new(1, 1, 1),
+    Color3.new(0, 1, 0), Color3.new(0.5, 0, 1), Color3.new(1, 0.647, 0), Color3.new(0, 1, 1)
+}
+
+rgbTab:Toggle({
+    Title = "RGB Hair",
+    Desc = "Makes your hair RGB",
+    Value = false,
+    Callback = function(value)
+        rgbHairActive = value
+        if rgbHairActive then
+            task.spawn(function()
+                local i = 1
+                while rgbHairActive do
+                    local args = { "ChangeHairColor2", hairColors[i] }
+                    pcall(function()
+                        ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Max1y"):FireServer(unpack(args))
+                    end)
+                    task.wait(0.1)
+                    i = i % #hairColors + 1
+                end
+            end)
+        end
+    end
+})
