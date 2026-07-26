@@ -1767,3 +1767,164 @@ rgbTab:Toggle({
         end
     end
 })
+
+local childTab = Window:Tab({ Title = "Child", Icon = "baby" })
+childTab:Section({ Title = "Child Options" })
+
+local chasingplayer = nil
+
+local function getChildPlayerNamesList()
+    local playerNames = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player.Name ~= LocalPlayer.Name then
+            table.insert(playerNames, player.Name)
+        end
+    end
+    return playerNames
+end
+
+local playerChildDropdown = childTab:Dropdown({
+    Title = "Select a player to chase",
+    Values = getChildPlayerNamesList(),
+    Default = "",
+    Callback = function(selected)
+        if Players:FindFirstChild(selected) then
+            chasingplayer = selected
+        else
+            chasingplayer = nil
+        end
+    end
+})
+
+local function updateChildPlayerList()
+    pcall(function()
+        if playerChildDropdown and playerChildDropdown.Refresh then
+            playerChildDropdown:Refresh(getChildPlayerNamesList())
+        end
+        if chasingplayer and not Players:FindFirstChild(chasingplayer) then
+            chasingplayer = nil
+        end
+    end)
+end
+
+childTab:Button({
+    Title = "Update Player List",
+    Callback = function()
+        updateChildPlayerList()
+    end
+})
+
+Players.PlayerAdded:Connect(function()
+    task.wait(0.1)
+    updateChildPlayerList()
+end)
+
+Players.PlayerRemoving:Connect(function()
+    task.wait(0.1)
+    updateChildPlayerList()
+end)
+
+childTab:Button({
+    Title = "Send Child",
+    Callback = function()
+        if not chasingplayer then return end
+        
+        WindUI:Notify({
+            Title = "Child Actions",
+            Content = "Sending child... | script di remake oleh: D_ForDeath1"
+        })
+
+        if not Workspace:FindFirstChild(LocalPlayer.Name) or not Workspace[LocalPlayer.Name]:FindFirstChild("FollowCharacter") then
+            local args = { "CharacterFollowSpawnPlayer", "BabyBoy" }
+            pcall(function()
+                ReplicatedStorage.RE:FindFirstChild("1Bab1yFollo1w"):FireServer(unpack(args))
+            end)
+        end
+        
+        task.wait(0.2)
+        
+        if Workspace:FindFirstChild(LocalPlayer.Name) then
+            for _, v in pairs(Workspace[LocalPlayer.Name]:GetChildren()) do
+                if v:IsA("BasePart") then
+                    v.CanCollide = true
+                end
+            end
+        end
+
+        local target = chasingplayer
+        if Workspace:FindFirstChild(target) and Workspace:FindFirstChild(LocalPlayer.Name) and Workspace[LocalPlayer.Name]:FindFirstChild("FollowCharacter") then
+            Workspace[LocalPlayer.Name].FollowCharacter.Parent = Workspace[target]
+
+            if rawget(getgenv(), "ChildRunService") then return end
+
+            getgenv().ChildRunService = RunService.Heartbeat:Connect(function()
+                local targetWorkspace = Workspace:FindFirstChild(target)
+                if not targetWorkspace then return end
+                
+                local followCharacter = targetWorkspace:FindFirstChild("FollowCharacter")
+                if followCharacter and followCharacter:FindFirstChild("Torso") and followCharacter.Torso:FindFirstChild("BodyPosition") then
+                    local humanoidRootPart = targetWorkspace:FindFirstChild("HumanoidRootPart")
+                    if humanoidRootPart then
+                        followCharacter.Torso.BodyPosition.Position = humanoidRootPart.Position - (humanoidRootPart.CFrame.LookVector * 3)
+                        followCharacter.Torso.BodyGyro.CFrame = humanoidRootPart.CFrame
+                    end
+                end
+            end)
+        end
+    end
+})
+
+childTab:Button({
+    Title = "Return Child",
+    Callback = function()
+        if rawget(getgenv(), "ChildRunService") then
+            getgenv().ChildRunService:Disconnect()
+            getgenv().ChildRunService = nil
+        end
+
+        local args = { "DeleteFollowCharacter" }
+        pcall(function()
+            ReplicatedStorage.RE:FindFirstChild("1Bab1yFollo1w"):FireServer(unpack(args))
+        end)
+
+        local args1 = { "CharacterFollowSpawnPlayer", "BabyBoy" }
+        pcall(function()
+            ReplicatedStorage.RE:FindFirstChild("1Bab1yFollo1w"):FireServer(unpack(args1))
+        end)
+    end
+})
+
+childTab:Toggle({
+    Title = "Spectate Player",
+    Value = false,
+    Callback = function(Value)
+        local Camera = Workspace.CurrentCamera
+
+        if Value then
+            if not chasingplayer then return end
+
+            if not rawget(getgenv(), "ChildCameraConnection") then
+                getgenv().ChildCameraConnection = RunService.Heartbeat:Connect(function()
+                    local targetPlayer = Players:FindFirstChild(chasingplayer)
+                    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+                        Camera.CameraSubject = targetPlayer.Character.Humanoid
+                    else
+                        if rawget(getgenv(), "ChildCameraConnection") then
+                            getgenv().ChildCameraConnection:Disconnect()
+                            getgenv().ChildCameraConnection = nil
+                        end
+                        Camera.CameraSubject = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") or nil
+                    end
+                end)
+            end
+        else
+            if rawget(getgenv(), "ChildCameraConnection") then
+                getgenv().ChildCameraConnection:Disconnect()
+                getgenv().ChildCameraConnection = nil
+            end
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                Camera.CameraSubject = LocalPlayer.Character.Humanoid
+            end
+        end
+    end
+})
