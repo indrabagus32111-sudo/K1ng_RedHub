@@ -1,3 +1,4 @@
+
 local pcall = pcall
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
 local Players = game:GetService("Players")
@@ -26,7 +27,7 @@ WindUI:AddTheme({
 })
 
 local Window = WindUI:CreateWindow({
-    Title   = '<font color="rgb(255,0,0)">Death Hub</font>',
+    Title   = '<font color="rgb(255,0,0)">Kenz Hub</font>',
     Author  = "Brookhaven RP",
     Folder  = "Kenz Hub",
     Icon    = "rbxassetid://589111610",
@@ -96,7 +97,7 @@ end)
 pcall(function()
     WindUI:Notify({
       Title = "Kenz Hub",
-      Content = "Thank you for using Kenz Hub",
+      Content = "script di remake oleh: D_ForDeath1",
     })
     WindUI:SetNotificationLower(true)
 end)
@@ -984,6 +985,77 @@ housesTab:Button({
                 Content = "No bans found to remove.",
                 Duration = 5
             })
+        end
+    end
+})
+
+teleportsTab:Section({ Title = "Kenz Hub Teleports" })
+
+local teleportLocation = "Hill"
+
+local locations = {
+    ["Hill"] = Vector3.new(-348.64, 65.94, -458.08),
+    ["Plaza"] = Vector3.new(-26.17, 3.48, -0.93),
+    ["Bank"] = Vector3.new(1.99, 3.32, 236.65),
+    ["Hospital"] = Vector3.new(-303.2, 3.40, 13.74),
+    ["City Hall"] = Vector3.new(-354.65, 7.32, -102.16),
+    ["Farm"] = Vector3.new(-766.41, 2.92, -61.10),
+    ["Market"] = Vector3.new(16.31, 3.32, -107.07),
+    ["Mall"] = Vector3.new(151.05, 3.52, -190.64),
+    ["Airport"] = Vector3.new(290.23, 4.32, 42.57),
+    ["Hotel"] = Vector3.new(159.10, 3.32, 164.97),
+    ["Beach 1"] = Vector3.new(55.69, 2.94, -1403.60),
+    ["Beach 2"] = Vector3.new(42.39, 2.94, 1336.14)
+}
+
+teleportsTab:Dropdown({
+    Title = "Brookhaven Locations",
+    Desc = "Select a location to teleport to",
+    Default = teleportLocation,
+    Values = {
+        "Hill",
+        "Plaza",
+        "Bank",
+        "Hospital",
+        "City Hall",
+        "Farm",
+        "Market",
+        "Mall",
+        "Airport",
+        "Hotel",
+        "Beach 1",
+        "Beach 2"
+    },
+    Callback = function(value)
+        teleportLocation = value
+    end
+})
+
+teleportsTab:Button({
+    Title = "Teleport",
+    Desc = "Teleports to the selected location",
+    Callback = function()
+        local teleportPlayer = game.Players.LocalPlayer
+        if teleportPlayer.Character and teleportPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local humanoidRootPart = teleportPlayer.Character.HumanoidRootPart
+            local humanoid = teleportPlayer.Character:FindFirstChildOfClass("Humanoid")
+            local pos = locations[teleportLocation]
+            if pos then
+                pcall(function()
+                    if humanoid then
+                        humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+                        humanoid.WalkSpeed = 0
+                    end
+                    humanoidRootPart.Anchored = true
+                    humanoidRootPart.CFrame = CFrame.new(pos)
+                    task.wait(0.4)
+                    humanoidRootPart.Anchored = false
+                    if humanoid then
+                        humanoid.WalkSpeed = 16
+                        humanoid:ChangeState(Enum.HumanoidStateType.Running)
+                    end
+                end)
+            end
         end
     end
 })
