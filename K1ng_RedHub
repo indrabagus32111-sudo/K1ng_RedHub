@@ -1,5 +1,4 @@
-
-local pcall = pcall
+Local pcall = pcall
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
@@ -1650,11 +1649,28 @@ itemsTab:Button({
 
 local rgbTab = Window:Tab({ Title = "RGB", Icon = "palette" })
 
-local function getRainbowColor(speed)
-    return Color3.fromHSV((tick() * (speed or 0.5)) % 1, 1, 1)
+local rgbSpeed = 3
+
+local function getRainbowColor(multiplier)
+    local speedMultiplier = (multiplier or 1) * (rgbSpeed / 3)
+    return Color3.fromHSV((tick() * speedMultiplier * 0.5) % 1, 1, 1)
 end
 
 rgbTab:Section({ Title = "RGB Features" })
+
+rgbTab:Slider({
+    Title = "Kecepatan RGB",
+    Desc = "Mengatur kecepatan efek RGB (1 - 10)",
+    Step = 1,
+    Value = {
+        Min = 1,
+        Max = 10,
+        Default = 3,
+    },
+    Callback = function(value)
+        rgbSpeed = value
+    end
+})
 
 local nameBioRGBActive = false
 rgbTab:Toggle({
@@ -1666,14 +1682,14 @@ rgbTab:Toggle({
         if state then
             task.spawn(function()
                 while nameBioRGBActive and LocalPlayer.Character do
-                    local color = getRainbowColor(0.5)
+                    local color = getRainbowColor(1)
                     local args1 = { "PickingRPNameColor", color }
                     local args2 = { "PickingRPBioColor", color }
                     pcall(function()
                         ReplicatedStorage:WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args1))
                         ReplicatedStorage:WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args2))
                     end)
-                    task.wait(0.1)
+                    task.wait(math.max(0.03, 0.2 / (rgbSpeed / 3)))
                 end
             end)
         end
@@ -1690,11 +1706,11 @@ rgbTab:Toggle({
         if rgbBicycleActive then
             task.spawn(function()
                 while rgbBicycleActive do
-                    local args = { "NoMotorColor", getRainbowColor(0.5) }
+                    local args = { "NoMotorColor", getRainbowColor(1) }
                     pcall(function()
                         ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sCa1r"):FireServer(unpack(args))
                     end)
-                    task.wait(0.1)
+                    task.wait(math.max(0.03, 0.2 / (rgbSpeed / 3)))
                 end
             end)
         end
@@ -1718,7 +1734,7 @@ rgbTab:Toggle({
                         pcall(function()
                             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeBodyColor"):FireServer(color)
                         end)
-                        task.wait(0.5)
+                        task.wait(math.max(0.05, 0.5 / (rgbSpeed / 3)))
                     end
                 end
             end)
@@ -1746,7 +1762,7 @@ rgbTab:Toggle({
                     pcall(function()
                         ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Max1y"):FireServer(unpack(args))
                     end)
-                    task.wait(0.1)
+                    task.wait(math.max(0.03, 0.2 / (rgbSpeed / 3)))
                     i = i % #hairColors + 1
                 end
             end)
