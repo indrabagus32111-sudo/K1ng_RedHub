@@ -28,7 +28,7 @@ WindUI:AddTheme({
 
 local Window = WindUI:CreateWindow({
     Title   = '<font color="rgb(255,0,0)">Kenz Hub</font>',
-    Author  = "Brookhaven RP",
+    Author  = "Brookhaven RP🏡",
     Folder  = "Kenz Hub",
     Icon    = "rbxassetid://589111610",
     Theme   = "Blood Red",
@@ -97,7 +97,7 @@ end)
 pcall(function()
     WindUI:Notify({
       Title = "Kenz Hub",
-      Content = "script di remake oleh: D_ForDeath1",
+      Content = "Thank you for using Kenz Hub",
     })
     WindUI:SetNotificationLower(true)
 end)
@@ -109,7 +109,7 @@ local housesTab = Window:Tab({ Title = "Houses", Icon = "house" })
 local worldTab = Window:Tab({ Title = "Protection", Icon = "shield" })
 local teleportsTab = Window:Tab({ Title = "Teleports", Icon = "map" })
 local espTab = Window:Tab({ Title = "ESP", Icon = "eye" })
-local childTab = Window:Tab({ Title = "Child", Icon = "users" })
+local childTab = Window:Tab({ Title = "Child", Icon = "baby" })
 local itemsTab = Window:Tab({ Title = "Items", Icon = "package" })
 local fireTab = Window:Tab({ Title = "Fire", Icon = "flame" })
 
@@ -1014,10 +1014,10 @@ teleportsTab:Dropdown({
     Default = teleportLocation,
     Values = {
         "Hill",
-        "Plaza",
+        "Lobby",
         "Bank",
         "Hospital",
-        "City Hall",
+        "Town Hall",
         "Farm",
         "Market",
         "Mall",
@@ -1215,7 +1215,7 @@ worldTab:Section({ Title = "Kenz Hub Protection Scripts" })
 
 worldTab:Button({
     Title = "Anti-Bug",
-    Desc = "Devs: cahh,Night",
+    Desc = "avoid other people's bug scripts",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/Antglitch/refs/heads/main/Main.txt"))()
     end
