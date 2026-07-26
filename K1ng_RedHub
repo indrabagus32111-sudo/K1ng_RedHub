@@ -923,3 +923,70 @@ espTab:Toggle({
         end
     end
 })
+
+housesTab:Section({ Title = "Self House Features" })
+
+-- Button to remove bans from all houses
+housesTab:Button({
+    Title = "Remove Ban from All Houses",
+    Desc = "Attempts to remove the ban from all houses",
+    Callback = function()
+        local Workspace = game:GetService("Workspace")
+        local successCount = 0
+        local failCount = 0
+        
+        -- Cek berdasarkan blok nama berurutan
+        for i = 1, 37 do
+            local bannedBlockName = "BannedBlock" .. i
+            local bannedBlock = Workspace:FindFirstChild(bannedBlockName, true)
+            if bannedBlock then
+                local success, _ = pcall(function()
+                    bannedBlock:Destroy()
+                end)
+                if success then
+                    successCount = successCount + 1
+                else
+                    failCount = failCount + 1
+                end
+            end
+        end
+        
+        for _, house in pairs(Workspace:GetDescendants()) do
+            if house.Name:match("BannedBlock") then
+                local success, _ = pcall(function()
+                    house:Destroy()
+                end)
+                if success then
+                    successCount = successCount + 1
+                else
+                    failCount = failCount + 1
+                end
+            end
+        end
+        
+        -- WindUI Notifications
+        if successCount > 0 then
+            WindUI:Notify({
+                Title = "Success",
+                Content = "Bans removed from " .. successCount .. " houses!",
+                Duration = 5
+            })
+        end
+        
+        if failCount > 0 then
+            WindUI:Notify({
+                Title = "Warning",
+                Content = "Failed to remove bans from " .. failCount .. " houses.",
+                Duration = 5
+            })
+        end
+        
+        if successCount == 0 and failCount == 0 then
+            WindUI:Notify({
+                Title = "Notice",
+                Content = "No bans found to remove.",
+                Duration = 5
+            })
+        end
+    end
+})
