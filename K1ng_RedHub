@@ -1111,10 +1111,10 @@ local teleportLocation = "Hill"
 
 local locations = {
     ["Hill"] = Vector3.new(-348.64, 65.94, -458.08),
-    ["Plaza"] = Vector3.new(-26.17, 3.48, -0.93),
+    ["Lobby"] = Vector3.new(-26.17, 3.48, -0.93),
     ["Bank"] = Vector3.new(1.99, 3.32, 236.65),
     ["Hospital"] = Vector3.new(-303.2, 3.40, 13.74),
-    ["City Hall"] = Vector3.new(-354.65, 7.32, -102.16),
+    ["Town Hall"] = Vector3.new(-354.65, 7.32, -102.16),
     ["Farm"] = Vector3.new(-766.41, 2.92, -61.10),
     ["Market"] = Vector3.new(16.31, 3.32, -107.07),
     ["Mall"] = Vector3.new(151.05, 3.52, -190.64),
