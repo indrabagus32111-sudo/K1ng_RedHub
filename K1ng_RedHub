@@ -822,106 +822,222 @@ avatarTab:Paragraph({
 
 espTab:Section({ Title = "ESP Settings" })
 
-local billboardGuis = {}
-local connections = {}
-local espEnabled = false
-local selectedColor = "RGB"
+_G.ESPData = _G.ESPData or {
+    espEnabled = false,
+    espType = "Name + Age",
+    selectedColor = "RGB",
+    billboardGuis = {},
+    highlights = {},
+    lines = {},
+    connections = {}
+}
 
 local function getESPColor()
-    if selectedColor == "RGB" then
-        return Color3.fromHSV((tick() % 5) / 5, 1, 1)
-    elseif selectedColor == "Black" then return Color3.fromRGB(0, 0, 0)
-    elseif selectedColor == "White" then return Color3.fromRGB(255, 255, 255)
-    elseif selectedColor == "Red" then return Color3.fromRGB(255, 0, 0)
-    elseif selectedColor == "Green" then return Color3.fromRGB(0, 255, 0)
-    elseif selectedColor == "Blue" then return Color3.fromRGB(0, 170, 255)
-    elseif selectedColor == "Yellow" then return Color3.fromRGB(255, 255, 0)
-    elseif selectedColor == "Pink" then return Color3.fromRGB(255, 105, 180)
-    elseif selectedColor == "Purple" then return Color3.fromRGB(128, 0, 128)
+    local colors = {
+        RGB = function()
+            local h = (tick() % 5) / 5
+            return Color3.fromHSV(h, 1, 1)
+        end,
+        Black = Color3.fromRGB(0, 0, 0),
+        White = Color3.fromRGB(255, 255, 255),
+        Red = Color3.fromRGB(255, 0, 0),
+        Green = Color3.fromRGB(0, 255, 0),
+        Blue = Color3.fromRGB(0, 170, 255),
+        Yellow = Color3.fromRGB(255, 255, 0),
+        Pink = Color3.fromRGB(255, 105, 180),
+        Purple = Color3.fromRGB(128, 0, 128)
+    }
+
+    local c = colors[_G.ESPData.selectedColor]
+    return type(c) == "function" and c() or c or Color3.new(1, 1, 1)
+end
+
+_G.clearAllESP = function()
+    for _, gui in pairs(_G.ESPData.billboardGuis) do
+        pcall(function() gui:Destroy() end)
     end
-    return Color3.new(1, 1, 1)
+    for _, h in pairs(_G.ESPData.highlights) do
+        pcall(function() h:Destroy() end)
+    end
+    for _, l in pairs(_G.ESPData.lines) do
+        pcall(function() l:Remove() end)
+    end
+    for _, c in pairs(_G.ESPData.connections) do
+        pcall(function() c:Disconnect() end)
+    end
+
+    _G.ESPData.billboardGuis = {}
+    _G.ESPData.highlights = {}
+    _G.ESPData.lines = {}
+    _G.ESPData.connections = {}
+end
+
+local function createNameESP(player)
+    if player == Players.LocalPlayer then return end
+    if not player.Character or not player.Character:FindFirstChild("Head") then return end
+
+    local head = player.Character.Head
+    if _G.ESPData.billboardGuis[player] then
+        _G.ESPData.billboardGuis[player]:Destroy()
+    end
+
+    local gui = Instance.new("BillboardGui", head)
+    gui.Name = "ESP_Billboard"
+    gui.Size = UDim2.new(0, 200, 0, 50)
+    gui.StudsOffset = Vector3.new(0, 3, 0)
+    gui.AlwaysOnTop = true
+
+    local txt = Instance.new("TextLabel", gui)
+    txt.Size = UDim2.new(1, 0, 1, 0)
+    txt.BackgroundTransparency = 1
+    txt.TextStrokeTransparency = 0.5
+    txt.Font = Enum.Font.SourceSansBold
+    txt.TextSize = 14
+    txt.Text = player.Name .. " | " .. player.AccountAge .. " days"
+    txt.TextColor3 = getESPColor()
+
+    _G.ESPData.billboardGuis[player] = gui
+end
+
+local function createHighlightESP(player)
+    if player == Players.LocalPlayer then return end
+    if not player.Character then return end
+
+    if _G.ESPData.highlights[player] then
+        _G.ESPData.highlights[player]:Destroy()
+    end
+
+    local h = Instance.new("Highlight", player.Character)
+    h.FillColor = getESPColor()
+    h.FillTransparency = 0.5
+    h.OutlineTransparency = 0
+    h.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+
+    _G.ESPData.highlights[player] = h
+end
+
+local function createLineESP(player)
+    if player == Players.LocalPlayer then return end
+    if _G.ESPData.lines[player] then
+        pcall(function() _G.ESPData.lines[player]:Remove() end)
+    end
+
+    local l = Drawing.new("Line")
+    l.Thickness = 2
+    l.Transparency = 1
+    l.Visible = false
+
+    _G.ESPData.lines[player] = l
+end
+
+_G.applyCurrentESP = function()
+    _G.clearAllESP()
+    if not _G.ESPData.espEnabled then return end
+
+    local function setupPlayerESP(p)
+        if _G.ESPData.espType == "Name + Age" then
+            createNameESP(p)
+        elseif _G.ESPData.espType == "Body (Highlight)" then
+            createHighlightESP(p)
+        elseif _G.ESPData.espType == "Tracer Lines" then
+            createLineESP(p)
+        end
+    end
+
+    for _, p in pairs(Players:GetPlayers()) do
+        setupPlayerESP(p)
+    end
+
+    table.insert(_G.ESPData.connections,
+        Players.PlayerAdded:Connect(function(p)
+            p.CharacterAdded:Connect(function()
+                task.wait(0.5)
+                if _G.ESPData.espEnabled then
+                    setupPlayerESP(p)
+                end
+            end)
+        end)
+    )
+
+    for _, p in pairs(Players:GetPlayers()) do
+        table.insert(_G.ESPData.connections,
+            p.CharacterAdded:Connect(function()
+                task.wait(0.5)
+                if _G.ESPData.espEnabled then
+                    setupPlayerESP(p)
+                end
+            end)
+        )
+    end
+
+    table.insert(_G.ESPData.connections,
+        RunService.RenderStepped:Connect(function()
+            if not _G.ESPData.espEnabled then return end
+            local color = getESPColor()
+            local Camera = workspace.CurrentCamera
+
+            if _G.ESPData.espType == "Name + Age" then
+                for _, gui in pairs(_G.ESPData.billboardGuis) do
+                    if gui:FindFirstChildOfClass("TextLabel") then
+                        gui.TextLabel.TextColor3 = color
+                    end
+                end
+
+            elseif _G.ESPData.espType == "Body (Highlight)" then
+                for _, h in pairs(_G.ESPData.highlights) do
+                    h.FillColor = color
+                end
+
+            elseif _G.ESPData.espType == "Tracer Lines" then
+                for p, l in pairs(_G.ESPData.lines) do
+                    if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                        local pos, on = Camera:WorldToViewportPoint(p.Character.HumanoidRootPart.Position)
+                        l.Visible = on
+                        if on then
+                            l.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
+                            l.To = Vector2.new(pos.X, pos.Y)
+                            l.Color = color
+                        end
+                    else
+                        l.Visible = false
+                    end
+                end
+            end
+        end)
+    )
 end
 
 espTab:Dropdown({
-    Title = "ESP Color",
-    Default = "RGB",
-    Values = {"RGB", "White", "Black", "Red", "Green", "Blue", "Yellow", "Pink", "Purple"},
-    Callback = function(value)
-        selectedColor = value
+    Title = "ESP Type",
+    Values = {"Name + Age", "Body (Highlight)", "Tracer Lines"},
+    Default = "Name + Age",
+    Callback = function(v)
+        _G.ESPData.espType = v
+        if _G.ESPData.espEnabled then
+            _G.applyCurrentESP()
+        end
     end
 })
 
-local function updateESP(player)
-    if player == LocalPlayer or not espEnabled then return end
-    local character = player.Character
-    if character then
-        local head = character:FindFirstChild("Head")
-        if head then
-            if not billboardGuis[player] or not billboardGuis[player].Parent then
-                local billboard = Instance.new("BillboardGui")
-                billboard.Name = "ESP_Billboard"
-                billboard.Adornee = head
-                billboard.Size = UDim2.new(0, 200, 0, 50)
-                billboard.StudsOffset = Vector3.new(0, 3, 0)
-                billboard.AlwaysOnTop = true
-
-                local textLabel = Instance.new("TextLabel")
-                textLabel.Name = "TextLabel"
-                textLabel.Parent = billboard
-                textLabel.Size = UDim2.new(1, 0, 1, 0)
-                textLabel.BackgroundTransparency = 1
-                textLabel.TextStrokeTransparency = 0.5
-                textLabel.Font = Enum.Font.SourceSansBold
-                textLabel.TextSize = 14
-                
-                billboard.Parent = head
-                billboardGuis[player] = billboard
-            end
-            
-            local gui = billboardGuis[player]
-            if gui and gui:FindFirstChild("TextLabel") then
-                gui.TextLabel.Text = player.Name .. " | " .. player.AccountAge .. " days"
-                gui.TextLabel.TextColor3 = getESPColor()
-            end
-        end
+espTab:Dropdown({
+    Title = "ESP Color",
+    Values = {"RGB", "White", "Black", "Red", "Green", "Blue", "Yellow", "Pink", "Purple"},
+    Default = "RGB",
+    Callback = function(v)
+        _G.ESPData.selectedColor = v
     end
-end
-
-local function removeESP(player)
-    if billboardGuis[player] then
-        billboardGuis[player]:Destroy()
-        billboardGuis[player] = nil
-    end
-end
+})
 
 espTab:Toggle({
     Title = "Enable ESP",
-    Desc = "Shows player names and account age.",
+    Desc = "Toggle ESP visual elements for players",
     Value = false,
-    Callback = function(value)
-        espEnabled = value
-        if espEnabled then
-            for _, player in pairs(Players:GetPlayers()) do updateESP(player) end
-
-            local updateConnection = RunService.Heartbeat:Connect(function()
-                for _, player in pairs(Players:GetPlayers()) do updateESP(player) end
-            end)
-            table.insert(connections, updateConnection)
-
-            local playerAdded = Players.PlayerAdded:Connect(function(player)
-                updateESP(player)
-                local charConn = player.CharacterAdded:Connect(function() updateESP(player) end)
-                table.insert(connections, charConn)
-            end)
-            table.insert(connections, playerAdded)
-
-            local playerRemoving = Players.PlayerRemoving:Connect(function(player) removeESP(player) end)
-            table.insert(connections, playerRemoving)
+    Callback = function(v)
+        _G.ESPData.espEnabled = v
+        if v then
+            _G.applyCurrentESP()
         else
-            for _, player in pairs(Players:GetPlayers()) do removeESP(player) end
-            for _, conn in pairs(connections) do conn:Disconnect() end
-            connections = {}
-            billboardGuis = {}
+            _G.clearAllESP()
         end
     end
 })
