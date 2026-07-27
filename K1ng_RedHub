@@ -114,9 +114,33 @@ local rgbTab = Window:Tab({ Title = "RGB", Icon = "palette" })
 local childTab = Window:Tab({ Title = "Child", Icon = "baby" })
 
 infoTab:Section({ Title = "Script Information" })
-infoTab:Paragraph({ Title = "Developer/Owner:", Desc = "D_ForDeath1" })
-infoTab:Paragraph({ Title = "You are using:", Desc = "Kenz Hub Brookhaven" })
-infoTab:Paragraph({ Title = "Your executor:", Desc = identifyexecutor() })
+infoTab:Paragraph({ Title = "Developer/Owner:", Desc = "Kenz & Death" })
+infoTab:Paragraph({ Title = "You are using:", Desc = "Kenz Hub Brookhaven🏡" })
+
+local Stats = game:GetService("Stats")
+local pingValue = "Unknown"
+local netStats = Stats:FindFirstChild("Network")
+local serverStats = netStats and netStats:FindFirstChild("ServerStatsItem")
+
+if serverStats and serverStats:FindFirstChild("Data Ping") then
+    pingValue = serverStats["Data Ping"]:GetValueString()
+end
+
+local executorName = "Unknown"
+if identifyexecutor then
+    local success, name, version = pcall(function() return identifyexecutor() end)
+    if success then
+        executorName = tostring(name) .. (version and (" v" .. tostring(version)) or "")
+    end
+end
+
+infoTab:Section({ Title = "Player Information" })
+infoTab:Paragraph({ Title = "Username:", Desc = LocalPlayer.Name or "Unknown" })
+infoTab:Paragraph({ Title = "Display Name:", Desc = LocalPlayer.DisplayName or "Unknown" })
+infoTab:Paragraph({ Title = "User ID:", Desc = tostring(LocalPlayer.UserId) or "Unknown" })
+infoTab:Paragraph({ Title = "Account Age:", Desc = tostring(LocalPlayer.AccountAge) .. " days" or "Unknown" })
+infoTab:Paragraph({ Title = "Ping:", Desc = pingValue })
+infoTab:Paragraph({ Title = "Executor:", Desc = executorName })
 
 infoTab:Section({ Title = "Rejoin" })
 infoTab:Button({
