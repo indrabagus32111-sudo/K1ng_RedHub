@@ -65,7 +65,7 @@ local Window = WindUI:CreateWindow({
         Enabled  = true,
         Anonymous = false,
         Callback = function()
-            print("user panel clicked")
+            print("User panel clicked")
         end,
     },
 })
@@ -111,6 +111,7 @@ local espTab = Window:Tab({ Title = "ESP", Icon = "eye" })
 local itemsTab = Window:Tab({ Title = "Items", Icon = "package" })
 local fireTab = Window:Tab({ Title = "Fire", Icon = "flame" })
 local rgbTab = Window:Tab({ Title = "RGB", Icon = "palette" })
+local childTab = Window:Tab({ Title = "Child", Icon = "baby" })
 
 infoTab:Section({ Title = "Script Information" })
 infoTab:Paragraph({ Title = "Developer/Owner:", Desc = "D_ForDeath1" })
@@ -1214,7 +1215,7 @@ worldTab:Section({ Title = "Kenz Hub Protection Scripts" })
 
 worldTab:Button({
     Title = "Anti-Bug",
-    Desc = "avoid other people's bug scripts",
+    Desc = "Avoid other people's bug scripts",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/Antglitch/refs/heads/main/Main.txt"))()
     end
@@ -1657,8 +1658,8 @@ end
 rgbTab:Section({ Title = "RGB Features" })
 
 rgbTab:Slider({
-    Title = "Kecepatan RGB",
-    Desc = "Mengatur kecepatan efek RGB (1 - 10)",
+    Title = "RGB Speed",
+    Desc = "Set RGB effect speed (1 - 10)",
     Step = 1,
     Value = {
         Min = 1,
@@ -1768,7 +1769,6 @@ rgbTab:Toggle({
     end
 })
 
-local childTab = Window:Tab({ Title = "Child", Icon = "baby" })
 childTab:Section({ Title = "Child Options" })
 
 local chasingplayer = nil
