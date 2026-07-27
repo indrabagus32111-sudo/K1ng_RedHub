@@ -1831,7 +1831,7 @@ childTab:Button({
         
         WindUI:Notify({
             Title = "Child Actions",
-            Content = "Sending child... | script di remake oleh: D_ForDeath1"
+            Content = "Sending child..."
         })
 
         if not Workspace:FindFirstChild(LocalPlayer.Name) or not Workspace[LocalPlayer.Name]:FindFirstChild("FollowCharacter") then
