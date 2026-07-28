@@ -1,4 +1,4 @@
-Local pcall = pcall
+local pcall = pcall
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
@@ -1068,139 +1068,52 @@ espTab:Toggle({
 
 housesTab:Section({ Title = "Self House Features" })
 
-housesTab:Button({
-    Title = "Remove Ban from All Houses",
-    Desc = "Attempts to remove the ban from all houses",
-    Callback = function()
-        local successCount = 0
-        local failCount = 0
-        
-        for i = 1, 37 do
-            local bannedBlockName = "BannedBlock" .. i
-            local bannedBlock = Workspace:FindFirstChild(bannedBlockName, true)
-            if bannedBlock then
-                local success, _ = pcall(function()
-                    bannedBlock:Destroy()
-                end)
-                if success then
-                    successCount = successCount + 1
-                else
-                    failCount = failCount + 1
-                end
-            end
-        end
-        
-        for _, house in pairs(Workspace:GetDescendants()) do
-            if house.Name:match("BannedBlock") then
-                local success, _ = pcall(function()
-                    house:Destroy()
-                end)
-                if success then
-                    successCount = successCount + 1
-                else
-                    failCount = failCount + 1
-                end
-            end
-        end
-        
-        if successCount > 0 then
-            WindUI:Notify({
-                Title = "Success",
-                Content = "Bans removed from " .. successCount .. " houses!",
-                Duration = 5
-            })
-        end
-        
-        if failCount > 0 then
-            WindUI:Notify({
-                Title = "Warning",
-                Content = "Failed to remove bans from " .. failCount .. " houses.",
-                Duration = 5
-            })
-        end
-        
-        if successCount == 0 and failCount == 0 then
-            WindUI:Notify({
-                Title = "Notice",
-                Content = "No bans found to remove.",
-                Duration = 5
-            })
-        end
-    end
-})
-
 local autoUnbanActive = false
 
 housesTab:Toggle({
-    Title = "Auto Unban All Houses",
-    Desc = "Automatically unbans you from all houses while enabled",
+    Title = "Auto Unban from All Houses",
+    Desc = "Automatically removes bans from all houses when active",
     Value = false,
     Callback = function(state)
         autoUnbanActive = state
         
         if state then
             WindUI:Notify({
-                Title = "Success",
-                Content = "Auto Unban activated!",
+                Title = "Auto Unban",
+                Content = "Auto Unban is now ON",
+                Duration = 3
             })
             
             task.spawn(function()
                 while autoUnbanActive do
-                    pcall(function()
-                        local lots = Workspace:FindFirstChild("001_Lots")
-                        if lots then
-                            for _, v in pairs(lots:GetDescendants()) do
-                                if v.Name:match("^BannedBlock%d+$") or v.Name:match("BannedBlock") then
-                                    v:Destroy()
-                                end
-                            end
-                        end
-                        
-                        for i = 1, 37 do
-                            local bannedBlockName = "BannedBlock" .. i
-                            local bannedBlock = Workspace:FindFirstChild(bannedBlockName, true)
-                            if bannedBlock then
+                    for i = 1, 37 do
+                        local bannedBlockName = "BannedBlock" .. i
+                        local bannedBlock = Workspace:FindFirstChild(bannedBlockName, true)
+                        if bannedBlock then
+                            pcall(function()
                                 bannedBlock:Destroy()
-                            end
+                            end)
                         end
-                    end)
+                    end
+                    
+                    for _, house in pairs(Workspace:GetDescendants()) do
+                        if house.Name:match("BannedBlock") then
+                            pcall(function()
+                                house:Destroy()
+                            end)
+                        end
+                    end
+                    
                     task.wait(1)
                 end
             end)
         else
             WindUI:Notify({
-                Title = "Notice",
-                Content = "Auto Unban deactivated!",
+                Title = "Auto Unban",
+                Content = "Auto Unban is now OFF",
+                Duration = 3
             })
         end
-    end
-})
-
-housesTab:Section({ Title = "House RGB" })
-
-local isHouseRGBActive = false
-
-local function toggleHouseRGB(state)
-    isHouseRGBActive = state
-    if isHouseRGBActive then
-        task.spawn(function()
-            while isHouseRGBActive do
-                local color = Color3.fromHSV((tick() * 0.5) % 1, 1, 1)
-                pcall(function()
-                    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Hous1eColo1r"):FireServer(color)
-                end)
-                task.wait(0.2)
-            end
-        end)
-    end
-end
-
-housesTab:Toggle({
-    Title = "House RGB",
-    Desc = "Makes your house RGB",
-    Value = false,
-    Callback = function(state)
-        toggleHouseRGB(state)
     end
 })
 
