@@ -1,4 +1,4 @@
-local pcall = pcall
+Local pcall = pcall
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
@@ -1126,6 +1126,81 @@ housesTab:Button({
                 Duration = 5
             })
         end
+    end
+})
+
+local autoUnbanActive = false
+
+housesTab:Toggle({
+    Title = "Auto Unban All Houses",
+    Desc = "Automatically unbans you from all houses while enabled",
+    Value = false,
+    Callback = function(state)
+        autoUnbanActive = state
+        
+        if state then
+            WindUI:Notify({
+                Title = "Success",
+                Content = "Auto Unban activated!",
+            })
+            
+            task.spawn(function()
+                while autoUnbanActive do
+                    pcall(function()
+                        local lots = Workspace:FindFirstChild("001_Lots")
+                        if lots then
+                            for _, v in pairs(lots:GetDescendants()) do
+                                if v.Name:match("^BannedBlock%d+$") or v.Name:match("BannedBlock") then
+                                    v:Destroy()
+                                end
+                            end
+                        end
+                        
+                        for i = 1, 37 do
+                            local bannedBlockName = "BannedBlock" .. i
+                            local bannedBlock = Workspace:FindFirstChild(bannedBlockName, true)
+                            if bannedBlock then
+                                bannedBlock:Destroy()
+                            end
+                        end
+                    end)
+                    task.wait(1)
+                end
+            end)
+        else
+            WindUI:Notify({
+                Title = "Notice",
+                Content = "Auto Unban deactivated!",
+            })
+        end
+    end
+})
+
+housesTab:Section({ Title = "House RGB" })
+
+local isHouseRGBActive = false
+
+local function toggleHouseRGB(state)
+    isHouseRGBActive = state
+    if isHouseRGBActive then
+        task.spawn(function()
+            while isHouseRGBActive do
+                local color = Color3.fromHSV((tick() * 0.5) % 1, 1, 1)
+                pcall(function()
+                    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Hous1eColo1r"):FireServer(color)
+                end)
+                task.wait(0.2)
+            end
+        end)
+    end
+end
+
+housesTab:Toggle({
+    Title = "House RGB",
+    Desc = "Makes your house RGB",
+    Value = false,
+    Callback = function(state)
+        toggleHouseRGB(state)
     end
 })
 
