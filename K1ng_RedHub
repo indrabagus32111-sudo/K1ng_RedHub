@@ -96,7 +96,7 @@ end)
 pcall(function()
     WindUI:Notify({
       Title = "Kenz Hub",
-      Content = "Thank you for using Kenz Hub",
+      Content = "Thank you for using Kenz Hub | script di remake oleh: D_ForDeath1",
     })
     WindUI:SetNotificationLower(true)
 end)
@@ -114,7 +114,7 @@ local rgbTab = Window:Tab({ Title = "RGB", Icon = "palette" })
 local childTab = Window:Tab({ Title = "Child", Icon = "baby" })
 
 infoTab:Section({ Title = "Script Information" })
-infoTab:Paragraph({ Title = "Developer/Owner:", Desc = "Kenz & Death" })
+infoTab:Paragraph({ Title = "Developer/Owner:", Desc = "Kenz & Death | script di remake oleh: D_ForDeath1" })
 infoTab:Paragraph({ Title = "You are using:", Desc = "Kenz Hub Brookhaven🏡" })
 
 local Stats = game:GetService("Stats")
@@ -214,7 +214,7 @@ end
 local function notifyPlayerSelected(player)
     WindUI:Notify({
         Title = "Player Selected",
-        Content = player.Name .. " has been selected!",
+        Content = player.Name .. " has been selected! | script di remake oleh: D_ForDeath1",
     })
 end
 
@@ -1068,52 +1068,60 @@ espTab:Toggle({
 
 housesTab:Section({ Title = "Self House Features" })
 
-local autoUnbanActive = false
+housesTab:Button({
+    Title = "Unban From All Houses",
+    Desc = "Removes bans from all houses on the map",
+    Callback = function()
+        WindUI:Notify({
+            Title = "Unban",
+            Content = "Unbanned from all houses successfully!",
+            Duration = 3
+        })
+        for i = 1, 37 do
+            local bannedBlockName = "BannedBlock" .. i
+            local bannedBlock = Workspace:FindFirstChild(bannedBlockName, true)
+            if bannedBlock then
+                pcall(function()
+                    bannedBlock:Destroy()
+                end)
+            end
+        end
+        for _, house in pairs(Workspace:GetDescendants()) do
+            if house.Name:match("BannedBlock") then
+                pcall(function()
+                    house:Destroy()
+                end)
+            end
+        end
+    end
+})
+
+local houseRgbActive = false
+
+local function toggleHouseRGB(state)
+    houseRgbActive = state
+    if state then
+        task.spawn(function()
+            while houseRgbActive do
+                pcall(function()
+                    local h = (tick() % 5) / 5
+                    local color = Color3.fromHSV(h, 1, 1)
+                    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Hous1eColo1r"):FireServer(color)
+                end)
+                task.wait(0.2)
+            end
+        end)
+    end
+end
+
+housesTab:Section({ Title = "House RGB Options" })
 
 housesTab:Toggle({
-    Title = "Auto Unban from All Houses",
-    Desc = "Automatically removes bans from all houses when active",
+    Title = "House RGB",
+    Desc = "Makes your house loop through RGB colors",
     Value = false,
     Callback = function(state)
-        autoUnbanActive = state
-        
-        if state then
-            WindUI:Notify({
-                Title = "Auto Unban",
-                Content = "Auto Unban is now ON",
-                Duration = 3
-            })
-            
-            task.spawn(function()
-                while autoUnbanActive do
-                    for i = 1, 37 do
-                        local bannedBlockName = "BannedBlock" .. i
-                        local bannedBlock = Workspace:FindFirstChild(bannedBlockName, true)
-                        if bannedBlock then
-                            pcall(function()
-                                bannedBlock:Destroy()
-                            end)
-                        end
-                    end
-                    
-                    for _, house in pairs(Workspace:GetDescendants()) do
-                        if house.Name:match("BannedBlock") then
-                            pcall(function()
-                                house:Destroy()
-                            end)
-                        end
-                    end
-                    
-                    task.wait(1)
-                end
-            end)
-        else
-            WindUI:Notify({
-                Title = "Auto Unban",
-                Content = "Auto Unban is now OFF",
-                Duration = 3
-            })
-        end
+        toggleHouseRGB(state)
     end
 })
 
