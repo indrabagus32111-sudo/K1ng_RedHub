@@ -1240,6 +1240,25 @@ worldTab:AddToggle({"Anti-Fling Block", false, function(state)
     end
 end})
 
+itemsTab:AddSection({"Clear All Tools"})
+
+itemsTab:AddButton({"Clear All Tools", function()
+    local args = {
+        [1] = "ClearAllTools"
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Clea1rTool1s"):FireServer(unpack(args))
+end})
+
+itemsTab:AddSection({"Equip All Items"})
+
+itemsTab:AddButton({"Equip All Items", function()
+    for _, tool in pairs(LocalPlayer.Backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            tool.Parent = LocalPlayer.Character
+        end
+    end
+end})
+
 itemsTab:AddSection({"Items"})
 
 local function getTool(toolName)
@@ -1277,6 +1296,8 @@ rgbTab:AddSlider({"RGB Speed", 1, 10, 1, 3, function(value)
     rgbSpeed = value
 end})
 
+rgbTab:AddSection({"RGB Name + Bio"})
+
 local nameBioRGBActive = false
 rgbTab:AddToggle({"Name + Bio RGB", false, function(state)
     nameBioRGBActive = state
@@ -1296,6 +1317,8 @@ rgbTab:AddToggle({"Name + Bio RGB", false, function(state)
     end
 end})
 
+rgbTab:AddSection({"RGB Bicycle"})
+
 local rgbBicycleActive = false
 rgbTab:AddToggle({"RGB Bicycle", false, function(Value)
     rgbBicycleActive = Value
@@ -1311,6 +1334,8 @@ rgbTab:AddToggle({"RGB Bicycle", false, function(Value)
         end)
     end
 end})
+
+rgbTab:AddSection({"RGB Avatar"})
 
 local rgbCharacterActive = false
 local characterColors = { "Bright red", "Lime green", "Bright blue", "Bright yellow", "Bright cyan", "Hot pink", "Royal purple" }
