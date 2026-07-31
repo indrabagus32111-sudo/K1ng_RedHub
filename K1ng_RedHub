@@ -25,8 +25,8 @@ notify("Kenz Hub", "Thank you for using Kenz Hub | script di remake oleh: D_ForD
 
 local Window = Libary:MakeWindow({
     Title = "Kenz Hub | Brookhaven RP 🏡",
-    SubTitle = "by: Kenz & Death | remake oleh: D_ForDeath1",
-    LoadText = "Carregando Kenz Hub",
+    SubTitle = "by: Kenz & Death",
+    LoadText = "Loading Kenz Hub",
     Flags = "KenzHub_Brookhaven"
 })
 
@@ -38,7 +38,7 @@ Window:AddMinimizeButton({
 local infoTab = Window:MakeTab({"Info", "info"})
 local playerTab = Window:MakeTab({"Player", "user"})
 local avatarTab = Window:MakeTab({"Avatar", "shirt"})
-local housesTab = Window:MakeTab({"Houses", "house"})
+local housesTab = Window:MakeTab({"Houses", "home"})
 local worldTab = Window:MakeTab({"Protection", "shield"})
 local teleportsTab = Window:MakeTab({"Teleports", "map"})
 local espTab = Window:MakeTab({"ESP", "eye"})
@@ -48,7 +48,7 @@ local rgbTab = Window:MakeTab({"RGB", "palette"})
 local childTab = Window:MakeTab({"Child", "baby"})
 
 infoTab:AddSection({"Script Information"})
-infoTab:AddParagraph({"Developer/Owner:", "Kenz & Death | script di remake oleh: D_ForDeath1"})
+infoTab:AddParagraph({"Developer/Owner:", "Kenz & Death"})
 infoTab:AddParagraph({"You are using:", "Kenz Hub Brookhaven🏡"})
 
 local pingValue = "Unknown"
@@ -877,7 +877,7 @@ teleportsTab:AddButton({"Teleport", function()
     end
 end})
 
-fireTab:AddSection({"Fire Settings"})
+fireTab:AddSection({"Fire"})
 
 local fireColors = {
     ["White"] = { id = "18637074370", code = "030FireWhite" },
@@ -926,7 +926,7 @@ fireTab:AddButton({"Equip Fire Color", function()
     end
 end})
 
-fireTab:AddSection({"Smoke Settings"})
+fireTab:AddSection({"Smoke"})
 
 fireTab:AddDropdown({"Smoke Colors", {"White", "Yellow", "Orange", "Green", "Blue", "Purple", "Red", "Black"}, "White", function(Value)
     _G.selectedSmokeColor = Value
