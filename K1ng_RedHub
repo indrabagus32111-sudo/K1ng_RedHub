@@ -822,8 +822,21 @@ end
 
 housesTab:AddSection({"House RGB Options"})
 
-housesTab:AddToggle({"House RGB", false, function(state)
-    toggleHouseRGB(state)
+housesTab:AddToggle({"House RGB", false, function(Value)
+    getgenv().rgbCasa = Value
+    if getgenv().rgbCasa then
+        task.spawn(function()
+            while getgenv().rgbCasa do
+                pcall(function()
+                    local currentSpeed = rgbSpeed or 3
+                    local color = Color3.fromHSV((tick() * currentSpeed / 3 * 0.5) % 1, 1, 1)
+                    local args = { "ColorPickHouse", color }
+                    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sHous1e"):FireServer(unpack(args))
+                end)
+                task.wait(0.1)
+            end
+        end)
+    end
 end})
 
 teleportsTab:AddSection({"Kenz Hub Teleports"})
