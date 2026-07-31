@@ -1,551 +1,1476 @@
-local MarketplaceService = game:GetService("MarketplaceService")
-local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
-local HttpService = game:GetService("HttpService")
-local RunService = game:GetService("RunService")
-local CoreGui = game:GetService("CoreGui")
+local pcall = pcall
+local Libary = loadstring(game:HttpGet("https://pastefy.app/qoLIvWvg/raw"))()
 local Players = game:GetService("Players")
-local Player = Players.LocalPlayer
-local PlayerMouse = Player:GetMouse()
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local StarterGui = game:GetService("StarterGui")
+local TeleportService = game:GetService("TeleportService")
+local Workspace = game:GetService("Workspace")
+local Stats = game:GetService("Stats")
+local LocalPlayer = Players.LocalPlayer
+local identifyexecutor = identifyexecutor or function() return "Unknown Executor" end
 
-local redzlib = {
-	Themes = {
-		Darker = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(15, 0, 0)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(25, 0, 0)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(10, 0, 0))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(20, 0, 0),
-			["Color Stroke"] = Color3.fromRGB(180, 0, 0),
-			["Color Theme"] = Color3.fromRGB(255, 0, 0),
-			["Color Text"] = Color3.fromRGB(255, 255, 255),
-			["Color Dark Text"] = Color3.fromRGB(200, 150, 150)
-		},
-		Dark = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(25, 5, 5)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(35, 5, 5)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(20, 0, 0))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(25, 0, 0),
-			["Color Stroke"] = Color3.fromRGB(220, 0, 0),
-			["Color Theme"] = Color3.fromRGB(255, 30, 30),
-			["Color Text"] = Color3.fromRGB(255, 255, 255),
-			["Color Dark Text"] = Color3.fromRGB(220, 180, 180)
-		},
-		Red = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(30, 0, 0)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(20, 0, 0)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(10, 0, 0))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(18, 0, 0),
-			["Color Stroke"] = Color3.fromRGB(255, 0, 0),
-			["Color Theme"] = Color3.fromRGB(255, 40, 40),
-			["Color Text"] = Color3.fromRGB(255, 255, 255),
-			["Color Dark Text"] = Color3.fromRGB(220, 180, 180),
-			["Color Dark Red"] = Color3.fromRGB(150, 0, 0),
-			["Color Hub 9"] = Color3.fromRGB(10, 0, 0),
-			["Color Dark Cyan"] = Color3.fromRGB(255, 100, 100)
-		}
-	},
-	Info = {
-		Version = "1.2.0"
-	},
-	Save = {
-		UISize = {550, 380},
-		TabSize = 160,
-		Theme = "Red"
-	},
-	Settings = {},
-	Connection = {},
-	Instances = {},
-	Elements = {},
-	Options = {},
-	Flags = {},
-	Tabs = {},
-	Icons = (function()
-		return {
-			["accessibility"] = "rbxassetid://10709751939",
-			["activity"] = "rbxassetid://10709752035",
-			["airvent"] = "rbxassetid://10709752131",
-			["airplay"] = "rbxassetid://10709752254",
-			["alarmcheck"] = "rbxassetid://10709752405",
-			["alarmclock"] = "rbxassetid://10709752630",
-			["alarmclockoff"] = "rbxassetid://10709752508",
-			["alarmminus"] = "rbxassetid://10709752732",
-			["alarmplus"] = "rbxassetid://10709752825",
-			["album"] = "rbxassetid://10709752906",
-			["alertcircle"] = "rbxassetid://10709752996",
-			["alertoctagon"] = "rbxassetid://10709753064",
-			["alerttriangle"] = "rbxassetid://10709753149",
-			["aligncenter"] = "rbxassetid://10709753570",
-			["aligncenterhorizontal"] = "rbxassetid://10709753272",
-			["aligncentervertical"] = "rbxassetid://10709753421",
-			["alignendhorizontal"] = "rbxassetid://10709753692",
-			["alignendvertical"] = "rbxassetid://10709753808",
-			["alignhorizontaldistributecenter"] = "rbxassetid://10747779791",
-			["alignhorizontaldistributeend"] = "rbxassetid://10747784534",
-			["alignhorizontaldistributestart"] = "rbxassetid://10709754118",
-			["alignhorizontaljustifycenter"] = "rbxassetid://10709754204",
-			["alignhorizontaljustifyend"] = "rbxassetid://10709754317",
-			["alignhorizontaljustifystart"] = "rbxassetid://10709754436",
-			["alignhorizontalspacearound"] = "rbxassetid://10709754590",
-			["alignhorizontalspacebetween"] = "rbxassetid://10709754749",
-			["alignjustify"] = "rbxassetid://10709759610",
-			["alignleft"] = "rbxassetid://10709759764",
-			["alignright"] = "rbxassetid://10709759895",
-			["alignstarthorizontal"] = "rbxassetid://10709760051",
-			["alignstartvertical"] = "rbxassetid://10709760244",
-			["alignverticaldistributecenter"] = "rbxassetid://10709760351",
-			["alignverticaldistributeend"] = "rbxassetid://10709760434",
-			["alignverticaldistributestart"] = "rbxassetid://10709760612",
-			["alignverticaljustifycenter"] = "rbxassetid://10709760814",
-			["alignverticaljustifyend"] = "rbxassetid://10709761003",
-			["alignverticaljustifystart"] = "rbxassetid://10709761176",
-			["alignverticalspacearound"] = "rbxassetid://10709761324",
-			["alignverticalspacebetween"] = "rbxassetid://10709761434",
-			["anchor"] = "rbxassetid://10709761530",
-			["angry"] = "rbxassetid://10709761629",
-			["annoyed"] = "rbxassetid://10709761722",
-			["aperture"] = "rbxassetid://10709761813",
-			["apple"] = "rbxassetid://10709761889",
-			["archive"] = "rbxassetid://10709762233",
-			["archiverestore"] = "rbxassetid://10709762058",
-			["armchair"] = "rbxassetid://10709762327",
-			["arrowbigdown"] = "rbxassetid://10747796644",
-			["arrowbigleft"] = "rbxassetid://10709762574",
-			["arrowbigright"] = "rbxassetid://10709762727",
-			["arrowbigup"] = "rbxassetid://10709762879",
-			["arrowdown"] = "rbxassetid://10709767827",
-			["arrowdowncircle"] = "rbxassetid://10709763034",
-			["arrowdownleft"] = "rbxassetid://10709767656",
-			["arrowdownright"] = "rbxassetid://10709767750",
-			["arrowleft"] = "rbxassetid://10709768114",
-			["arrowleftcircle"] = "rbxassetid://10709767936",
-			["arrowleftright"] = "rbxassetid://10709768019",
-			["arrowright"] = "rbxassetid://10709768347",
-			["arrowrightcircle"] = "rbxassetid://10709768226",
-			["arrowup"] = "rbxassetid://10709768939",
-			["arrowupcircle"] = "rbxassetid://10709768432",
-			["arrowupdown"] = "rbxassetid://10709768538",
-			["arrowupleft"] = "rbxassetid://10709768661",
-			["arrowupright"] = "rbxassetid://10709768787",
-			["asterisk"] = "rbxassetid://10709769095",
-			["atsign"] = "rbxassetid://10709769286",
-			["award"] = "rbxassetid://10709769406",
-			["axe"] = "rbxassetid://10709769508",
-			["axis3d"] = "rbxassetid://10709769598",
-			["baby"] = "rbxassetid://10709769732",
-			["backpack"] = "rbxassetid://10709769841",
-			["baggageclaim"] = "rbxassetid://10709769935",
-			["banana"] = "rbxassetid://10709770005",
-			["banknote"] = "rbxassetid://10709770178",
-			["barchart"] = "rbxassetid://10709773755",
-			["barchart2"] = "rbxassetid://10709770317",
-			["barchart3"] = "rbxassetid://10709770431",
-			["barchart4"] = "rbxassetid://10709770560",
-			["barcharthorizontal"] = "rbxassetid://10709773669",
-			["barcode"] = "rbxassetid://10747360675",
-			["baseline"] = "rbxassetid://10709773863",
-			["bath"] = "rbxassetid://10709773963",
-			["battery"] = "rbxassetid://10709774640",
-			["batterycharging"] = "rbxassetid://10709774068",
-			["batteryfull"] = "rbxassetid://10709774206",
-			["batterylow"] = "rbxassetid://10709774370",
-			["batterymedium"] = "rbxassetid://10709774513",
-			["beaker"] = "rbxassetid://10709774756",
-			["bed"] = "rbxassetid://10709775036",
-			["beddouble"] = "rbxassetid://10709774864",
-			["bedsingle"] = "rbxassetid://10709774968",
-			["beer"] = "rbxassetid://10709775167",
-			["bell"] = "rbxassetid://10709775704",
-			["bellminus"] = "rbxassetid://10709775241",
-			["belloff"] = "rbxassetid://10709775320",
-			["bellplus"] = "rbxassetid://10709775448",
-			["bellring"] = "rbxassetid://10709775560",
-			["bike"] = "rbxassetid://10709775894",
-			["binary"] = "rbxassetid://10709776050",
-			["bitcoin"] = "rbxassetid://10709776126",
-			["bluetooth"] = "rbxassetid://10709776655",
-			["bluetoothconnected"] = "rbxassetid://10709776240",
-			["bluetoothoff"] = "rbxassetid://10709776344",
-			["bluetoothsearching"] = "rbxassetid://10709776501",
-			["bold"] = "rbxassetid://10747813908",
-			["bomb"] = "rbxassetid://10709781460",
-			["bone"] = "rbxassetid://10709781605",
-			["book"] = "rbxassetid://10709781824",
-			["bookopen"] = "rbxassetid://10709781717",
-			["bookmark"] = "rbxassetid://10709782154",
-			["bookmarkminus"] = "rbxassetid://10709781919",
-			["bookmarkplus"] = "rbxassetid://10709782044",
-			["bot"] = "rbxassetid://10709782230",
-			["box"] = "rbxassetid://10709782497",
-			["boxselect"] = "rbxassetid://10709782342",
-			["boxes"] = "rbxassetid://10709782582",
-			["briefcase"] = "rbxassetid://10709782662",
-			["brush"] = "rbxassetid://10709782758",
-			["bug"] = "rbxassetid://10709782845",
-			["building"] = "rbxassetid://10709783051",
-			["building2"] = "rbxassetid://10709782939",
-			["bus"] = "rbxassetid://10709783137",
-			["cake"] = "rbxassetid://10709783217",
-			["calculator"] = "rbxassetid://10709783311",
-			["calendar"] = "rbxassetid://10709789505",
-			["calendarcheck"] = "rbxassetid://10709783474",
-			["calendarcheck2"] = "rbxassetid://10709783392",
-			["calendarclock"] = "rbxassetid://10709783577",
-			["calendardays"] = "rbxassetid://10709783673",
-			["calendarheart"] = "rbxassetid://10709783835",
-			["calendarminus"] = "rbxassetid://10709783959",
-			["calendaroff"] = "rbxassetid://10709788784",
-			["calendarplus"] = "rbxassetid://10709788937",
-			["calendarrange"] = "rbxassetid://10709789053",
-			["calendarsearch"] = "rbxassetid://10709789200",
-			["calendarx"] = "rbxassetid://10709789407",
-			["calendarx2"] = "rbxassetid://10709789329",
-			["camera"] = "rbxassetid://10709789686",
-			["cameraoff"] = "rbxassetid://10747822677",
-			["car"] = "rbxassetid://10709789810",
-			["carrot"] = "rbxassetid://10709789960",
-			["cast"] = "rbxassetid://10709790097",
-			["charge"] = "rbxassetid://10709790202",
-			["check"] = "rbxassetid://10709790644",
-			["checkcircle"] = "rbxassetid://10709790387",
-			["checkcircle2"] = "rbxassetid://10709790298",
-			["checksquare"] = "rbxassetid://10709790537",
-			["chefhat"] = "rbxassetid://10709790757",
-			["cherry"] = "rbxassetid://10709790875",
-			["chevrondown"] = "rbxassetid://10709790948",
-			["chevronfirst"] = "rbxassetid://10709791015",
-			["chevronlast"] = "rbxassetid://10709791130",
-			["chevronleft"] = "rbxassetid://10709791281",
-			["chevronright"] = "rbxassetid://10709791437",
-			["chevronup"] = "rbxassetid://10709791523",
-			["chevronsdown"] = "rbxassetid://10709796864",
-			["chevronsdownup"] = "rbxassetid://10709791632",
-			["chevronsleft"] = "rbxassetid://10709797151",
-			["chevronsleftright"] = "rbxassetid://10709797006",
-			["chevronsright"] = "rbxassetid://10709797382",
-			["chevronsrightleft"] = "rbxassetid://10709797274",
-			["chevronsup"] = "rbxassetid://10709797622",
-			["chevronsupdown"] = "rbxassetid://10709797508",
-			["chrome"] = "rbxassetid://10709797725",
-			["circle"] = "rbxassetid://10709798174",
-			["circledot"] = "rbxassetid://10709797837",
-			["circleellipsis"] = "rbxassetid://10709797985",
-			["circleslashed"] = "rbxassetid://10709798100",
-			["citrus"] = "rbxassetid://10709798276",
-			["clapperboard"] = "rbxassetid://10709798350",
-			["clipboard"] = "rbxassetid://10709799288",
-			["clipboardcheck"] = "rbxassetid://10709798443",
-			["clipboardcopy"] = "rbxassetid://10709798574",
-			["clipboardedit"] = "rbxassetid://10709798682",
-			["clipboardlist"] = "rbxassetid://10709798792",
-			["clipboardsignature"] = "rbxassetid://10709798890",
-			["clipboardtype"] = "rbxassetid://10709798999",
-			["clipboardx"] = "rbxassetid://10709799124",
-			["clock"] = "rbxassetid://10709805144",
-			["clock1"] = "rbxassetid://10709799535",
-			["clock10"] = "rbxassetid://10709799718",
-			["clock11"] = "rbxassetid://10709799818",
-			["clock12"] = "rbxassetid://10709799962",
-			["clock2"] = "rbxassetid://10709803876",
-			["clock3"] = "rbxassetid://10709803989",
-			["clock4"] = "rbxassetid://10709804164",
-			["clock5"] = "rbxassetid://10709804291",
-			["clock6"] = "rbxassetid://10709804435",
-			["clock7"] = "rbxassetid://10709804599",
-			["clock8"] = "rbxassetid://10709804784",
-			["clock9"] = "rbxassetid://10709804996",
-			["cloud"] = "rbxassetid://10709806740",
-			["cloudcog"] = "rbxassetid://10709805262",
-			["clouddrizzle"] = "rbxassetid://10709805371",
-			["cloudfog"] = "rbxassetid://10709805477",
-			["cloudhail"] = "rbxassetid://10709805596",
-			["cloudlightning"] = "rbxassetid://10709805727",
-			["cloudmoon"] = "rbxassetid://10709805942",
-			["cloudmoonrain"] = "rbxassetid://10709805838",
-			["cloudoff"] = "rbxassetid://10709806060",
-			["cloudrain"] = "rbxassetid://10709806277",
-			["cloudrainwind"] = "rbxassetid://10709806166",
-			["cloudsnow"] = "rbxassetid://10709806374",
-			["cloudsun"] = "rbxassetid://10709806631",
-			["cloudsunrain"] = "rbxassetid://10709806475",
-			["cloudy"] = "rbxassetid://10709806859",
-			["clover"] = "rbxassetid://10709806995",
-			["code"] = "rbxassetid://10709810463",
-			["code2"] = "rbxassetid://10709807111",
-			["codepen"] = "rbxassetid://10709810534",
-			["codesandbox"] = "rbxassetid://10709810676",
-			["coffee"] = "rbxassetid://10709810814",
-			["cog"] = "rbxassetid://10709810948",
-			["coins"] = "rbxassetid://10709811110",
-			["columns"] = "rbxassetid://10709811261",
-			["command"] = "rbxassetid://10709811365",
-			["compass"] = "rbxassetid://10709811445",
-			["component"] = "rbxassetid://10709811595",
-			["conciergebell"] = "rbxassetid://10709811706",
-			["connection"] = "rbxassetid://10747361219",
-			["contact"] = "rbxassetid://10709811834",
-			["contrast"] = "rbxassetid://10709811939",
-			["cookie"] = "rbxassetid://10709812067",
-			["copy"] = "rbxassetid://10709812159",
-			["copyleft"] = "rbxassetid://10709812251",
-			["copyright"] = "rbxassetid://10709812311",
-			["cornerdownleft"] = "rbxassetid://10709812396",
-			["cornerdownright"] = "rbxassetid://10709812485",
-			["cornerleftdown"] = "rbxassetid://10709812632",
-			["cornerleftup"] = "rbxassetid://10709812784",
-			["cornerrightdown"] = "rbxassetid://10709812939",
-			["cornerrightup"] = "rbxassetid://10709813094",
-			["cornerupleft"] = "rbxassetid://10709813185",
-			["cornerupright"] = "rbxassetid://10709813281",
-			["cpu"] = "rbxassetid://10709813383",
-			["croissant"] = "rbxassetid://10709818125",
-			["crop"] = "rbxassetid://10709818245",
-			["cross"] = "rbxassetid://10709818399",
-			["crosshair"] = "rbxassetid://10709818534",
-			["crown"] = "rbxassetid://10709818626",
-			["cupsoda"] = "rbxassetid://10709818763",
-			["curlybraces"] = "rbxassetid://10709818847",
-			["currency"] = "rbxassetid://10709818931",
-			["database"] = "rbxassetid://10709818996",
-			["delete"] = "rbxassetid://10709819059",
-			["diamond"] = "rbxassetid://10709819149",
-			["dice1"] = "rbxassetid://10709819266",
-			["dice2"] = "rbxassetid://10709819361",
-			["dice3"] = "rbxassetid://10709819508",
-			["dice4"] = "rbxassetid://10709819670",
-			["dice5"] = "rbxassetid://10709819801",
-			["dice6"] = "rbxassetid://10709819896",
-			["dices"] = "rbxassetid://10723343321",
-			["diff"] = "rbxassetid://10723343416",
-			["disc"] = "rbxassetid://10723343537",
-			["divide"] = "rbxassetid://10723343805",
-			["dividecircle"] = "rbxassetid://10723343636",
-			["dividesquare"] = "rbxassetid://10723343737",
-			["dollarsign"] = "rbxassetid://10723343958",
-			["download"] = "rbxassetid://10723344270",
-			["downloadcloud"] = "rbxassetid://10723344088",
-			["droplet"] = "rbxassetid://10723344432",
-			["droplets"] = "rbxassetid://10734883356",
-			["drumstick"] = "rbxassetid://10723344737",
-			["edit"] = "rbxassetid://10734883598",
-			["edit2"] = "rbxassetid://10723344885",
-			["edit3"] = "rbxassetid://10723345088",
-			["egg"] = "rbxassetid://10723345518",
-			["eggfried"] = "rbxassetid://10723345347",
-			["electricity"] = "rbxassetid://10723345749",
-			["electricityoff"] = "rbxassetid://10723345643",
-			["equal"] = "rbxassetid://10723345990",
-			["equalnot"] = "rbxassetid://10723345866",
-			["eraser"] = "rbxassetid://10723346158",
-			["euro"] = "rbxassetid://10723346372",
-			["expand"] = "rbxassetid://10723346553",
-			["externallink"] = "rbxassetid://10723346684",
-			["eye"] = "rbxassetid://10723346959",
-			["eyeoff"] = "rbxassetid://10723346871",
-			["factory"] = "rbxassetid://10723347051",
-			["fan"] = "rbxassetid://10723354359",
-			["fastforward"] = "rbxassetid://10723354521",
-			["feather"] = "rbxassetid://10723354671",
-			["figma"] = "rbxassetid://10723354801",
-			["file"] = "rbxassetid://10723374641",
-			["filearchive"] = "rbxassetid://10723354921",
-			["fileaudio"] = "rbxassetid://10723355148",
-			["fileaudio2"] = "rbxassetid://10723355026",
-			["fileaxis3d"] = "rbxassetid://10723355272",
-			["filebadge"] = "rbxassetid://10723355622",
-			["filebadge2"] = "rbxassetid://10723355451",
-			["filebarchart"] = "rbxassetid://10723355887",
-			["filebarchart2"] = "rbxassetid://10723355746",
-			["filebox"] = "rbxassetid://10723355989",
-			["filecheck"] = "rbxassetid://10723356210",
-			["filecheck2"] = "rbxassetid://10723356100",
-			["fileclock"] = "rbxassetid://10723356329",
-			["filecode"] = "rbxassetid://10723356507",
-			["filecog"] = "rbxassetid://10723356830",
-			["filecog2"] = "rbxassetid://10723356676",
-			["filediff"] = "rbxassetid://10723357039",
-			["filedigit"] = "rbxassetid://10723357151",
-			["filedown"] = "rbxassetid://10723357322",
-			["fileedit"] = "rbxassetid://10723357495",
-			["fileheart"] = "rbxassetid://10723357637",
-			["fileimage"] = "rbxassetid://10723357790",
-			["fileinput"] = "rbxassetid://10723357933",
-			["filejson"] = "rbxassetid://10723364435",
-			["filejson2"] = "rbxassetid://10723364361",
-			["filekey"] = "rbxassetid://10723364605",
-			["filekey2"] = "rbxassetid://10723364515",
-			["filelinechart"] = "rbxassetid://10723364725",
-			["filelock"] = "rbxassetid://10723364957",
-			["filelock2"] = "rbxassetid://10723364861",
-			["fileminus"] = "rbxassetid://10723365254",
-			["fileminus2"] = "rbxassetid://10723365086",
-			["fileoutput"] = "rbxassetid://10723365457",
-			["filepiechart"] = "rbxassetid://10723365598",
-			["fileplus"] = "rbxassetid://10723365877",
-			["fileplus2"] = "rbxassetid://10723365766",
-			["filequestion"] = "rbxassetid://10723365987",
-			["filescan"] = "rbxassetid://1072336167",
-			["filesearch"] = "rbxassetid://10723366550",
-			["filesearch2"] = "rbxassetid://10723366340",
-			["filesignature"] = "rbxassetid://10723366741",
-			["filespreadsheet"] = "rbxassetid://10723366962",
-			["filesymlink"] = "rbxassetid://10723367098",
-			["fileterminal"] = "rbxassetid://10723367244",
-			["filetext"] = "rbxassetid://10723367380",
-			["filetype"] = "rbxassetid://10723367606",
-			["filetype2"] = "rbxassetid://10723367509",
-			["fileup"] = "rbxassetid://10723367734",
-			["filevideo"] = "rbxassetid://10723373884",
-			["filevideo2"] = "rbxassetid://10723367834",
-			["filevolume"] = "rbxassetid://10723374172",
-			["filevolume2"] = "rbxassetid://10723374030",
-			["filewarning"] = "rbxassetid://10723374276",
-			["filex"] = "rbxassetid://10723374544",
-			["filex2"] = "rbxassetid://10723374378",
-			["files"] = "rbxassetid://10723374759"
-		}
-	end)()
+local function notify(title, text)
+    pcall(function()
+        StarterGui:SetCore("SendNotification", {
+            Title = title,
+            Text = text,
+            Duration = 4
+        })
+    end)
+end
+
+notify("Kenz Hub", "Thank you for using Kenz Hub | script di remake oleh: D_ForDeath1")
+
+local Window = Libary:MakeWindow({
+    Title = "Kenz Hub | Brookhaven RP 🏡",
+    SubTitle = "by: Kenz & Death | remake oleh: D_ForDeath1",
+    LoadText = "Carregando Kenz Hub",
+    Flags = "KenzHub_Brookhaven"
+})
+
+Window:AddMinimizeButton({
+    Button = { Image = "rbxassetid://70484094709190", BackgroundTransparency = 0 },
+    Corner = { CornerRadius = UDim.new(35, 1) },
+})
+
+local infoTab = Window:MakeTab({"Info", "info"})
+local playerTab = Window:MakeTab({"Player", "user"})
+local avatarTab = Window:MakeTab({"Avatar", "shirt"})
+local housesTab = Window:MakeTab({"Houses", "house"})
+local worldTab = Window:MakeTab({"Protection", "shield"})
+local teleportsTab = Window:MakeTab({"Teleports", "map"})
+local espTab = Window:MakeTab({"ESP", "eye"})
+local itemsTab = Window:MakeTab({"Items", "package"})
+local fireTab = Window:MakeTab({"Fire", "flame"})
+local rgbTab = Window:MakeTab({"RGB", "palette"})
+local childTab = Window:MakeTab({"Child", "baby"})
+
+infoTab:AddSection({"Script Information"})
+infoTab:AddParagraph({"Developer/Owner:", "Kenz & Death | script di remake oleh: D_ForDeath1"})
+infoTab:AddParagraph({"You are using:", "Kenz Hub Brookhaven🏡"})
+
+local pingValue = "Unknown"
+local netStats = Stats:FindFirstChild("Network")
+local serverStats = netStats and netStats:FindFirstChild("ServerStatsItem")
+
+if serverStats and serverStats:FindFirstChild("Data Ping") then
+    pingValue = serverStats["Data Ping"]:GetValueString()
+end
+
+local executorName = "Unknown"
+if identifyexecutor then
+    local success, name, version = pcall(function() return identifyexecutor() end)
+    if success then
+        executorName = tostring(name) .. (version and (" v" .. tostring(version)) or "")
+    end
+end
+
+infoTab:AddSection({"Player Information"})
+infoTab:AddParagraph({"Username:", LocalPlayer.Name or "Unknown"})
+infoTab:AddParagraph({"Display Name:", LocalPlayer.DisplayName or "Unknown"})
+infoTab:AddParagraph({"User ID:", tostring(LocalPlayer.UserId) or "Unknown"})
+infoTab:AddParagraph({"Account Age:", tostring(LocalPlayer.AccountAge) .. " days"})
+infoTab:AddParagraph({"Ping:", pingValue})
+infoTab:AddParagraph({"Executor:", executorName})
+
+infoTab:AddSection({"Rejoin"})
+infoTab:AddButton({"Rejoin", function()
+    TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+end})
+
+playerTab:AddSection({"Player Character & Headsit"})
+
+local selectedPlayerName = nil
+local headsitActive = false
+
+local function headsitOnPlayer(targetPlayer)
+    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+    if not targetPlayer.Character or not targetPlayer.Character:FindFirstChild("Head") then
+        return false
+    end
+    local targetHead = targetPlayer.Character.Head
+    local localRoot = character:FindFirstChild("HumanoidRootPart")
+    if not localRoot then
+        return false
+    end
+
+    localRoot.CFrame = targetHead.CFrame * CFrame.new(0, 2.2, 0)
+
+    for _, v in pairs(localRoot:GetChildren()) do
+        if v:IsA("WeldConstraint") then
+            v:Destroy()
+        end
+    end
+
+    local weld = Instance.new("WeldConstraint")
+    weld.Part0 = localRoot
+    weld.Part1 = targetHead
+    weld.Parent = localRoot
+
+    if humanoid then humanoid.Sit = true end
+    return true
+end
+
+local function removeHeadsit()
+    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    local localRoot = character:FindFirstChild("HumanoidRootPart")
+    
+    if localRoot then
+        for _, v in pairs(localRoot:GetChildren()) do
+            if v:IsA("WeldConstraint") then
+                v:Destroy()
+            end
+        end
+    end
+    if humanoid then humanoid.Sit = false end
+end
+
+local function findPlayerByPartialName(partial)
+    partial = partial:lower()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Name:lower():sub(1, #partial) == partial then
+            return player
+        end
+    end
+    return nil
+end
+
+playerTab:AddTextBox({"Player Name (Partial)", "", function(Value)
+    local foundPlayer = findPlayerByPartialName(Value)
+    if foundPlayer then
+        selectedPlayerName = foundPlayer.Name
+        notify("Player Selected", foundPlayer.Name .. " selected! | remake: D_ForDeath1")
+    else
+        notify("Error", "No player found.")
+    end
+end})
+
+playerTab:AddButton({"Enable / Disable Headsit", function()
+    if not selectedPlayerName then return end
+
+    if not headsitActive then
+        local target = Players:FindFirstChild(selectedPlayerName)
+        if target and headsitOnPlayer(target) then
+            headsitActive = true
+        end
+    else
+        removeHeadsit()
+        headsitActive = false
+    end
+end})
+
+playerTab:AddSection({"Movement Modifiers"})
+
+playerTab:AddSlider({"Speed Player", 0, 500, 1, 50, function(value)
+    local character = LocalPlayer.Character
+    if character then
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = value
+        end
+    end
+end})
+
+playerTab:AddSlider({"Jumppower", 0, 500, 1, 50, function(value)
+    local character = LocalPlayer.Character
+    if character then
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.JumpPower = value
+        end
+    end
+end})
+
+playerTab:AddSlider({"Gravity", 0, 500, 1, 196, function(value)
+    Workspace.Gravity = value
+end})
+
+local InfiniteJumpEnabled = false
+UserInputService.JumpRequest:Connect(function()
+    if InfiniteJumpEnabled then
+        local character = LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end
+    end
+end)
+
+playerTab:AddToggle({"Infinite Jump", false, function(Value)
+    InfiniteJumpEnabled = Value
+end})
+
+playerTab:AddButton({"Reset Speed / Gravity / Jumppower", function()
+    local character = LocalPlayer.Character
+    if character then
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = 16
+            humanoid.JumpPower = 50
+        end
+    end
+    Workspace.Gravity = 196.2
+    InfiniteJumpEnabled = false
+end})
+
+playerTab:AddSection({"Utility & Protection"})
+
+local UltimateNoclip = { Enabled = false, Connections = {}, SoccerBalls = {} }
+
+local function managePlayerCollisions(character)
+    if not character then return end
+    for _, part in ipairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = not UltimateNoclip.Enabled
+            part.Anchored = false
+        end
+    end
+end
+
+local function voidProtection(rootPart)
+    if rootPart.Position.Y < -500 then
+        local safeCFrame = CFrame.new(0, 100, 0)
+        local rayParams = RaycastParams.new()
+        rayParams.FilterDescendantsInstances = {LocalPlayer.Character}
+        local result = Workspace:Raycast(rootPart.Position, Vector3.new(0, 500, 0), rayParams)
+        rootPart.CFrame = result and CFrame.new(result.Position + Vector3.new(0, 5, 0)) or safeCFrame
+    end
+end
+
+local function manageSoccerBalls()
+    local soccerFolder = Workspace:FindFirstChild("Com", true) and Workspace.Com:FindFirstChild("001_SoccerBalls")
+    if soccerFolder then
+        for _, ball in ipairs(soccerFolder:GetChildren()) do
+            if ball.Name:match("^Soccer") then
+                pcall(function()
+                    ball.CanCollide = not UltimateNoclip.Enabled
+                    ball.Anchored = UltimateNoclip.Enabled
+                end)
+                UltimateNoclip.SoccerBalls[ball] = true
+            end
+        end
+    end
+end
+
+local function noclipMainLoop()
+    UltimateNoclip.Connections.Heartbeat = RunService.Heartbeat:Connect(function()
+        local character = LocalPlayer.Character
+        if character then
+            managePlayerCollisions(character)
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            if rootPart then voidProtection(rootPart) end
+        end
+        if tick() % 2 < 0.1 then manageSoccerBalls() end
+    end)
+end
+
+playerTab:AddToggle({"Ultimate Noclip", false, function(state)
+    UltimateNoclip.Enabled = state
+    if state then
+        noclipMainLoop()
+        manageSoccerBalls()
+        UltimateNoclip.Connections.CharAdded = LocalPlayer.CharacterAdded:Connect(function()
+            task.wait(0.5)
+            managePlayerCollisions(LocalPlayer.Character)
+        end)
+    else
+        for _, conn in pairs(UltimateNoclip.Connections) do conn:Disconnect() end
+        if LocalPlayer.Character then managePlayerCollisions(LocalPlayer.Character) end
+        for ball in pairs(UltimateNoclip.SoccerBalls) do
+            if ball.Parent then pcall(function() ball.CanCollide = true; ball.Anchored = false end) end
+        end
+    end
+end})
+
+local antiSitConnection = nil
+local antiSitEnabled = false
+
+playerTab:AddToggle({"Anti-Sit", false, function(state)
+    antiSitEnabled = state
+    if state then
+        local function applyAntiSit(character)
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid.Sit = false
+                humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+                if antiSitConnection then antiSitConnection:Disconnect() end
+                antiSitConnection = humanoid.Seated:Connect(function(isSeated)
+                    if isSeated then
+                        humanoid.Sit = false
+                        humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+                    end
+                end)
+            end
+        end
+        if LocalPlayer.Character then applyAntiSit(LocalPlayer.Character) end
+        LocalPlayer.CharacterAdded:Connect(function(character)
+            if antiSitEnabled then
+                local humanoid = character:WaitForChild("Humanoid", 5)
+                if humanoid then applyAntiSit(character) end
+            end
+        end)
+    else
+        if antiSitConnection then antiSitConnection:Disconnect(); antiSitConnection = nil end
+        if LocalPlayer.Character then
+            local humanoid = LocalPlayer.Character:FindFirstChild("Humanoid")
+            if humanoid then humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, true) end
+        end
+    end
+end})
+
+playerTab:AddButton({"Enable Fly GUI", function()
+    local success, _ = pcall(function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Fly-gui-v3-30439"))()
+    end)
+    notify(success and "Success" or "Error", success and "Fly GUI loaded!" or "Failed to load Fly GUI.")
+end})
+
+avatarTab:AddSection({"Copy Avatar"})
+
+local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+local TargetPlayerCopy = nil
+
+local function GetPlayerNamesList()
+    local playerNames = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player.Name ~= LocalPlayer.Name then
+            table.insert(playerNames, player.Name)
+        end
+    end
+    return #playerNames > 0 and playerNames or {"No Players"}
+end
+
+local playerDropdown = avatarTab:AddDropdown({"Players List", GetPlayerNamesList(), "", function(playername)
+    TargetPlayerCopy = playername
+end})
+
+avatarTab:AddButton({"Refresh List", function()
+    if playerDropdown and playerDropdown.Set then
+        playerDropdown:Set(GetPlayerNamesList())
+    end
+end})
+
+avatarTab:AddButton({"Copy Avatar", function()
+    if not TargetPlayerCopy or TargetPlayerCopy == "" or TargetPlayerCopy == "No Players" then return end
+
+    local LChar = LocalPlayer.Character
+    local TPlayer = Players:FindFirstChild(TargetPlayerCopy)
+
+    if TPlayer and TPlayer.Character then
+        local LHumanoid = LChar and LChar:FindFirstChildOfClass("Humanoid")
+        local THumanoid = TPlayer.Character:FindFirstChildOfClass("Humanoid")
+
+        if LHumanoid and THumanoid then
+            local LDesc = LHumanoid:GetAppliedDescription()
+
+            for _, acc in ipairs(LDesc:GetAccessories(true)) do
+                if acc.AssetId and tonumber(acc.AssetId) then
+                    Remotes.Wear:InvokeServer(tonumber(acc.AssetId))
+                    task.wait(0.2)
+                end
+            end
+
+            if tonumber(LDesc.Shirt) then
+                Remotes.Wear:InvokeServer(tonumber(LDesc.Shirt))
+                task.wait(0.2)
+            end
+
+            if tonumber(LDesc.Pants) then
+                Remotes.Wear:InvokeServer(tonumber(LDesc.Pants))
+                task.wait(0.2)
+            end
+
+            if tonumber(LDesc.Face) then
+                Remotes.Wear:InvokeServer(tonumber(LDesc.Face))
+                task.wait(0.2)
+            end
+
+            local PDesc = THumanoid:GetAppliedDescription()
+
+            local argsBody = {
+                [1] = {
+                    [1] = PDesc.Torso,
+                    [2] = PDesc.RightArm,
+                    [3] = PDesc.LeftArm,
+                    [4] = PDesc.RightLeg,
+                    [5] = PDesc.LeftLeg,
+                    [6] = PDesc.Head
+                }
+            }
+            Remotes.ChangeCharacterBody:InvokeServer(unpack(argsBody))
+            task.wait(0.5)
+
+            if tonumber(PDesc.Shirt) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.Shirt))
+                task.wait(0.3)
+            end
+
+            if tonumber(PDesc.Pants) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.Pants))
+                task.wait(0.3)
+            end
+
+            if tonumber(PDesc.Face) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.Face))
+                task.wait(0.3)
+            end
+
+            for _, v in ipairs(PDesc:GetAccessories(true)) do
+                if v.AssetId and tonumber(v.AssetId) then
+                    Remotes.Wear:InvokeServer(tonumber(v.AssetId))
+                    task.wait(0.3)
+                end
+            end
+
+            local SkinColor = TPlayer.Character:FindFirstChild("Body Colors")
+            if SkinColor then
+                Remotes.ChangeBodyColor:FireServer(tostring(SkinColor.HeadColor))
+                task.wait(0.3)
+            end
+
+            if tonumber(PDesc.IdleAnimation) then
+                Remotes.Wear:InvokeServer(tonumber(PDesc.IdleAnimation))
+                task.wait(0.3)
+            end
+
+            local Bag = TPlayer:FindFirstChild("PlayersBag")
+            if Bag then
+                if Bag:FindFirstChild("RPName") and Bag.RPName.Value ~= "" then
+                    Remotes.RPNameText:FireServer("RolePlayName", Bag.RPName.Value)
+                    task.wait(0.3)
+                end
+                if Bag:FindFirstChild("RPBio") and Bag.RPBio.Value ~= "" then
+                    Remotes.RPNameText:FireServer("RolePlayBio", Bag.RPBio.Value)
+                    task.wait(0.3)
+                end
+                if Bag:FindFirstChild("RPNameColor") then
+                    Remotes.RPNameColor:FireServer("PickingRPNameColor", Bag.RPNameColor.Value)
+                    task.wait(0.3)
+                end
+                if Bag:FindFirstChild("RPBioColor") then
+                    Remotes.RPNameColor:FireServer("PickingRPBioColor", Bag.RPBioColor.Value)
+                    task.wait(0.3)
+                end
+            end
+        end
+    end
+end})
+
+avatarTab:AddSection({"3D Clothes / Costumes"})
+
+local AvatarManager = {}
+AvatarManager.ReplicatedStorage = ReplicatedStorage
+
+function AvatarManager:ShowNotification(message)
+    notify("Notice", message)
+end
+
+AvatarManager.Avatars = {
+    { Name = "Mango Cat", ID = 124948425515124 },
+    { Name = "Tung Saur", ID = 117098257036480 },
+    { Name = "Tralaleiro", ID = 99459753608381 },
+    { Name = "Monsters Inc", ID = 123609977175226 },
+    { Name = "Little Train", ID = 80468697076178 },
+    { Name = "Dino", ID = 11941741105 },
+    { Name = "Old Pou", ID = 15742966010 },
+    { Name = "Poop/Turd", ID = 77013984520332 },
+    { Name = "Rabbit", ID = 71797333686800 },
+    { Name = "Hippopotamus", ID = 73215892129281 },
+    { Name = "Ratatouille", ID = 108557570415453 },
+    { Name = "Chicken", ID = 71251793812515 },
+    { Name = "Peppa Pig", ID = 92979204778377 },
+    { Name = "Penguin", ID = 94944293759578 },
+    { Name = "Sid", ID = 87442757321244 },
+    { Name = "Big Flea", ID = 111436158728716 },
+    { Name = "CURSED SHREK", ID = 120960401202173 },
+    { Name = "Big Mosquito", ID = 108052868536435 },
+    { Name = "Inverted Noob", ID = 106596990206151 },
+    { Name = "Duck", ID = 135132836238349 },
+    { Name = "Chihuahua Dog", ID = 18656467256 },
+    { Name = "Idk Cat", ID = 18994959003 },
+    { Name = "Ugly Cat", ID = 77506186615650 },
+    { Name = "Impostor", ID = 18234669337 },
+    { Name = "Yellow Simon", ID = 75183593514657 },
+    { Name = "Blue Simon", ID = 76155710249925 }
 }
 
-local ViewportSize = workspace.CurrentCamera.ViewportSize
-local UIScale = ViewportSize.Y / 450
-
-local Settings = redzlib.Settings
-local Flags = redzlib.Flags
-
-local SetProps, SetChildren, InsertTheme, Create do
-	InsertTheme = function(Instance, Type)
-		table.insert(redzlib.Instances, {
-			Instance = Instance,
-			Type = Type
-		})
-		return Instance
-	end
-	
-	SetChildren = function(Instance, Children)
-		if Children then
-			table.foreach(Children, function(_,Child)
-				Child.Parent = Instance
-			end)
-		end
-		return Instance
-	end
-	
-	SetProps = function(Instance, Props)
-		if Props then
-			table.foreach(Props, function(prop, value)
-				Instance[prop] = value
-			end)
-		end
-		return Instance
-	end
-	
-	Create = function(...)
-		local args = {...}
-		if type(args) ~= "table" then return end
-		local new = Instance.new(args[1])
-		local Children = {}
-		
-		if type(args[2]) == "table" then
-			SetProps(new, args[2])
-			SetChildren(new, args[3])
-			Children = args[3] or {}
-		elseif typeof(args[2]) == "Instance" then
-			new.Parent = args[2]
-			SetProps(new, args[3])
-			SetChildren(new, args[4])
-			Children = args[4] or {}
-		end
-		return new
-	end
-	
-	local function Save(file)
-		if readfile and isfile and isfile(file) then
-			local decode = HttpService:JSONDecode(readfile(file))
-			
-			if type(decode) == "table" then
-				if rawget(decode, "UISize") then redzlib.Save["UISize"] = decode["UISize"] end
-				if rawget(decode, "TabSize") then redzlib.Save["TabSize"] = decode["TabSize"] end
-				if rawget(decode, "Theme") and VerifyTheme(decode["Theme"]) then redzlib.Save["Theme"] = decode["Theme"] end
-			end
-		end
-	end
-	
-	pcall(Save, "redz library V5.json")
+function AvatarManager:GetAvatarNamesList()
+    local names = {}
+    for _, avatar in ipairs(self.Avatars) do
+        table.insert(names, avatar.Name)
+    end
+    return names
 end
 
-local Funcs = {} do
-	function Funcs:InsertCallback(tab, func)
-		if type(func) == "function" then
-			table.insert(tab, func)
-		end
-		return func
-	end
-	
-	function Funcs:FireCallback(tab, ...)
-		for _,v in ipairs(tab) do
-			if type(v) == "function" then
-				task.spawn(v, ...)
-			end
-		end
-	end
-	
-	function Funcs:ToggleVisible(Obj, Bool)
-		Obj.Visible = Bool ~= nil and Bool or Obj.Visible
-	end
-	
-	function Funcs:ToggleParent(Obj, Parent)
-		if Bool ~= nil then
-			Obj.Parent = Bool
-		else
-			Obj.Parent = not Obj.Parent and Parent
-		end
-	end
-	
-	function Funcs:GetConnectionFunctions(ConnectedFuncs, func)
-		local Connected = { Function = func, Connected = true }
-		
-		function Connected:Disconnect()
-			if self.Connected then
-				table.remove(ConnectedFuncs, table.find(ConnectedFuncs, self.Function))
-				self.Connected = false
-			end
-		end
-		
-		function Connected:Fire(...)
-			if self.Connected then
-				task.spawn(self.Function, ...)
-			end
-		end
-		
-		return Connected
-	end
-	
-	function Funcs:GetCallback(Configs, index)
-		local func = Configs[index] or Configs.Callback or function()end
-		
-		if type(func) == "table" then
-			return ({function(Value) func[1][func[2]] = Value end})
-		end
-		return {func}
-	end
+function AvatarManager:EquipAvatar(avatarName)
+    for _, avatar in ipairs(self.Avatars) do
+        if avatar.Name == avatarName then
+            local args = { avatar.ID }
+            local success, _ = pcall(function()
+                return self.ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(unpack(args))
+            end)
+            if success then
+                self:ShowNotification("Avatar " .. avatarName .. " equipped successfully!")
+            else
+                self:ShowNotification("Failed to equip avatar " .. avatarName .. "!")
+            end
+            return
+        end
+    end
+    self:ShowNotification("Avatar " .. avatarName .. " not found!")
 end
 
-local Connections, Connection = {}, redzlib.Connection do
-	local function NewConnectionList(List)
-		if type(List) ~= "table" then return end
-		
-		for _,CoName in ipairs(List) do
-			local ConnectedFuncs, Connect = {}, {}
-			Connection[CoName] = Connect
-			Connections[CoName] = ConnectedFuncs
-		end
-	end
+avatarTab:AddDropdown({"3D Accessories", AvatarManager:GetAvatarNamesList(), "", function(selectedAvatar)
+    _G.SelectedAvatar = selectedAvatar
+end})
+
+avatarTab:AddButton({"Equip Accessory", function()
+    if not _G.SelectedAvatar or _G.SelectedAvatar == "" then
+        AvatarManager:ShowNotification("No avatar selected!")
+        return
+    end
+    AvatarManager:EquipAvatar(_G.SelectedAvatar)
+end})
+
+avatarTab:AddSection({"Avatar Editor"})
+
+avatarTab:AddParagraph({"Warning: Reset Avatar", "Using these options will override your current body parts."})
+
+avatarTab:AddButton({"Mini REPO", function()
+    local args = {{ 117101023704825, 125767940563838, 137301494386930, 87357384184710, 133391239416999, 111818794467824 }}
+    ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+end})
+
+avatarTab:AddButton({"Mini Stallion", function()
+    local args = {{ 124355047456535, 120507500641962, 82273782655463, 113625313757230, 109182039511426, 0 }}
+    ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+end})
+
+avatarTab:AddButton({"Stick", function()
+    local args = {{ 14731384498, 14731377938, 14731377894, 14731377875, 14731377941, 14731382899 }}
+    ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+end})
+
+avatarTab:AddButton({"Chunky-Bug", function()
+    local args = {{ 15527827600, 15527827578, 15527831669, 15527836067, 15527827184, 15527827599 }}
+    ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+end})
+
+avatarTab:AddButton({"Cursed-Spider", function()
+    local args = {{ 134555168634906, 100269043793774, 125607053187319, 122504853343598, 95907982259204, 91289185840375 }}
+    ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+end})
+
+avatarTab:AddButton({"Possessed-Horror", function()
+    local args = {{ 122800511983371, 132465361516275, 125155800236527, 83070163355072, 102906187256945, 78311422507297 }}
+    ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+end})
+
+espTab:AddSection({"ESP Settings"})
+
+_G.ESPData = _G.ESPData or {
+    espEnabled = false,
+    espType = "Name + Age",
+    selectedColor = "RGB",
+    billboardGuis = {},
+    highlights = {},
+    lines = {},
+    connections = {}
+}
+
+local function getESPColor()
+    local colors = {
+        RGB = function()
+            local h = (tick() % 5) / 5
+            return Color3.fromHSV(h, 1, 1)
+        end,
+        Black = Color3.fromRGB(0, 0, 0),
+        White = Color3.fromRGB(255, 255, 255),
+        Red = Color3.fromRGB(255, 0, 0),
+        Green = Color3.fromRGB(0, 255, 0),
+        Blue = Color3.fromRGB(0, 170, 255),
+        Yellow = Color3.fromRGB(255, 255, 0),
+        Pink = Color3.fromRGB(255, 105, 180),
+        Purple = Color3.fromRGB(128, 0, 128)
+    }
+
+    local c = colors[_G.ESPData.selectedColor]
+    return type(c) == "function" and c() or c or Color3.new(1, 1, 1)
 end
 
-return redzlib
+_G.clearAllESP = function()
+    for _, gui in pairs(_G.ESPData.billboardGuis) do
+        pcall(function() gui:Destroy() end)
+    end
+    for _, h in pairs(_G.ESPData.highlights) do
+        pcall(function() h:Destroy() end)
+    end
+    for _, l in pairs(_G.ESPData.lines) do
+        pcall(function() l:Remove() end)
+    end
+    for _, c in pairs(_G.ESPData.connections) do
+        pcall(function() c:Disconnect() end)
+    end
+
+    _G.ESPData.billboardGuis = {}
+    _G.ESPData.highlights = {}
+    _G.ESPData.lines = {}
+    _G.ESPData.connections = {}
+end
+
+local function createNameESP(player)
+    if player == Players.LocalPlayer then return end
+    if not player.Character or not player.Character:FindFirstChild("Head") then return end
+
+    local head = player.Character.Head
+    if _G.ESPData.billboardGuis[player] then
+        _G.ESPData.billboardGuis[player]:Destroy()
+    end
+
+    local gui = Instance.new("BillboardGui", head)
+    gui.Name = "ESP_Billboard"
+    gui.Size = UDim2.new(0, 200, 0, 50)
+    gui.StudsOffset = Vector3.new(0, 3, 0)
+    gui.AlwaysOnTop = true
+
+    local txt = Instance.new("TextLabel", gui)
+    txt.Size = UDim2.new(1, 0, 1, 0)
+    txt.BackgroundTransparency = 1
+    txt.TextStrokeTransparency = 0.5
+    txt.Font = Enum.Font.SourceSansBold
+    txt.TextSize = 14
+    txt.Text = player.Name .. " | " .. player.AccountAge .. " days"
+    txt.TextColor3 = getESPColor()
+
+    _G.ESPData.billboardGuis[player] = gui
+end
+
+local function createHighlightESP(player)
+    if player == Players.LocalPlayer then return end
+    if not player.Character then return end
+
+    if _G.ESPData.highlights[player] then
+        _G.ESPData.highlights[player]:Destroy()
+    end
+
+    local h = Instance.new("Highlight", player.Character)
+    h.FillColor = getESPColor()
+    h.FillTransparency = 0.5
+    h.OutlineTransparency = 0
+    h.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+
+    _G.ESPData.highlights[player] = h
+end
+
+local function createLineESP(player)
+    if player == Players.LocalPlayer then return end
+    if _G.ESPData.lines[player] then
+        pcall(function() _G.ESPData.lines[player]:Remove() end)
+    end
+
+    local l = Drawing.new("Line")
+    l.Thickness = 2
+    l.Transparency = 1
+    l.Visible = false
+
+    _G.ESPData.lines[player] = l
+end
+
+_G.applyCurrentESP = function()
+    _G.clearAllESP()
+    if not _G.ESPData.espEnabled then return end
+
+    local function setupPlayerESP(p)
+        if _G.ESPData.espType == "Name + Age" then
+            createNameESP(p)
+        elseif _G.ESPData.espType == "Body (Highlight)" then
+            createHighlightESP(p)
+        elseif _G.ESPData.espType == "Tracer Lines" then
+            createLineESP(p)
+        end
+    end
+
+    for _, p in pairs(Players:GetPlayers()) do
+        setupPlayerESP(p)
+    end
+
+    table.insert(_G.ESPData.connections,
+        Players.PlayerAdded:Connect(function(p)
+            p.CharacterAdded:Connect(function()
+                task.wait(0.5)
+                if _G.ESPData.espEnabled then
+                    setupPlayerESP(p)
+                end
+            end)
+        end)
+    )
+
+    for _, p in pairs(Players:GetPlayers()) do
+        table.insert(_G.ESPData.connections,
+            p.CharacterAdded:Connect(function()
+                task.wait(0.5)
+                if _G.ESPData.espEnabled then
+                    setupPlayerESP(p)
+                end
+            end)
+        )
+    end
+
+    table.insert(_G.ESPData.connections,
+        RunService.RenderStepped:Connect(function()
+            if not _G.ESPData.espEnabled then return end
+            local color = getESPColor()
+            local Camera = workspace.CurrentCamera
+
+            if _G.ESPData.espType == "Name + Age" then
+                for _, gui in pairs(_G.ESPData.billboardGuis) do
+                    if gui:FindFirstChildOfClass("TextLabel") then
+                        gui.TextLabel.TextColor3 = color
+                    end
+                end
+
+            elseif _G.ESPData.espType == "Body (Highlight)" then
+                for _, h in pairs(_G.ESPData.highlights) do
+                    h.FillColor = color
+                end
+
+            elseif _G.ESPData.espType == "Tracer Lines" then
+                for p, l in pairs(_G.ESPData.lines) do
+                    if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                        local pos, on = Camera:WorldToViewportPoint(p.Character.HumanoidRootPart.Position)
+                        l.Visible = on
+                        if on then
+                            l.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
+                            l.To = Vector2.new(pos.X, pos.Y)
+                            l.Color = color
+                        end
+                    else
+                        l.Visible = false
+                    end
+                end
+            end
+        end)
+    )
+end
+
+espTab:AddDropdown({"ESP Type", {"Name + Age", "Body (Highlight)", "Tracer Lines"}, "Name + Age", function(v)
+    _G.ESPData.espType = v
+    if _G.ESPData.espEnabled then
+        _G.applyCurrentESP()
+    end
+end})
+
+espTab:AddDropdown({"ESP Color", {"RGB", "White", "Black", "Red", "Green", "Blue", "Yellow", "Pink", "Purple"}, "RGB", function(v)
+    _G.ESPData.selectedColor = v
+end})
+
+espTab:AddToggle({"Enable ESP", false, function(v)
+    _G.ESPData.espEnabled = v
+    if v then
+        _G.applyCurrentESP()
+    else
+        _G.clearAllESP()
+    end
+end})
+
+housesTab:AddSection({"Self House Features"})
+
+housesTab:AddButton({"Unban From All Houses", function()
+    notify("Unban", "Unbanned from all houses successfully!")
+    for i = 1, 37 do
+        local bannedBlockName = "BannedBlock" .. i
+        local bannedBlock = Workspace:FindFirstChild(bannedBlockName, true)
+        if bannedBlock then
+            pcall(function()
+                bannedBlock:Destroy()
+            end)
+        end
+    end
+    for _, house in pairs(Workspace:GetDescendants()) do
+        if house.Name:match("BannedBlock") then
+            pcall(function()
+                house:Destroy()
+            end)
+        end
+    end
+end})
+
+local houseRgbActive = false
+
+local function toggleHouseRGB(state)
+    houseRgbActive = state
+    if state then
+        task.spawn(function()
+            while houseRgbActive do
+                pcall(function()
+                    local h = (tick() % 5) / 5
+                    local color = Color3.fromHSV(h, 1, 1)
+                    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Hous1eColo1r"):FireServer(color)
+                end)
+                task.wait(0.2)
+            end
+        end)
+    end
+end
+
+housesTab:AddSection({"House RGB Options"})
+
+housesTab:AddToggle({"House RGB", false, function(state)
+    toggleHouseRGB(state)
+end})
+
+teleportsTab:AddSection({"Kenz Hub Teleports"})
+
+local teleportLocation = "Hill"
+
+local locations = {
+    ["Hill"] = Vector3.new(-348.64, 65.94, -458.08),
+    ["Lobby"] = Vector3.new(-26.17, 3.48, -0.93),
+    ["Bank"] = Vector3.new(1.99, 3.32, 236.65),
+    ["Hospital"] = Vector3.new(-303.2, 3.40, 13.74),
+    ["Town Hall"] = Vector3.new(-354.65, 7.32, -102.16),
+    ["Farm"] = Vector3.new(-766.41, 2.92, -61.10),
+    ["Market"] = Vector3.new(16.31, 3.32, -107.07),
+    ["Mall"] = Vector3.new(151.05, 3.52, -190.64),
+    ["Airport"] = Vector3.new(290.23, 4.32, 42.57),
+    ["Hotel"] = Vector3.new(159.10, 3.32, 164.97),
+    ["Beach 1"] = Vector3.new(55.69, 2.94, -1403.60),
+    ["Beach 2"] = Vector3.new(42.39, 2.94, 1336.14)
+}
+
+teleportsTab:AddDropdown({"Brookhaven Locations", {
+    "Hill", "Lobby", "Bank", "Hospital", "Town Hall", "Farm",
+    "Market", "Mall", "Airport", "Hotel", "Beach 1", "Beach 2"
+}, teleportLocation, function(value)
+    teleportLocation = value
+end})
+
+teleportsTab:AddButton({"Teleport", function()
+    local teleportPlayer = Players.LocalPlayer
+    if teleportPlayer.Character and teleportPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local humanoidRootPart = teleportPlayer.Character.HumanoidRootPart
+        local humanoid = teleportPlayer.Character:FindFirstChildOfClass("Humanoid")
+        local pos = locations[teleportLocation]
+        if pos then
+            pcall(function()
+                if humanoid then
+                    humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+                    humanoid.WalkSpeed = 0
+                end
+                humanoidRootPart.Anchored = true
+                humanoidRootPart.CFrame = CFrame.new(pos)
+                task.wait(0.4)
+                humanoidRootPart.Anchored = false
+                if humanoid then
+                    humanoid.WalkSpeed = 16
+                    humanoid:ChangeState(Enum.HumanoidStateType.Running)
+                end
+            end)
+        end
+    end
+end})
+
+fireTab:AddSection({"Fire Settings"})
+
+local fireColors = {
+    ["White"] = { id = "18637074370", code = "030FireWhite" },
+    ["Orange"] = { id = "18637025451", code = "031FireOrange" },
+    ["Green"] = { id = "18637078598", code = "032FireGreen" },
+    ["Blue"] = { id = "18637076370", code = "033FireBlue" },
+    ["Purple"] = { id = "18637070174", code = "034FirePurple" },
+    ["Black"] = { id = "18637072603", code = "035FireBlack" }
+}
+
+local smokeColors = {
+    ["White"] = { id = "18637791748", code = "080SmokeWhite" },
+    ["Yellow"] = { id = "18637800482", code = "081SmokeYellow" },
+    ["Orange"] = { id = "18637793920", code = "082SmokeOrange" },
+    ["Green"] = { id = "18637789299", code = "083SmokeGreen" },
+    ["Blue"] = { id = "18637803021", code = "084SmokeBlue" },
+    ["Purple"] = { id = "18637813360", code = "085SmokePurple" },
+    ["Red"] = { id = "18637796598", code = "086SmokeRed" },
+    ["Black"] = { id = "18637798529", code = "087SmokeBlack" }
+}
+
+_G.selectedColor = "White"
+_G.selectedSmokeColor = "White"
+
+fireTab:AddDropdown({"Fire Colors", {"White", "Orange", "Green", "Blue", "Purple", "Black"}, "White", function(Value)
+    _G.selectedColor = Value
+end})
+
+fireTab:AddButton({"Equip Fire Color", function()
+    local selectedColor = _G.selectedColor
+    if selectedColor and fireColors[selectedColor] then
+        local colorData = fireColors[selectedColor]
+        local args = { colorData.id, colorData.code }
+        
+        local success, _ = pcall(function()
+            ReplicatedStorage.Remotes.ApplyEmmiter:InvokeServer(unpack(args))
+        end)
+        
+        if success then
+            notify("Fire Equipped", "Successfully equipped: " .. selectedColor .. " Fire")
+        else
+            notify("Error", "Failed to equip fire.")
+        end
+    else
+        notify("Error", "Fire color not found!")
+    end
+end})
+
+fireTab:AddSection({"Smoke Settings"})
+
+fireTab:AddDropdown({"Smoke Colors", {"White", "Yellow", "Orange", "Green", "Blue", "Purple", "Red", "Black"}, "White", function(Value)
+    _G.selectedSmokeColor = Value
+end})
+
+fireTab:AddButton({"Equip Smoke Color", function()
+    local selectedSmokeColor = _G.selectedSmokeColor
+    if selectedSmokeColor and smokeColors[selectedSmokeColor] then
+        local colorData = smokeColors[selectedSmokeColor]
+        local args = { colorData.id, colorData.code }
+        
+        local success, _ = pcall(function()
+            ReplicatedStorage.Remotes.ApplyEmmiter:InvokeServer(unpack(args))
+        end)
+        
+        if success then
+            notify("Smoke Equipped", "Successfully equipped: " .. selectedSmokeColor .. " Smoke")
+        else
+            notify("Error", "Failed to equip smoke.")
+        end
+    else
+        notify("Error", "Smoke color not found!")
+    end
+end})
+
+worldTab:AddSection({"Kenz Hub Protection Scripts"})
+
+worldTab:AddButton({"Anti-Bug", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/Antglitch/refs/heads/main/Main.txt"))()
+end})
+
+worldTab:AddButton({"Anti-Audio Spam", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/antaudiosdefdps/refs/heads/main/Main.txt"))()
+end})
+
+local backupTables = {
+    Vehicles = {},
+    Canoes = {},
+    Jets = {},
+    Helis = {},
+    Balls = {}
+}
+
+local function AntiFlingLoop(name, getFolderFunc)
+    local active = false
+    task.spawn(function()
+        while true do
+            if active and LocalPlayer.Character then
+                local folder = getFolderFunc()
+                if folder then
+                    for _, item in ipairs(folder:GetChildren()) do
+                        local isMine = false
+                        if name == "Vehicles" then
+                            for _, seat in ipairs(item:GetDescendants()) do
+                                if (seat:IsA("VehicleSeat") or seat:IsA("Seat")) and seat.Occupant and seat.Occupant.Parent == LocalPlayer.Character then
+                                    isMine = true
+                                    break
+                                end
+                            end
+                        elseif name == "Canoes" then
+                            local owner = item:FindFirstChild("Owner")
+                            isMine = owner and owner.Value == LocalPlayer
+                        elseif name == "Jets" or name == "Helis" then
+                            isMine = item.Name == LocalPlayer.Name
+                        end
+                        if not isMine then
+                            table.insert(backupTables[name], item:Clone())
+                            item:Destroy()
+                        end
+                    end
+                end
+            end
+            task.wait(0.03)
+        end
+    end)
+    return function(state)
+        active = state
+        notify("Kenz Hub", name .. " protection " .. (state and "Enabled!" or "Disabled!"))
+        if not state then
+            for _, item in ipairs(backupTables[name]) do
+                local parentFolder = getFolderFunc()
+                if parentFolder then item.Parent = parentFolder end
+            end
+            backupTables[name] = {}
+        end
+    end
+end
+
+worldTab:AddToggle({"Anti-Fling Vehicles", false, AntiFlingLoop("Vehicles", function()
+    return Workspace:FindFirstChild("Vehicles")
+end)})
+
+worldTab:AddToggle({"Anti-Fling Canoes", false, AntiFlingLoop("Canoes", function()
+    local workspaceCom = Workspace:FindFirstChild("WorkspaceCom")
+    return workspaceCom and workspaceCom:FindFirstChild("001_CanoeStorage")
+end)})
+
+worldTab:AddToggle({"Anti-Fling Jets", false, AntiFlingLoop("Jets", function()
+    local folder = Workspace:FindFirstChild("WorkspaceCom")
+    if folder and folder:FindFirstChild("001_Airport") then
+        local storage = folder["001_Airport"]:FindFirstChild("AirportHanger")
+        if storage then return storage:FindFirstChild("001_JetStorage") and storage["001_JetStorage"]:FindFirstChild("JetAirport") end
+    end
+end)})
+
+worldTab:AddToggle({"Anti-Fling Helicopters", false, AntiFlingLoop("Helis", function()
+    local folder = Workspace:FindFirstChild("WorkspaceCom")
+    return folder and folder:FindFirstChild("001_HeliStorage") and folder["001_HeliStorage"]:FindFirstChild("PoliceStationHeli")
+end)})
+
+worldTab:AddToggle({"Anti-Fling Balls", false, AntiFlingLoop("Balls", function()
+    local folder = Workspace:FindFirstChild("WorkspaceCom")
+    return folder and folder:FindFirstChild("001_SoccerBalls")
+end)})
+
+local protectionAntiSitActive = false
+worldTab:AddToggle({"Anti-Sit", false, function(state)
+    protectionAntiSitActive = state
+    notify("Kenz Hub", "Anti-Sit " .. (state and "Enabled!" or "Disabled!"))
+    task.spawn(function()
+        while protectionAntiSitActive and LocalPlayer.Character do
+            local humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+                if humanoid:GetState() == Enum.HumanoidStateType.Seated then
+                    humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+                end
+            end
+            task.wait(0.05)
+        end
+        if not protectionAntiSitActive then
+            local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
+            end
+        end
+    end)
+end})
+
+worldTab:AddToggle({"Anti-Lag", false, function(state)
+    local dedupLock = {}
+    local IGNORED_PLAYER
+
+    if not state then return end
+
+    local function marcarIgnorado(player)
+        IGNORED_PLAYER = player
+    end
+
+    local function isTargetTool(inst)
+        return inst:IsA("Tool")
+    end
+
+    local function gatherTools(player)
+        local found = {}
+        local containers = {}
+        if player.Character then table.insert(containers, player.Character) end
+        local backpack = player:FindFirstChildOfClass("Backpack")
+        if backpack then table.insert(containers, backpack) end
+        local sg = player:FindFirstChild("StarterGear")
+        if sg then table.insert(containers, sg) end
+        for _, container in ipairs(containers) do
+            for _, child in ipairs(container:GetChildren()) do
+                if isTargetTool(child) then table.insert(found, child) end
+            end
+        end
+        return found
+    end
+
+    local function dedupePlayer(player)
+        if player == IGNORED_PLAYER then return end
+        if dedupLock[player] then return end
+        dedupLock[player] = true
+        local tools = gatherTools(player)
+        if #tools > 1 then
+            for i = 2, #tools do pcall(function() tools[i]:Destroy() end) end
+        end
+        dedupLock[player] = false
+    end
+
+    local function hookPlayer(player)
+        if not IGNORED_PLAYER then marcarIgnorado(player) end
+        task.defer(dedupePlayer, player)
+        local function setupChar(char)
+            task.delay(0.5, function() dedupePlayer(player) end)
+            char.ChildAdded:Connect(function(child)
+                if isTargetTool(child) then task.delay(0.1, function() dedupePlayer(player) end) end
+            end)
+        end
+        if player.Character then setupChar(player.Character) end
+        player.CharacterAdded:Connect(setupChar)
+        local backpack = player:WaitForChild("Backpack", 10)
+        if backpack then
+            backpack.ChildAdded:Connect(function(child)
+                if isTargetTool(child) then task.delay(0.1, function() dedupePlayer(player) end) end
+            end)
+        end
+        local sg = player:FindFirstChild("StarterGear") or player:WaitForChild("StarterGear", 10)
+        if sg then
+            sg.ChildAdded:Connect(function(child)
+                if isTargetTool(child) then task.delay(0.1, function() dedupePlayer(player) end) end
+            end)
+        end
+    end
+
+    Players.PlayerAdded:Connect(hookPlayer)
+    for _, plr in ipairs(Players:GetPlayers()) do hookPlayer(plr) end
+
+    task.spawn(function()
+        while state do
+            for _, plr in ipairs(Players:GetPlayers()) do dedupePlayer(plr) end
+            task.wait(2)
+        end
+    end)
+end})
+
+worldTab:AddToggle({"Anti-Fling Doors", false, function(state)
+    if not _G.hiddenDoors then _G.hiddenDoors = {} end
+    if state then
+        _G.hiddenDoors = {}
+        for _, obj in ipairs(Workspace:GetDescendants()) do
+            if obj:IsA("BasePart") and obj.Name:lower():find("door") then
+                local doorData = {
+                    door = obj,
+                    originalTransparency = obj.Transparency,
+                    originalCanCollide = obj.CanCollide,
+                    originalCastShadow = obj.CastShadow
+                }
+                obj.Transparency = 1
+                obj.CanCollide = false
+                obj.CastShadow = false
+                for _, child in ipairs(obj:GetChildren()) do
+                    if child:IsA("BasePart") then
+                        child.Transparency = 1
+                        child.CanCollide = false
+                    elseif child:IsA("SurfaceGui") or child:IsA("BillboardGui") then
+                        child.Enabled = false
+                    end
+                end
+                table.insert(_G.hiddenDoors, doorData)
+            end
+        end
+        notify("Kenz Hub", #_G.hiddenDoors .. " doors have been hidden!")
+    else
+        for _, doorData in ipairs(_G.hiddenDoors or {}) do
+            if doorData.door and doorData.door.Parent then
+                doorData.door.Transparency = doorData.originalTransparency
+                doorData.door.CanCollide = doorData.originalCanCollide
+                doorData.door.CastShadow = doorData.originalCastShadow
+                for _, child in ipairs(doorData.door:GetChildren()) do
+                    if child:IsA("BasePart") then
+                        child.Transparency = 0
+                        child.CanCollide = true
+                    elseif child:IsA("SurfaceGui") or child:IsA("BillboardGui") then
+                        child.Enabled = true
+                    end
+                end
+            end
+        end
+        notify("Kenz Hub", #(_G.hiddenDoors or {}) .. " doors restored!")
+        _G.hiddenDoors = {}
+    end
+end})
+
+worldTab:AddToggle({"Anti-Fling Block", false, function(state)
+    if not _G.playerDoorData then 
+        _G.playerDoorData = {}
+    end
+    
+    local function findPlayerDoor()
+        local lotsFolder = Workspace:FindFirstChild("001_Lots")
+        if not lotsFolder then 
+            return nil 
+        end
+        
+        for _, lot in pairs(lotsFolder:GetChildren()) do
+            if lot:FindFirstChild("HousePickedByPlayer") then
+                local houseModel = lot.HousePickedByPlayer:FindFirstChild("HouseModel")
+                if houseModel then
+                    local model = houseModel:FindFirstChild("Model")
+                    if model then
+                        local noLockDoor = model:FindFirstChild("NoLockHouseDoor")
+                        if noLockDoor then
+                            local door = noLockDoor:FindFirstChild("Door")
+                            if door then
+                                return door, noLockDoor
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        return nil
+    end
+    
+    if state then
+        local door, parent = findPlayerDoor()
+        if door then
+            _G.playerDoorData = {
+                door = door,
+                parent = parent,
+                name = door.Name
+            }
+            door.Parent = nil
+        end
+    else
+        if _G.playerDoorData and _G.playerDoorData.door and _G.playerDoorData.parent then
+            _G.playerDoorData.door.Parent = _G.playerDoorData.parent
+            _G.playerDoorData = {}
+        end
+    end
+end})
+
+itemsTab:AddSection({"Items"})
+
+local function getTool(toolName)
+    local args = {
+        "AcceptedToolToServer",
+        toolName,
+        LocalPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end
+
+itemsTab:AddButton({"Snowboard", function() getTool("Snowboard") end})
+itemsTab:AddButton({"Money Gun", function() getTool("MoneyGun") end})
+itemsTab:AddButton({"Skis", function() getTool("Skis") end})
+itemsTab:AddButton({"Crystals", function() getTool("Crystals") end})
+itemsTab:AddButton({"Egg Launcher", function() getTool("EggLauncher") end})
+itemsTab:AddButton({"Cannon", function() getTool("Cannon") end})
+itemsTab:AddButton({"Chainsaw", function() getTool("Chainsaw") end})
+itemsTab:AddButton({"Couch", function() getTool("Couch") end})
+itemsTab:AddButton({"Uranium Rod", function() getTool("UraniumRod") end})
+itemsTab:AddButton({"Golden Basketball", function() getTool("GoldenBasketball") end})
+itemsTab:AddButton({"Glider", function() getTool("Glider") end})
+itemsTab:AddButton({"Candy Basket", function() getTool("CandyBasket") end})
+
+rgbTab:AddSection({"RGB Features"})
+
+local rgbSpeed = 3
+
+local function getRainbowColor(multiplier)
+    local speedMultiplier = (multiplier or 1) * (rgbSpeed / 3)
+    return Color3.fromHSV((tick() * speedMultiplier * 0.5) % 1, 1, 1)
+end
+
+rgbTab:AddSlider({"RGB Speed", 1, 10, 1, 3, function(value)
+    rgbSpeed = value
+end})
+
+local nameBioRGBActive = false
+rgbTab:AddToggle({"Name + Bio RGB", false, function(state)
+    nameBioRGBActive = state
+    if state then
+        task.spawn(function()
+            while nameBioRGBActive and LocalPlayer.Character do
+                local color = getRainbowColor(1)
+                local args1 = { "PickingRPNameColor", color }
+                local args2 = { "PickingRPBioColor", color }
+                pcall(function()
+                    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args1))
+                    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args2))
+                end)
+                task.wait(math.max(0.03, 0.2 / (rgbSpeed / 3)))
+            end
+        end)
+    end
+end})
+
+local rgbBicycleActive = false
+rgbTab:AddToggle({"RGB Bicycle", false, function(Value)
+    rgbBicycleActive = Value
+    if rgbBicycleActive then
+        task.spawn(function()
+            while rgbBicycleActive do
+                local args = { "NoMotorColor", getRainbowColor(1) }
+                pcall(function()
+                    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sCa1r"):FireServer(unpack(args))
+                end)
+                task.wait(math.max(0.03, 0.2 / (rgbSpeed / 3)))
+            end
+        end)
+    end
+end})
+
+local rgbCharacterActive = false
+local characterColors = { "Bright red", "Lime green", "Bright blue", "Bright yellow", "Bright cyan", "Hot pink", "Royal purple" }
+
+rgbTab:AddToggle({"RGB Character", false, function(value)
+    rgbCharacterActive = value
+    if rgbCharacterActive then
+        task.spawn(function()
+            while rgbCharacterActive do
+                for _, color in ipairs(characterColors) do
+                    if not rgbCharacterActive then break end
+                    pcall(function()
+                        ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeBodyColor"):FireServer(color)
+                    end)
+                    task.wait(math.max(0.05, 0.5 / (rgbSpeed / 3)))
+                end
+            end
+        end)
+    end
+end})
+
+local rgbHairActive = false
+local hairColors = {
+    Color3.new(1, 1, 0), Color3.new(0, 0, 1), Color3.new(1, 0, 1), Color3.new(1, 1, 1),
+    Color3.new(0, 1, 0), Color3.new(0.5, 0, 1), Color3.new(1, 0.647, 0), Color3.new(0, 1, 1)
+}
+
+rgbTab:AddToggle({"RGB Hair", false, function(value)
+    rgbHairActive = value
+    if rgbHairActive then
+        task.spawn(function()
+            local i = 1
+            while rgbHairActive do
+                local args = { "ChangeHairColor2", hairColors[i] }
+                pcall(function()
+                    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Max1y"):FireServer(unpack(args))
+                end)
+                task.wait(math.max(0.03, 0.2 / (rgbSpeed / 3)))
+                i = i % #hairColors + 1
+            end
+        end)
+    end
+end})
+
+childTab:AddSection({"Child Options"})
+
+local chasingplayer = nil
+
+local function getChildPlayerNamesList()
+    local playerNames = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player.Name ~= LocalPlayer.Name then
+            table.insert(playerNames, player.Name)
+        end
+    end
+    return #playerNames > 0 and playerNames or {"No Players"}
+end
+
+local childDropdown = childTab:AddDropdown({"Select a player to chase", getChildPlayerNamesList(), "", function(selected)
+    if Players:FindFirstChild(selected) then
+        chasingplayer = selected
+    else
+        chasingplayer = nil
+    end
+end})
+
+childTab:AddButton({"Update Player List", function()
+    if childDropdown and childDropdown.Set then
+        childDropdown:Set(getChildPlayerNamesList())
+    end
+end})
+
+childTab:AddButton({"Send Child", function()
+    if not chasingplayer then return end
+    
+    notify("Child Actions", "Sending child...")
+
+    if not Workspace:FindFirstChild(LocalPlayer.Name) or not Workspace[LocalPlayer.Name]:FindFirstChild("FollowCharacter") then
+        local args = { "CharacterFollowSpawnPlayer", "BabyBoy" }
+        pcall(function()
+            ReplicatedStorage.RE:FindFirstChild("1Bab1yFollo1w"):FireServer(unpack(args))
+        end)
+    end
+    
+    task.wait(0.2)
+    
+    if Workspace:FindFirstChild(LocalPlayer.Name) then
+        for _, v in pairs(Workspace[LocalPlayer.Name]:GetChildren()) do
+            if v:IsA("BasePart") then
+                v.CanCollide = true
+            end
+        end
+    end
+
+    local target = chasingplayer
+    if Workspace:FindFirstChild(target) and Workspace:FindFirstChild(LocalPlayer.Name) and Workspace[LocalPlayer.Name]:FindFirstChild("FollowCharacter") then
+        Workspace[LocalPlayer.Name].FollowCharacter.Parent = Workspace[target]
+
+        if rawget(getgenv(), "ChildRunService") then return end
+
+        getgenv().ChildRunService = RunService.Heartbeat:Connect(function()
+            local targetWorkspace = Workspace:FindFirstChild(target)
+            if not targetWorkspace then return end
+            
+            local followCharacter = targetWorkspace:FindFirstChild("FollowCharacter")
+            if followCharacter and followCharacter:FindFirstChild("Torso") and followCharacter.Torso:FindFirstChild("BodyPosition") then
+                local humanoidRootPart = targetWorkspace:FindFirstChild("HumanoidRootPart")
+                if humanoidRootPart then
+                    followCharacter.Torso.BodyPosition.Position = humanoidRootPart.Position - (humanoidRootPart.CFrame.LookVector * 3)
+                    followCharacter.Torso.BodyGyro.CFrame = humanoidRootPart.CFrame
+                end
+            end
+        end)
+    end
+end})
+
+childTab:AddButton({"Return Child", function()
+    if rawget(getgenv(), "ChildRunService") then
+        getgenv().ChildRunService:Disconnect()
+        getgenv().ChildRunService = nil
+    end
+
+    local args = { "DeleteFollowCharacter" }
+    pcall(function()
+        ReplicatedStorage.RE:FindFirstChild("1Bab1yFollo1w"):FireServer(unpack(args))
+    end)
+
+    local args1 = { "CharacterFollowSpawnPlayer", "BabyBoy" }
+    pcall(function()
+        ReplicatedStorage.RE:FindFirstChild("1Bab1yFollo1w"):FireServer(unpack(args1))
+    end)
+end})
+
+childTab:AddToggle({"Spectate Player", false, function(Value)
+    local Camera = Workspace.CurrentCamera
+
+    if Value then
+        if not chasingplayer then return end
+
+        if not rawget(getgenv(), "ChildCameraConnection") then
+            getgenv().ChildCameraConnection = RunService.Heartbeat:Connect(function()
+                local targetPlayer = Players:FindFirstChild(chasingplayer)
+                if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+                    Camera.CameraSubject = targetPlayer.Character.Humanoid
+                else
+                    if rawget(getgenv(), "ChildCameraConnection") then
+                        getgenv().ChildCameraConnection:Disconnect()
+                        getgenv().ChildCameraConnection = nil
+                    end
+                    Camera.CameraSubject = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") or nil
+                end
+            end)
+        end
+    else
+        if rawget(getgenv(), "ChildCameraConnection") then
+            getgenv().ChildCameraConnection:Disconnect()
+            getgenv().ChildCameraConnection = nil
+        end
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            Camera.CameraSubject = LocalPlayer.Character.Humanoid
+        end
+    end
+end})
