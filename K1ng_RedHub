@@ -21,7 +21,7 @@ local function notify(title, text)
     end)
 end
 
-notify("Kenz Hub", "Thank you for using Kenz Hub | script di remake oleh: D_ForDeath1")
+notify("Kenz Hub", "Thank you for using Kenz Hub")
 
 local Window = Libary:MakeWindow({
     Title = "Kenz Hub | Brookhaven RP 🏡",
@@ -31,7 +31,7 @@ local Window = Libary:MakeWindow({
 })
 
 Window:AddMinimizeButton({
-    Button = { Image = "rbxassetid://97164863851802", BackgroundTransparency = 0 },
+    Button = { Image = "rbxassetid://113406531660767", BackgroundTransparency = 0 },
     Corner = { CornerRadius = UDim.new(35, 1) },
 })
 
