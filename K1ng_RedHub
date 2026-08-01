@@ -1245,7 +1245,7 @@ teleportsTab:AddButton({"Teleport", function()
     end
 end})
 
-fireTab:AddSection({"Fire & Smoke"})
+fireTab:AddSection({"Fire"})
 
 local fireColors = {
     ["White"] = { id = "18637074370", code = "030FireWhite" },
