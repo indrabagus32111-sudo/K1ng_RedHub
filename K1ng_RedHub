@@ -1015,7 +1015,7 @@ local function updateUI(player, char)
         empty.Name = "EmptyLabel"
         empty.Size = UDim2.new(1, 0, 0, 20)
         empty.BackgroundTransparency = 1
-        empty.Text = "Tidak ada tool"
+        empty.Text = "No tools"
         empty.TextColor3 = Color3.fromRGB(120, 120, 130)
         empty.TextSize = 12
         empty.Font = Enum.Font.SourceSansItalic
@@ -1090,7 +1090,7 @@ espTab:AddToggle({"ESP Item", false, function(Value)
     end
 end})
 
-housesTab:AddSection({"Self House Features"})
+housesTab:AddSection({"House"})
 
 housesTab:AddButton({"Unban From All Houses", function()
     notify("Unban", "Unbanned from all houses successfully!")
@@ -1194,7 +1194,7 @@ housesTab:AddButton({"Teleport to House", function()
     end
 end})
 
-teleportsTab:AddSection({"Kenz Hub Teleports"})
+teleportsTab:AddSection({"Teleports"})
 
 local teleportLocation = "Hill"
 
@@ -1245,7 +1245,7 @@ teleportsTab:AddButton({"Teleport", function()
     end
 end})
 
-fireTab:AddSection({"Fire"})
+fireTab:AddSection({"Fire & Smoke"})
 
 local fireColors = {
     ["White"] = { id = "18637074370", code = "030FireWhite" },
@@ -1651,7 +1651,7 @@ itemsTab:AddButton({"Golden Basketball", function() getTool("GoldenBasketball") 
 itemsTab:AddButton({"Glider", function() getTool("Glider") end})
 itemsTab:AddButton({"Candy Basket", function() getTool("CandyBasket") end})
 
-rgbTab:AddSection({"RGB Features"})
+rgbTab:AddSection({"RGB Speed"})
 
 local rgbSpeed = 3
 
