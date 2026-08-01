@@ -573,7 +573,7 @@ avatarTab:AddButton({"Possessed-Horror", function()
     ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
 end})
 
-espTab:AddSection({"ESP Settings"})
+espTab:AddSection({"ESP Player"})
 
 _G.ESPData = _G.ESPData or {
     espEnabled = false,
@@ -779,6 +779,8 @@ espTab:AddToggle({"Enable ESP", false, function(v)
         _G.clearAllESP()
     end
 end})
+
+espTab:AddSection({"ESP Item Player"})
 
 local ts = game:GetService("TweenService")
 local rs = game:GetService("RunService")
