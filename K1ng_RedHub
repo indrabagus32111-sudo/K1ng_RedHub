@@ -839,6 +839,49 @@ housesTab:AddToggle({"House RGB", false, function(Value)
     end
 end})
 
+local SelectHouse = "..."
+
+local function getHouseList()
+    local houses = {}
+    local lotsFolder = Workspace:FindFirstChild("001_Lots")
+    if lotsFolder then
+        for _, lot in pairs(lotsFolder:GetChildren()) do
+            table.insert(houses, lot.Name)
+        end
+    end
+    return #houses > 0 and houses or {"No Houses Found"}
+end
+
+local houseDropdown = housesTab:AddDropdown({"Select House", getHouseList(), "...", function(Value)
+    SelectHouse = Value
+    pcall(function()
+        if NoclipDoor then
+            NoclipDoor:Set(false)
+        end
+    end)
+end})
+
+local function DropdownHouseUpdate()
+    local houseTable = getHouseList()
+    if houseDropdown and houseDropdown.Set then
+        houseDropdown:Set(houseTable)
+    end
+end
+
+housesTab:AddButton({"Refresh House List", function()
+    pcall(DropdownHouseUpdate)
+end})
+
+housesTab:AddButton({"Teleport to House", function()
+    local lotsFolder = Workspace:FindFirstChild("001_Lots")
+    if lotsFolder then
+        local House = lotsFolder:FindFirstChild(tostring(SelectHouse))
+        if House and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(House.WorldPivot.Position)
+        end
+    end
+end})
+
 teleportsTab:AddSection({"Kenz Hub Teleports"})
 
 local teleportLocation = "Hill"
