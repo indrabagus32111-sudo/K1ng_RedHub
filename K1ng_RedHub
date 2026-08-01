@@ -820,7 +820,7 @@ local function toggleHouseRGB(state)
     end
 end
 
-housesTab:AddSection({"House RGB Options"})
+housesTab:AddSection({"House RGB"})
 
 housesTab:AddToggle({"House RGB", false, function(Value)
     getgenv().rgbCasa = Value
@@ -838,6 +838,8 @@ housesTab:AddToggle({"House RGB", false, function(Value)
         end)
     end
 end})
+
+housesTab:AddSection({"teleport to player's house"})
 
 local SelectHouse = "..."
 
