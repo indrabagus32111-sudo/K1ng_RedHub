@@ -695,72 +695,61 @@ local function createLineESP(player)
     _G.ESPData.lines[player] = l
 end
 
-local function setupPlayerESP(p)
-    if not _G.ESPData.espEnabled then return end
-    if _G.ESPData.espType == "Name + Age" then
-        createNameESP(p)
-    elseif _G.ESPData.espType == "Body (Highlight)" then
-        createHighlightESP(p)
-    elseif _G.ESPData.espType == "Tracer Lines" then
-        createLineESP(p)
-    end
-end
-
 _G.applyCurrentESP = function()
     _G.clearAllESP()
     if not _G.ESPData.espEnabled then return end
-    for _, p in pairs(Players:GetPlayers()) do
-        setupPlayerESP(p)
-    end
-    table.insert(_G.ESPData.connections,
-        Players.PlayerAdded:Connect(function(p)
-            table.insert(_G.ESPData.connections,
-                p.CharacterAdded:Connect(function(char)
-                    char:WaitForChild("Head", 5)
-                    if _G.ESPData.espEnabled then
-                        setupPlayerESP(p)
-                    end
-                end)
-            )
-        end)
-    )
-    for _, p in pairs(Players:GetPlayers()) do
-        table.insert(_G.ESPData.connections,
-            p.CharacterAdded:Connect(function(char)
-                char:WaitForChild("Head", 5)
-                if _G.ESPData.espEnabled then
-                    setupPlayerESP(p)
-                end
-            end)
-        )
-    end
+    
     table.insert(_G.ESPData.connections,
         RunService.RenderStepped:Connect(function()
             if not _G.ESPData.espEnabled then return end
             local color = getESPColor()
             local Camera = workspace.CurrentCamera
-            if _G.ESPData.espType == "Name + Age" then
-                for _, gui in pairs(_G.ESPData.billboardGuis) do
-                    if gui:FindFirstChildOfClass("TextLabel") then
-                        gui.TextLabel.TextColor3 = color
-                    end
-                end
-            elseif _G.ESPData.espType == "Body (Highlight)" then
-                for _, h in pairs(_G.ESPData.highlights) do
-                    h.FillColor = color
-                end
-            elseif _G.ESPData.espType == "Tracer Lines" then
-                for p, l in pairs(_G.ESPData.lines) do
-                    if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                        local pos, on = Camera:WorldToViewportPoint(p.Character.HumanoidRootPart.Position)
-                        l.Visible = on
-                        if on then
-                            l.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
-                            l.To = Vector2.new(pos.X, pos.Y)
-                            l.Color = color
+            
+            for _, p in pairs(Players:GetPlayers()) do
+                if p ~= Players.LocalPlayer then
+                    local char = p.Character
+                    if char then
+                        if _G.ESPData.espType == "Name + Age" then
+                            local head = char:FindFirstChild("Head")
+                            if head then
+                                local gui = _G.ESPData.billboardGuis[p]
+                                if not gui or gui.Adornee ~= head or not gui.Parent then
+                                    createNameESP(p)
+                                else
+                                    if gui:FindFirstChildOfClass("TextLabel") then
+                                        gui.TextLabel.TextColor3 = color
+                                    end
+                                end
+                            end
+                        elseif _G.ESPData.espType == "Body (Highlight)" then
+                            local h = _G.ESPData.highlights[p]
+                            if not h or h.Adornee ~= char or not h.Parent then
+                                createHighlightESP(p)
+                            else
+                                h.FillColor = color
+                            end
+                        elseif _G.ESPData.espType == "Tracer Lines" then
+                            local l = _G.ESPData.lines[p]
+                            if not l then
+                                createLineESP(p)
+                                l = _G.ESPData.lines[p]
+                            end
+                            if l and char:FindFirstChild("HumanoidRootPart") then
+                                local pos, on = Camera:WorldToViewportPoint(char.HumanoidRootPart.Position)
+                                l.Visible = on
+                                if on then
+                                    l.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
+                                    l.To = Vector2.new(pos.X, pos.Y)
+                                    l.Color = color
+                                end
+                            elseif l then
+                                l.Visible = false
+                            end
                         end
                     else
-                        l.Visible = false
+                        if _G.ESPData.espType == "Tracer Lines" and _G.ESPData.lines[p] then
+                            _G.ESPData.lines[p].Visible = false
+                        end
                     end
                 end
             end
@@ -944,7 +933,7 @@ local function updateUI(player, char)
     if equipped then
         count = count + 1
         local icon = Instance.new("ImageButton")
-        icon.Name = equipped.Name .. " (Equipped)"
+        icon.Name = equipped.Name
         icon.BackgroundTransparency = 1
         icon.Image = equipped.TextureId or ""
         icon.ScaleType = Enum.ScaleType.Fit
@@ -956,7 +945,7 @@ local function updateUI(player, char)
         border.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
         border.Parent = icon
         icon.MouseEnter:Connect(function()
-            scroller.Tooltip.Text = equipped.Name .. " (dipegang)"
+            scroller.Tooltip.Text = equipped.Name
             scroller.Tooltip.Visible = true
         end)
         icon.MouseLeave:Connect(function()
@@ -1067,6 +1056,30 @@ espTab:AddToggle({"ESP Item", false, function(Value)
 end})
 
 housesTab:AddSection({"House"})
+
+local antiPropActive = false
+housesTab:AddToggle({"Anti prop", false, function(Value)
+    antiPropActive = Value
+    if antiPropActive then
+        task.spawn(function()
+            while antiPropActive do
+                pcall(function()
+                    local lots = workspace:FindFirstChild("001_Lots")
+                    if lots then
+                        local myHouse = lots:FindFirstChild(LocalPlayer.Name .. "House")
+                        if myHouse and myHouse:FindFirstChild("HousePickedByPlayer") and myHouse.HousePickedByPlayer:FindFirstChild("HouseModel") then
+                            local clearEvent = myHouse.HousePickedByPlayer.HouseModel:FindFirstChild("Permissions:ClearProps")
+                            if clearEvent then
+                                local Result = table.pack(clearEvent:InvokeServer(nil))
+                            end
+                        end
+                    end
+                end)
+                task.wait(0.5)
+            end
+        end)
+    end
+end})
 
 housesTab:AddButton({"Unban From All Houses", function()
     notify("Unban", "Unbanned from all houses successfully!")
