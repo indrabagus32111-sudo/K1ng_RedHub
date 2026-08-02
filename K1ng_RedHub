@@ -166,29 +166,41 @@ end})
 
 playerTab:AddSection({"Movement Modifiers"})
 
-playerTab:AddSlider({"Speed Player", 0, 500, 1, 50, function(value)
-    local character = LocalPlayer.Character
-    if character then
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            humanoid.WalkSpeed = value
+local readySpeed = false
+playerTab:AddSlider({"Speed Player", 0, 500, 1, 16, function(value)
+    if readySpeed then
+        local character = LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.WalkSpeed = value
+            end
         end
     end
 end})
+readySpeed = true
 
+local readyJump = false
 playerTab:AddSlider({"Jumppower", 0, 500, 1, 50, function(value)
-    local character = LocalPlayer.Character
-    if character then
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            humanoid.JumpPower = value
+    if readyJump then
+        local character = LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.JumpPower = value
+            end
         end
     end
 end})
+readyJump = true
 
+local readyGrav = false
 playerTab:AddSlider({"Gravity", 0, 500, 1, 196, function(value)
-    Workspace.Gravity = value
+    if readyGrav then
+        Workspace.Gravity = value
+    end
 end})
+readyGrav = true
 
 local InfiniteJumpEnabled = false
 UserInputService.JumpRequest:Connect(function()
