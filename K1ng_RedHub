@@ -597,6 +597,12 @@ _G.ESPData = _G.ESPData or {
     connections = {}
 }
 
+local function getParentGUI()
+    local success, coreGui = pcall(function() return game:GetService("CoreGui") end)
+    if success and coreGui then return coreGui end
+    return Players.LocalPlayer:FindFirstChild("PlayerGui")
+end
+
 local function getESPColor()
     local colors = {
         RGB = function()
@@ -612,7 +618,6 @@ local function getESPColor()
         Pink = Color3.fromRGB(255, 105, 180),
         Purple = Color3.fromRGB(128, 0, 128)
     }
-
     local c = colors[_G.ESPData.selectedColor]
     return type(c) == "function" and c() or c or Color3.new(1, 1, 1)
 end
@@ -630,7 +635,6 @@ _G.clearAllESP = function()
     for _, c in pairs(_G.ESPData.connections) do
         pcall(function() c:Disconnect() end)
     end
-
     _G.ESPData.billboardGuis = {}
     _G.ESPData.highlights = {}
     _G.ESPData.lines = {}
@@ -639,19 +643,19 @@ end
 
 local function createNameESP(player)
     if player == Players.LocalPlayer then return end
-    if not player.Character or not player.Character:FindFirstChild("Head") then return end
-
-    local head = player.Character.Head
+    if not player.Character then return end
+    local head = player.Character:FindFirstChild("Head")
+    if not head then return end
     if _G.ESPData.billboardGuis[player] then
-        _G.ESPData.billboardGuis[player]:Destroy()
+        pcall(function() _G.ESPData.billboardGuis[player]:Destroy() end)
     end
-
-    local gui = Instance.new("BillboardGui", head)
+    local gui = Instance.new("BillboardGui")
     gui.Name = "ESP_Billboard"
     gui.Size = UDim2.new(0, 200, 0, 50)
     gui.StudsOffset = Vector3.new(0, 3, 0)
     gui.AlwaysOnTop = true
-
+    gui.Adornee = head
+    gui.Parent = getParentGUI()
     local txt = Instance.new("TextLabel", gui)
     txt.Size = UDim2.new(1, 0, 1, 0)
     txt.BackgroundTransparency = 1
@@ -660,24 +664,22 @@ local function createNameESP(player)
     txt.TextSize = 14
     txt.Text = player.Name .. " | " .. player.AccountAge .. " days"
     txt.TextColor3 = getESPColor()
-
     _G.ESPData.billboardGuis[player] = gui
 end
 
 local function createHighlightESP(player)
     if player == Players.LocalPlayer then return end
     if not player.Character then return end
-
     if _G.ESPData.highlights[player] then
-        _G.ESPData.highlights[player]:Destroy()
+        pcall(function() _G.ESPData.highlights[player]:Destroy() end)
     end
-
-    local h = Instance.new("Highlight", player.Character)
+    local h = Instance.new("Highlight")
+    h.Adornee = player.Character
     h.FillColor = getESPColor()
     h.FillTransparency = 0.5
     h.OutlineTransparency = 0
     h.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-
+    h.Parent = getParentGUI()
     _G.ESPData.highlights[player] = h
 end
 
@@ -686,73 +688,67 @@ local function createLineESP(player)
     if _G.ESPData.lines[player] then
         pcall(function() _G.ESPData.lines[player]:Remove() end)
     end
-
     local l = Drawing.new("Line")
     l.Thickness = 2
     l.Transparency = 1
     l.Visible = false
-
     _G.ESPData.lines[player] = l
+end
+
+local function setupPlayerESP(p)
+    if not _G.ESPData.espEnabled then return end
+    if _G.ESPData.espType == "Name + Age" then
+        createNameESP(p)
+    elseif _G.ESPData.espType == "Body (Highlight)" then
+        createHighlightESP(p)
+    elseif _G.ESPData.espType == "Tracer Lines" then
+        createLineESP(p)
+    end
 end
 
 _G.applyCurrentESP = function()
     _G.clearAllESP()
     if not _G.ESPData.espEnabled then return end
-
-    local function setupPlayerESP(p)
-        if _G.ESPData.espType == "Name + Age" then
-            createNameESP(p)
-        elseif _G.ESPData.espType == "Body (Highlight)" then
-            createHighlightESP(p)
-        elseif _G.ESPData.espType == "Tracer Lines" then
-            createLineESP(p)
-        end
-    end
-
     for _, p in pairs(Players:GetPlayers()) do
         setupPlayerESP(p)
     end
-
     table.insert(_G.ESPData.connections,
         Players.PlayerAdded:Connect(function(p)
-            p.CharacterAdded:Connect(function()
-                task.wait(0.5)
-                if _G.ESPData.espEnabled then
-                    setupPlayerESP(p)
-                end
-            end)
+            table.insert(_G.ESPData.connections,
+                p.CharacterAdded:Connect(function(char)
+                    char:WaitForChild("Head", 5)
+                    if _G.ESPData.espEnabled then
+                        setupPlayerESP(p)
+                    end
+                end)
+            )
         end)
     )
-
     for _, p in pairs(Players:GetPlayers()) do
         table.insert(_G.ESPData.connections,
-            p.CharacterAdded:Connect(function()
-                task.wait(0.5)
+            p.CharacterAdded:Connect(function(char)
+                char:WaitForChild("Head", 5)
                 if _G.ESPData.espEnabled then
                     setupPlayerESP(p)
                 end
             end)
         )
     end
-
     table.insert(_G.ESPData.connections,
         RunService.RenderStepped:Connect(function()
             if not _G.ESPData.espEnabled then return end
             local color = getESPColor()
             local Camera = workspace.CurrentCamera
-
             if _G.ESPData.espType == "Name + Age" then
                 for _, gui in pairs(_G.ESPData.billboardGuis) do
                     if gui:FindFirstChildOfClass("TextLabel") then
                         gui.TextLabel.TextColor3 = color
                     end
                 end
-
             elseif _G.ESPData.espType == "Body (Highlight)" then
                 for _, h in pairs(_G.ESPData.highlights) do
                     h.FillColor = color
                 end
-
             elseif _G.ESPData.espType == "Tracer Lines" then
                 for p, l in pairs(_G.ESPData.lines) do
                     if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
@@ -832,34 +828,28 @@ local function animate(state, direction)
         for _, t in ipairs(state.tweens) do t:Cancel() end
     end
     state.tweens = {}
-
     local goalTrans = (direction == "in") and 0.18 or 1
     local goalSize  = (direction == "in") and UDim2.fromScale(1,1) or UDim2.fromScale(0.82,0.82)
-
     local tween = ts:Create(state.main, TweenInfo.new(CONFIG.animTime, Enum.EasingStyle.Quint), {
         BackgroundTransparency = goalTrans
     })
     local sizeTween = ts:Create(state.root, TweenInfo.new(CONFIG.animTime, Enum.EasingStyle.Quint), {
         Size = goalSize
     })
-
     table.insert(state.tweens, tween)
     table.insert(state.tweens, sizeTween)
     tween:Play()
     sizeTween:Play()
-
     return sizeTween
 end
 
 local function createElements(player)
     local state = { currentState = "hidden", tweens = {} }
-    
     state.gui = Instance.new("BillboardGui")
     state.gui.Name = "PlayerInfo"
     state.gui.AlwaysOnTop = true
     state.gui.Size = UDim2.fromOffset(200, 90)
     state.gui.StudsOffset = Vector3.new(0, 2.4, 0)
-
     state.root = Instance.new("Frame", state.gui)
     state.root.Name = "Root"
     state.root.BackgroundTransparency = 1
@@ -867,22 +857,18 @@ local function createElements(player)
     state.root.AnchorPoint = Vector2.new(0.5, 0.5)
     state.root.Position = UDim2.fromScale(0.5, 0.5)
     state.root.Size = UDim2.fromScale(0.82, 0.82)
-
     state.main = Instance.new("Frame", state.root)
     state.main.Name = "Main"
     state.main.Size = UDim2.fromScale(1, 1)
     state.main.BackgroundColor3 = Color3.fromRGB(30, 32, 38)
     state.main.BackgroundTransparency = 1
-    
     Instance.new("UICorner", state.main).CornerRadius = UDim.new(0, 8)
     Instance.new("UIStroke", state.main).Color = Color3.fromRGB(10, 11, 13)
-
     local platformIcon = Instance.new("ImageLabel", state.main)
     platformIcon.Name = "PlatformIcon"
     platformIcon.Size = UDim2.fromOffset(16, 16)
     platformIcon.Position = UDim2.new(0, 6, 0, 6)
     platformIcon.BackgroundTransparency = 1
-
     local healthBar = Instance.new("Frame", state.main)
     healthBar.Name = "HealthBar"
     healthBar.Size = UDim2.new(0.82, 0, 0, 8)
@@ -890,13 +876,11 @@ local function createElements(player)
     healthBar.AnchorPoint = Vector2.new(0.5, 0)
     healthBar.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
     Instance.new("UICorner", healthBar).CornerRadius = UDim.new(1, 0)
-
     local healthFill = Instance.new("Frame", healthBar)
     healthFill.Name = "Fill"
     healthFill.Size = UDim2.fromScale(1, 1)
     healthFill.BackgroundColor3 = Color3.fromRGB(60, 200, 100)
     Instance.new("UICorner", healthFill).CornerRadius = UDim.new(1, 0)
-
     local scroller = Instance.new("ScrollingFrame", state.main)
     scroller.Name = "Backpack"
     scroller.Size = UDim2.new(1, -12, 1, -26)
@@ -908,18 +892,15 @@ local function createElements(player)
     scroller.ScrollBarImageColor3 = Color3.fromRGB(80, 80, 90)
     scroller.AutomaticCanvasSize = Enum.AutomaticSize.Y
     scroller.CanvasSize = UDim2.new(0, 0, 0, 0)
-
     scroller.MouseEnter:Connect(function() BillboardState.activeScroller = scroller end)
     scroller.MouseLeave:Connect(function()
         if BillboardState.activeScroller == scroller then BillboardState.activeScroller = nil end
     end)
-
     local grid = Instance.new("UIGridLayout", scroller)
     grid.CellSize = UDim2.fromOffset(32, 32)
     grid.CellPadding = UDim2.fromOffset(6, 6)
     grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
     grid.SortOrder = Enum.SortOrder.LayoutOrder
-
     local tooltip = Instance.new("TextLabel", scroller)
     tooltip.Name = "Tooltip"
     tooltip.Size = UDim2.new(1, -8, 0, 24)
@@ -934,7 +915,6 @@ local function createElements(player)
     tooltip.Text = ""
     Instance.new("UICorner", tooltip).CornerRadius = UDim.new(0, 6)
     Instance.new("UIStroke", tooltip).Color = Color3.fromRGB(60, 60, 80)
-
     state.gui.Parent = nil
     BillboardState.uis[player] = state
     return state
@@ -942,30 +922,24 @@ end
 
 local function updateUI(player, char)
     if not BillboardState.enabled then return end
-    
     local state = BillboardState.uis[player]
     if not (state and state.main) then return end
-    
     local hum = char:FindFirstChildOfClass("Humanoid")
     if hum and hum.MaxHealth > 0 then
         local ratio = math.clamp(hum.Health / hum.MaxHealth, 0, 1)
         state.main.HealthBar.Fill.Size = UDim2.fromScale(ratio, 1)
         state.main.HealthBar.Fill.BackgroundColor3 = Color3.fromHSV(ratio / 3, 0.8, 0.9)
     end
-    
     local pData = CONFIG.platforms[getPlayerPlatform(player) or "Unknown"]
     state.main.PlatformIcon.Image = pData[1]
     state.main.PlatformIcon.ImageColor3 = pData[2]
-
     local scroller = state.main.Backpack
     for _, child in ipairs(scroller:GetChildren()) do
         if child:IsA("ImageButton") or (child:IsA("TextLabel") and child.Name == "EmptyLabel") then
             child:Destroy()
         end
     end
-    
     local count = 0
-    
     local equipped = char:FindFirstChildWhichIsA("Tool")
     if equipped then
         count = count + 1
@@ -975,14 +949,12 @@ local function updateUI(player, char)
         icon.Image = equipped.TextureId or ""
         icon.ScaleType = Enum.ScaleType.Fit
         icon.Parent = scroller
-        
         local border = Instance.new("UIStroke")
         border.Color = Color3.fromRGB(255, 80, 80)
         border.Thickness = 2.5
         border.Transparency = 0.2
         border.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
         border.Parent = icon
-        
         icon.MouseEnter:Connect(function()
             scroller.Tooltip.Text = equipped.Name .. " (dipegang)"
             scroller.Tooltip.Visible = true
@@ -996,7 +968,6 @@ local function updateUI(player, char)
             end
         end)
     end
-    
     for _, tool in ipairs(player.Backpack:GetChildren()) do
         if tool:IsA("Tool") then
             count = count + 1
@@ -1006,7 +977,6 @@ local function updateUI(player, char)
             icon.Image = tool.TextureId or ""
             icon.ScaleType = Enum.ScaleType.Fit
             icon.Parent = scroller
-            
             icon.MouseEnter:Connect(function()
                 scroller.Tooltip.Text = tool.Name
                 scroller.Tooltip.Visible = true
@@ -1021,7 +991,6 @@ local function updateUI(player, char)
             end)
         end
     end
-    
     if count == 0 then
         local empty = Instance.new("TextLabel")
         empty.Name = "EmptyLabel"
@@ -1037,25 +1006,20 @@ end
 
 rs.Heartbeat:Connect(function()
     if not BillboardState.enabled then return end
-    
     local char = lp.Character
     if not (char and char.PrimaryPart) then return end
     local pos = char.PrimaryPart.Position
-    
     for _, plr in players:GetPlayers() do
         if plr == lp then continue end
-        
         local state = BillboardState.uis[plr] or createElements(plr)
         local target = plr.Character
-        
         if target and target.PrimaryPart and target:FindFirstChild("Head") then
             local dist = (pos - target.PrimaryPart.Position).Magnitude
-            
             if dist <= CONFIG.distance then
+                state.gui.Adornee = target.Head
                 if state.currentState == "hidden" then
                     state.currentState = "visible"
-                    state.gui.Adornee = target.Head
-                    state.gui.Parent = target.Head
+                    state.gui.Parent = getParentGUI()
                     animate(state, "in")
                 end
                 updateUI(plr, target)
