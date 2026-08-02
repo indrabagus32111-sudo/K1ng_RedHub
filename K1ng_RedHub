@@ -1055,7 +1055,7 @@ espTab:AddToggle({"ESP Item", false, function(Value)
     end
 end})
 
-housesTab:AddSection({"House"})
+housesTab:AddSection({"Anti Prop"})
 
 local antiPropActive = false
 housesTab:AddToggle({"Anti prop", false, function(Value)
@@ -1080,6 +1080,8 @@ housesTab:AddToggle({"Anti prop", false, function(Value)
         end)
     end
 end})
+
+housesTab:AddSection({"Unban From All Houses"})
 
 housesTab:AddButton({"Unban From All Houses", function()
     notify("Unban", "Unbanned from all houses successfully!")
