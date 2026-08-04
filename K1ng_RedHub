@@ -8,7 +8,9 @@ local StarterGui = game:GetService("StarterGui")
 local TeleportService = game:GetService("TeleportService")
 local Workspace = game:GetService("Workspace")
 local Stats = game:GetService("Stats")
+local VirtualInputManager = game:GetService("VirtualInputManager")
 local LocalPlayer = Players.LocalPlayer
+local cam = workspace.CurrentCamera
 local identifyexecutor = identifyexecutor or function() return "Unknown Executor" end
 
 local function notify(title, text)
@@ -39,6 +41,7 @@ local infoTab = Window:MakeTab({"Info", "info"})
 local playerTab = Window:MakeTab({"Player", "user"})
 local avatarTab = Window:MakeTab({"Avatar", "shirt"})
 local housesTab = Window:MakeTab({"Houses", "home"})
+local trollTab = Window:MakeTab({"Troll Player", "ghost"})
 local worldTab = Window:MakeTab({"Protection", "shield"})
 local teleportsTab = Window:MakeTab({"Teleports", "map"})
 local espTab = Window:MakeTab({"ESP", "eye"})
@@ -144,7 +147,7 @@ playerTab:AddTextBox({"Player Name (Partial)", "", function(Value)
     local foundPlayer = findPlayerByPartialName(Value)
     if foundPlayer then
         selectedPlayerName = foundPlayer.Name
-        notify("Player Selected", foundPlayer.Name .. " selected! | remake: D_ForDeath1")
+        notify("Player Selected", foundPlayer.Name .. " selected!")
     else
         notify("Error", "No player found.")
     end
@@ -1183,6 +1186,165 @@ housesTab:AddButton({"Teleport to House", function()
             LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(House.WorldPivot.Position)
         end
     end
+end})
+
+trollTab:AddSection({"Couch Kill"})
+
+local trollTargetName = nil
+local trollCharacter = LocalPlayer.Character
+local trollHumanoid = trollCharacter and trollCharacter:WaitForChild("Humanoid")
+local trollRootPart = trollCharacter and trollCharacter:WaitForChild("HumanoidRootPart")
+
+local function cleanupCouch()
+    local char = LocalPlayer.Character
+    if char then
+        local couch = char:FindFirstChild("Chaos.Couch") or LocalPlayer.Backpack:FindFirstChild("Chaos.Couch")
+        if couch then
+            couch:Destroy()
+        end
+    end
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Clea1rTool1s"):FireServer("ClearAllTools")
+end
+
+LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+    trollCharacter = newCharacter
+    trollHumanoid = newCharacter:WaitForChild("Humanoid")
+    trollRootPart = newCharacter:WaitForChild("HumanoidRootPart")
+    cleanupCouch()
+    
+    trollHumanoid.Died:Connect(function()
+        cleanupCouch()
+    end)
+end)
+
+if trollHumanoid then
+    trollHumanoid.Died:Connect(function()
+        cleanupCouch()
+    end)
+end
+
+local function KillPlayerCouch()
+    if not trollTargetName then
+        notify("Error", "No player selected")
+        return
+    end
+    local target = Players:FindFirstChild(trollTargetName)
+    if not target or not target.Character then
+        notify("Error", "Target player not found or has no character")
+        return
+    end
+
+    local char = LocalPlayer.Character
+    if not char then
+        notify("Error", "Local player character not found")
+        return
+    end
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    local root = char:FindFirstChild("HumanoidRootPart")
+    local tRoot = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+    if not hum or not root or not tRoot then
+        notify("Error", "Required components not found")
+        return
+    end
+
+    local originalPos = root.Position 
+    local sitPos = Vector3.new(145.51, -350.09, 21.58)
+
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Clea1rTool1s"):FireServer("ClearAllTools")
+    task.wait(0.2)
+
+    ReplicatedStorage.RE:FindFirstChild("1Too1l"):InvokeServer("PickingTools", "Couch")
+    task.wait(0.3)
+
+    local tool = LocalPlayer.Backpack:FindFirstChild("Couch")
+    if tool then tool.Parent = char end
+    task.wait(0.1)
+
+    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F, false, game)
+    task.wait(0.1)
+
+    hum:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+    hum.PlatformStand = false
+    cam.CameraSubject = target.Character:FindFirstChild("Head") or tRoot or hum
+
+    local align = Instance.new("BodyPosition")
+    align.Name = "BringPosition"
+    align.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    align.D = 10
+    align.P = 30000
+    align.Position = root.Position
+    align.Parent = tRoot
+
+    task.spawn(function()
+        local angle = 0
+        local startTime = tick()
+        while tick() - startTime < 5 and target and target.Character and target.Character:FindFirstChildOfClass("Humanoid") do
+            local tHum = target.Character:FindFirstChildOfClass("Humanoid")
+            if not tHum or tHum.Sit then break end
+
+            local hrp = target.Character.HumanoidRootPart
+            local adjustedPos = hrp.Position + (hrp.Velocity / 1.5)
+
+            angle += 50
+            root.CFrame = CFrame.new(adjustedPos + Vector3.new(0, 2, 0)) * CFrame.Angles(math.rad(angle), 0, 0)
+            align.Position = root.Position + Vector3.new(2, 0, 0)
+
+            task.wait()
+        end
+
+        align:Destroy()
+        hum:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
+        hum.PlatformStand = false
+        cam.CameraSubject = hum
+
+        for _, p in pairs(char:GetDescendants()) do
+            if p:IsA("BasePart") then
+                p.Velocity = Vector3.zero
+                p.RotVelocity = Vector3.zero
+            end
+        end
+
+        task.wait(0.1)
+        root.CFrame = CFrame.new(sitPos)
+        task.wait(0.3)
+
+        local tool = char:FindFirstChild("Couch")
+        if tool then tool.Parent = LocalPlayer.Backpack end
+
+        task.wait(0.01)
+        ReplicatedStorage.RE:FindFirstChild("1Too1l"):InvokeServer("PickingTools", "Couch")
+        task.wait(0.2)
+        root.CFrame = CFrame.new(originalPos)
+    end)
+end
+
+local function getTrollPlayerNamesList()
+    local playerNames = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player.Name ~= LocalPlayer.Name then
+            table.insert(playerNames, player.Name)
+        end
+    end
+    return #playerNames > 0 and playerNames or {"No Players"}
+end
+
+local trollDropdown = trollTab:AddDropdown({"Select Player", getTrollPlayerNamesList(), "", function(selected)
+    if Players:FindFirstChild(selected) then
+        trollTargetName = selected
+        notify("Troll Player", "Target: " .. selected .. " | remake: D_ForDeath1")
+    else
+        trollTargetName = nil
+    end
+end})
+
+trollTab:AddButton({"Refresh List", function()
+    if trollDropdown and trollDropdown.Set then
+        trollDropdown:Set(getTrollPlayerNamesList())
+    end
+end})
+
+trollTab:AddButton({"Kill Player", function()
+    KillPlayerCouch()
 end})
 
 teleportsTab:AddSection({"Teleports"})
