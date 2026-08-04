@@ -27,7 +27,7 @@ notify("Kenz Hub", "Thank you for using Kenz Hub")
 
 local Window = Libary:MakeWindow({
     Title = "Kenz Hub | Brookhaven RP 🏡",
-    SubTitle = "by: Kenz & Death",
+    SubTitle = "by: Kenz & D_ForDeath1",
     LoadText = "Loading Kenz Hub",
     Flags = "KenzHub_Brookhaven"
 })
@@ -51,7 +51,7 @@ local rgbTab = Window:MakeTab({"RGB", "palette"})
 local childTab = Window:MakeTab({"Child", "baby"})
 
 infoTab:AddSection({"Script Information"})
-infoTab:AddParagraph({"Developer/Owner:", "Kenz & Death"})
+infoTab:AddParagraph({"Developer/Owner:", "Kenz & D_ForDeath1"})
 infoTab:AddParagraph({"You are using:", "Kenz Hub Brookhaven🏡"})
 
 local pingValue = "Unknown"
@@ -147,6 +147,7 @@ playerTab:AddTextBox({"Player Name (Partial)", "", function(Value)
     local foundPlayer = findPlayerByPartialName(Value)
     if foundPlayer then
         selectedPlayerName = foundPlayer.Name
+        getgenv().Target = foundPlayer.Name
         notify("Player Selected", foundPlayer.Name .. " selected!")
     else
         notify("Error", "No player found.")
@@ -1188,7 +1189,7 @@ housesTab:AddButton({"Teleport to House", function()
     end
 end})
 
-trollTab:AddSection({"Couch Kill"})
+trollTab:AddSection({"Troll Player Options"})
 
 local trollTargetName = nil
 local trollCharacter = LocalPlayer.Character
@@ -1224,11 +1225,12 @@ if trollHumanoid then
 end
 
 local function KillPlayerCouch()
-    if not trollTargetName then
+    local targetName = trollTargetName or selectedPlayerName or getgenv().Target
+    if not targetName then
         notify("Error", "No player selected")
         return
     end
-    local target = Players:FindFirstChild(trollTargetName)
+    local target = Players:FindFirstChild(targetName)
     if not target or not target.Character then
         notify("Error", "Target player not found or has no character")
         return
@@ -1318,6 +1320,193 @@ local function KillPlayerCouch()
     end)
 end
 
+local function BringPlayerLLL()
+    local targetName = trollTargetName or selectedPlayerName or getgenv().Target
+    if not targetName then
+        notify("Error", "No player selected")
+        return
+    end
+    local target = Players:FindFirstChild(targetName)
+    if not target or not target.Character then
+        notify("Error", "Target player not found or has no character")
+        return
+    end
+
+    local char = LocalPlayer.Character
+    if not char then
+        notify("Error", "Local player character not found")
+        return
+    end
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    local root = char:FindFirstChild("HumanoidRootPart")
+    local tRoot = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
+    if not hum or not root or not tRoot then
+        notify("Error", "Required components not found")
+        return
+    end
+
+    local originalPos = root.Position 
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Clea1rTool1s"):FireServer("ClearAllTools")
+    task.wait(0.2)
+
+    ReplicatedStorage.RE:FindFirstChild("1Too1l"):InvokeServer("PickingTools", "Couch")
+    task.wait(0.3)
+
+    local tool = LocalPlayer.Backpack:FindFirstChild("Couch")
+    if tool then
+        tool.Parent = char
+    end
+    task.wait(0.1)
+
+    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F, false, game)
+    task.wait(0.1)
+
+    hum:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+    hum.PlatformStand = false
+    cam.CameraSubject = target.Character:FindFirstChild("Head") or tRoot or hum
+
+    local align = Instance.new("BodyPosition")
+    align.Name = "BringPosition"
+    align.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    align.D = 10
+    align.P = 30000
+    align.Position = root.Position
+    align.Parent = tRoot
+
+    task.spawn(function()
+        local angle = 0
+        local startTime = tick()
+        while tick() - startTime < 5 and target and target.Character and target.Character:FindFirstChildOfClass("Humanoid") do
+            local tHum = target.Character:FindFirstChildOfClass("Humanoid")
+            if not tHum or tHum.Sit then break end
+
+            local hrp = target.Character.HumanoidRootPart
+            local adjustedPos = hrp.Position + (hrp.Velocity / 1.5)
+
+            angle += 50
+            root.CFrame = CFrame.new(adjustedPos + Vector3.new(0, 2, 0)) * CFrame.Angles(math.rad(angle), 0, 0)
+            align.Position = root.Position + Vector3.new(2, 0, 0)
+
+            task.wait()
+        end
+
+        align:Destroy()
+        hum:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
+        hum.PlatformStand = false
+        cam.CameraSubject = hum
+
+        for _, p in pairs(char:GetDescendants()) do
+            if p:IsA("BasePart") then
+                p.Velocity = Vector3.zero
+                p.RotVelocity = Vector3.zero
+            end
+        end
+
+        task.wait(0.1)
+        root.Anchored = true
+        root.CFrame = CFrame.new(originalPos)
+        task.wait(0.001)
+        root.Anchored = false
+
+        task.wait(0.7)
+        local tool = char:FindFirstChild("Couch")
+        if tool then
+            tool.Parent = LocalPlayer.Backpack
+        end
+
+        task.wait(0.001)
+        ReplicatedStorage.RE:FindFirstChild("1Too1l"):InvokeServer("PickingTools", "Couch")
+    end)
+end
+
+local function BringWithCouch()
+    local targetName = trollTargetName or selectedPlayerName or getgenv().Target
+    if not targetName then
+        notify("Error", "No target player selected")
+        return
+    end
+    local targetPlayer = Players:FindFirstChild(targetName)
+    if not targetPlayer then
+        notify("Error", "Target player not found")
+        return
+    end
+    if not targetPlayer.Character or not targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        notify("Error", "Target player has no character or HumanoidRootPart")
+        return
+    end
+
+    local args = { [1] = "ClearAllTools" }
+    ReplicatedStorage.RE["1Clea1rTool1s"]:FireServer(unpack(args))
+    local args2 = { [1] = "PickingTools", [2] = "Couch" }
+    ReplicatedStorage.RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args2))
+
+    local couch = LocalPlayer.Backpack:WaitForChild("Couch", 2)
+    if not couch then
+        notify("Error", "Couch not found in Backpack")
+        return
+    end
+
+    couch.Name = "Chaos.Couch"
+    local seat1 = couch:FindFirstChild("Seat1")
+    local seat2 = couch:FindFirstChild("Seat2")
+    local handle = couch:FindFirstChild("Handle")
+    if seat1 and seat2 and handle then
+        seat1.Disabled = true
+        seat2.Disabled = true
+        handle.Name = "Handle "
+    else
+        notify("Error", "Couch components not found")
+        return
+    end
+    couch.Parent = LocalPlayer.Character
+
+    local tet = Instance.new("BodyVelocity", seat1)
+    tet.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    tet.P = 1250
+    tet.Velocity = Vector3.new(0, 0, 0)
+    tet.Name = "#mOVOOEPF$#@F$#GERE..>V<<<<EW<V<<W"
+
+    repeat
+        for m = 1, 35 do
+            local pos = { x = 0, y = 0, z = 0 }
+            local tRoot = targetPlayer.Character and targetPlayer.Character.HumanoidRootPart
+            if not tRoot then break end
+            pos.x = tRoot.Position.X + (tRoot.Velocity.X / 2)
+            pos.y = tRoot.Position.Y + (tRoot.Velocity.Y / 2)
+            pos.z = tRoot.Position.Z + (tRoot.Velocity.Z / 2)
+            seat1.CFrame = CFrame.new(Vector3.new(pos.x, pos.y, pos.z)) * CFrame.new(-2, 2, 0)
+            task.wait()
+        end
+        tet:Destroy()
+        couch.Parent = LocalPlayer.Backpack
+        task.wait()
+        couch:FindFirstChild("Handle ").Name = "Handle"
+        task.wait(0.2)
+        couch.Parent = LocalPlayer.Character
+        task.wait()
+        couch.Parent = LocalPlayer.Backpack
+        couch.Handle.Name = "Handle "
+        task.wait(0.2)
+        couch.Parent = LocalPlayer.Character
+        tet = Instance.new("BodyVelocity", seat1)
+        tet.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        tet.P = 1250
+        tet.Velocity = Vector3.new(0, 0, 0)
+        tet.Name = "#mOVOOEPF$#@F$#GERE..>V<<<<EW<V<<W"
+    until targetPlayer.Character and targetPlayer.Character.Humanoid and targetPlayer.Character.Humanoid.Sit == true
+    task.wait()
+    tet:Destroy()
+    couch.Parent = LocalPlayer.Backpack
+    task.wait()
+    couch:FindFirstChild("Handle ").Name = "Handle"
+    task.wait(0.3)
+    couch.Parent = LocalPlayer.Character
+    task.wait(0.3)
+    couch.Grip = CFrame.new(Vector3.new(0, 0, 0))
+    task.wait(0.3)
+    ReplicatedStorage.RE["1Clea1rTool1s"]:FireServer("ClearAllTools")
+end
+
 local function getTrollPlayerNamesList()
     local playerNames = {}
     for _, player in ipairs(Players:GetPlayers()) do
@@ -1328,12 +1517,16 @@ local function getTrollPlayerNamesList()
     return #playerNames > 0 and playerNames or {"No Players"}
 end
 
-local trollDropdown = trollTab:AddDropdown({"Select Player", getTrollPlayerNamesList(), "", function(selected)
+local trollDropdown = trollTab:AddDropdown({"Select Target Player", getTrollPlayerNamesList(), "", function(selected)
     if Players:FindFirstChild(selected) then
         trollTargetName = selected
-        notify("Troll Player", "Target: " .. selected .. " | remake: D_ForDeath1")
+        selectedPlayerName = selected
+        getgenv().Target = selected
+        notify("Troll Player", "Target: " .. selected .. " | Remake by: D_ForDeath1")
     else
         trollTargetName = nil
+        selectedPlayerName = nil
+        getgenv().Target = nil
     end
 end})
 
@@ -1343,8 +1536,16 @@ trollTab:AddButton({"Refresh List", function()
     end
 end})
 
-trollTab:AddButton({"Kill Player", function()
+trollTab:AddButton({"Kill Player (Couch)", function()
     KillPlayerCouch()
+end})
+
+trollTab:AddButton({"Bring Player (Method 1)", function()
+    BringPlayerLLL()
+end})
+
+trollTab:AddButton({"Bring Player (Method 2)", function()
+    BringWithCouch()
 end})
 
 teleportsTab:AddSection({"Teleports"})
