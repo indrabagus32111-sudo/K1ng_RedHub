@@ -27,7 +27,7 @@ notify("Kenz Hub", "Thank you for using Kenz Hub")
 
 local Window = Libary:MakeWindow({
     Title = "Kenz Hub | Brookhaven RP 🏡",
-    SubTitle = "by: Kenz & D_ForDeath1",
+    SubTitle = "by: Kenz",
     LoadText = "Loading Kenz Hub",
     Flags = "KenzHub_Brookhaven"
 })
@@ -51,7 +51,7 @@ local rgbTab = Window:MakeTab({"RGB", "palette"})
 local childTab = Window:MakeTab({"Child", "baby"})
 
 infoTab:AddSection({"Script Information"})
-infoTab:AddParagraph({"Developer/Owner:", "Kenz & D_ForDeath1"})
+infoTab:AddParagraph({"Developer/Owner:", "Kenz"})
 infoTab:AddParagraph({"You are using:", "Kenz Hub Brookhaven🏡"})
 
 local pingValue = "Unknown"
@@ -1464,17 +1464,15 @@ local function BringWithCouch()
     tet.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
     tet.P = 1250
     tet.Velocity = Vector3.new(0, 0, 0)
-    tet.Name = "#mOVOOEPF$#@F$#GERE..>V<<<<EW<V<<W"
+    tet.Name = "BringV2Velocity"
 
     repeat
         for m = 1, 35 do
-            local pos = { x = 0, y = 0, z = 0 }
-            local tRoot = targetPlayer.Character and targetPlayer.Character.HumanoidRootPart
+            local tRoot = targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart")
             if not tRoot then break end
-            pos.x = tRoot.Position.X + (tRoot.Velocity.X / 2)
-            pos.y = tRoot.Position.Y + (tRoot.Velocity.Y / 2)
-            pos.z = tRoot.Position.Z + (tRoot.Velocity.Z / 2)
-            seat1.CFrame = CFrame.new(Vector3.new(pos.x, pos.y, pos.z)) * CFrame.new(-2, 2, 0)
+            
+            seat1.CFrame = tRoot.CFrame * CFrame.new(0, -1.5, -0.5)
+            
             task.wait()
         end
         tet:Destroy()
@@ -1488,12 +1486,14 @@ local function BringWithCouch()
         couch.Handle.Name = "Handle "
         task.wait(0.2)
         couch.Parent = LocalPlayer.Character
+        
         tet = Instance.new("BodyVelocity", seat1)
         tet.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
         tet.P = 1250
         tet.Velocity = Vector3.new(0, 0, 0)
-        tet.Name = "#mOVOOEPF$#@F$#GERE..>V<<<<EW<V<<W"
-    until targetPlayer.Character and targetPlayer.Character.Humanoid and targetPlayer.Character.Humanoid.Sit == true
+        tet.Name = "BringV2Velocity"
+    until targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") and targetPlayer.Character.Humanoid.Sit == true
+    
     task.wait()
     tet:Destroy()
     couch.Parent = LocalPlayer.Backpack
@@ -1522,7 +1522,7 @@ local trollDropdown = trollTab:AddDropdown({"Select Target Player", getTrollPlay
         trollTargetName = selected
         selectedPlayerName = selected
         getgenv().Target = selected
-        notify("Troll Player", "Target: " .. selected .. " | Remake by: D_ForDeath1")
+        notify("Troll Player", "Target: " .. selected)
     else
         trollTargetName = nil
         selectedPlayerName = nil
