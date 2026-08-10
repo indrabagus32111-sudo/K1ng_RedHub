@@ -2332,15 +2332,6 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Title = "Obito",
-    Desc = "Obito FE",
-    Locked = false,
-    Callback = function()
-      loadstring(game:HttpGet("https://cdn.authguard.org/virtual-file/c47b8a12ca6c4cef840280dafd893e7d"))()
-    end
-})
-
-Tab:AddButton({
 	Name = "Shadow",
 	Desc = "Shadow FE",
 	Callback = function()
