@@ -26,8 +26,8 @@ end
 notify("Kenz Hub", "script di remake oleh: D_ForDeath1")
 
 local Window = Libary:MakeWindow({
-    Title = "Kenz Hub | Brookhaven RP ðŸ¡",
-    SubTitle = "script di remake oleh: D_ForDeath1",
+    Title = "Kenz Hub | Brookhaven RP🏡",
+    SubTitle = "By Kenz & Death",
     LoadText = "Loading Kenz Hub",
     Flags = "KenzHub_Brookhaven"
 })
@@ -51,7 +51,7 @@ local rgbTab = Window:MakeTab({"RGB", "palette"})
 local childTab = Window:MakeTab({"Child", "baby"})
 
 infoTab:AddSection({"Script Information"})
-infoTab:AddParagraph({"Developer/Owner:", "Kenz"})
+infoTab:AddParagraph({"Developer/Owner:", "Kenz & Death"})
 infoTab:AddParagraph({"Remake:", "D_ForDeath1"})
 infoTab:AddParagraph({"You are using:", "Kenz Hub BrookhavenðŸ¡"})
 
