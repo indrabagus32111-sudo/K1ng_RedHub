@@ -1190,8 +1190,8 @@ housesTab:AddButton({"Teleport to House", function()
     end
 end})
 
-trollTab:AddSection({"Troll Player Options"})
-
+local Troll = trollTab
+trollTab:AddSection({"Troll Player"})
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
