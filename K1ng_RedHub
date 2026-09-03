@@ -1191,7 +1191,7 @@ housesTab:AddButton({"Teleport to House", function()
 end})
 
 local Troll = trollTab
-trollTab:AddSection({"Troll Player"})
+local PlayerSection = Troll:AddSection({ Name = "Troll Player" })
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -2651,11 +2651,14 @@ local HRP = Character:WaitForChild("HumanoidRootPart")
 -- Alvo invisível (BlackHole)
 local BlackHole = Instance.new("Part")
 BlackHole.Size = Vector3.new(100000, 100000, 100000)
+BlackHole.Position = HRP.Position
 BlackHole.Transparency = 1
-BlackHole.Anchored = true
 BlackHole.CanCollide = false
-BlackHole.Name = "BlackHoleTarget"
+BlackHole.Anchored = true
 BlackHole.Parent = Workspace
+
+  end
+})
 
 -- Attachment base no BlackHole
 local baseAttachment = Instance.new("Attachment")
