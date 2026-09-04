@@ -2595,7 +2595,7 @@ Troll:AddButton({
                 obj:Destroy()
             end
         end
-        print("Spin e forças removidas do jogador.")
+        print("Spin e forcas removidas do jogador.")
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Ca1r"):FireServer("DeleteAllVehicles")
         task.wait(0.5)
@@ -2615,21 +2615,10 @@ Troll:AddButton({
         local safePos = Vector3.new(0, 1000, 0)
         local bp = Instance.new("BodyPosition", RootPart)
         bp.Position = safePos
-        bp.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-
-        local bg = Instance.new("BodyGyro", RootPart)
-        bg.CFrame = RootPart.CFrame
-        bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
-
-        print("Jogador está preso na coordenada segura.")
-
-        task.wait(3)
-
+        
+        task.wait(0.5)
         bp:Destroy()
-        bg:Destroy()
         Humanoid.PlatformStand = false
-
-        print("Jogador liberado, seguro na posição.")
     end
 })
 
