@@ -4599,3 +4599,263 @@ worldTab:AddToggle({"Anti-Fling Block", false, function(state)
         end
     end
 end})
+
+itemsTab:AddSection({"Clear All Tools"})
+
+itemsTab:AddButton({"Clear All Tools", function()
+    local args = {
+        [1] = "ClearAllTools"
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Clea1rTool1s"):FireServer(unpack(args))
+end})
+
+itemsTab:AddSection({"Equip All Items"})
+
+itemsTab:AddButton({"Equip All Items", function()
+    for _, tool in pairs(LocalPlayer.Backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            tool.Parent = LocalPlayer.Character
+        end
+    end
+end})
+
+itemsTab:AddSection({"Items"})
+
+local function getTool(toolName)
+    local args = {
+        "AcceptedToolToServer",
+        toolName,
+        LocalPlayer
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
+end
+
+itemsTab:AddButton({"Snowboard", function() getTool("Snowboard") end})
+itemsTab:AddButton({"Money Gun", function() getTool("MoneyGun") end})
+itemsTab:AddButton({"Skis", function() getTool("Skis") end})
+itemsTab:AddButton({"Crystals", function() getTool("Crystals") end})
+itemsTab:AddButton({"Egg Launcher", function() getTool("EggLauncher") end})
+itemsTab:AddButton({"Cannon", function() getTool("Cannon") end})
+itemsTab:AddButton({"Chainsaw", function() getTool("Chainsaw") end})
+itemsTab:AddButton({"Couch", function() getTool("Couch") end})
+itemsTab:AddButton({"Uranium Rod", function() getTool("UraniumRod") end})
+itemsTab:AddButton({"Golden Basketball", function() getTool("GoldenBasketball") end})
+itemsTab:AddButton({"Glider", function() getTool("Glider") end})
+itemsTab:AddButton({"Candy Basket", function() getTool("CandyBasket") end})
+
+rgbTab:AddSection({"RGB Speed"})
+
+local rgbSpeed = 3
+
+local function getRainbowColor(multiplier)
+    local speedMultiplier = (multiplier or 1) * (rgbSpeed / 3)
+    return Color3.fromHSV((tick() * speedMultiplier * 0.5) % 1, 1, 1)
+end
+
+rgbTab:AddSlider({"RGB Speed", 1, 10, 1, 3, function(value)
+    rgbSpeed = value
+end})
+
+rgbTab:AddSection({"RGB Name + Bio"})
+
+local nameBioRGBActive = false
+rgbTab:AddToggle({"Name + Bio RGB", false, function(state)
+    nameBioRGBActive = state
+    if state then
+        task.spawn(function()
+            while nameBioRGBActive and LocalPlayer.Character do
+                local color = getRainbowColor(1)
+                local args1 = { "PickingRPNameColor", color }
+                local args2 = { "PickingRPBioColor", color }
+                pcall(function()
+                    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args1))
+                    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1RPNam1eColo1r"):FireServer(unpack(args2))
+                end)
+                task.wait(math.max(0.03, 0.2 / (rgbSpeed / 3)))
+            end
+        end)
+    end
+end})
+
+rgbTab:AddSection({"RGB Bicycle"})
+
+local rgbBicycleActive = false
+rgbTab:AddToggle({"RGB Bicycle", false, function(Value)
+    rgbBicycleActive = Value
+    if rgbBicycleActive then
+        task.spawn(function()
+            while rgbBicycleActive do
+                local args = { "NoMotorColor", getRainbowColor(1) }
+                pcall(function()
+                    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sCa1r"):FireServer(unpack(args))
+                end)
+                task.wait(math.max(0.03, 0.2 / (rgbSpeed / 3)))
+            end
+        end)
+    end
+end})
+
+rgbTab:AddSection({"RGB Avatar"})
+
+local rgbCharacterActive = false
+local characterColors = { "Bright red", "Lime green", "Bright blue", "Bright yellow", "Bright cyan", "Hot pink", "Royal purple" }
+
+rgbTab:AddToggle({"RGB Character", false, function(value)
+    rgbCharacterActive = value
+    if rgbCharacterActive then
+        task.spawn(function()
+            while rgbCharacterActive do
+                for _, color in ipairs(characterColors) do
+                    if not rgbCharacterActive then break end
+                    pcall(function()
+                        ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeBodyColor"):FireServer(color)
+                    end)
+                    task.wait(math.max(0.05, 0.5 / (rgbSpeed / 3)))
+                end
+            end
+        end)
+    end
+end})
+
+local rgbHairActive = false
+local hairColors = {
+    Color3.new(1, 1, 0), Color3.new(0, 0, 1), Color3.new(1, 0, 1), Color3.new(1, 1, 1),
+    Color3.new(0, 1, 0), Color3.new(0.5, 0, 1), Color3.new(1, 0.647, 0), Color3.new(0, 1, 1)
+}
+
+rgbTab:AddToggle({"RGB Hair", false, function(value)
+    rgbHairActive = value
+    if rgbHairActive then
+        task.spawn(function()
+            local i = 1
+            while rgbHairActive do
+                local args = { "ChangeHairColor2", hairColors[i] }
+                pcall(function()
+                    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Max1y"):FireServer(unpack(args))
+                end)
+                task.wait(math.max(0.03, 0.2 / (rgbSpeed / 3)))
+                i = i % #hairColors + 1
+            end
+        end)
+    end
+end})
+
+childTab:AddSection({"Child Options"})
+
+local chasingplayer = nil
+
+local function getChildPlayerNamesList()
+    local playerNames = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player.Name ~= LocalPlayer.Name then
+            table.insert(playerNames, player.Name)
+        end
+    end
+    return #playerNames > 0 and playerNames or {"No Players"}
+end
+
+local childDropdown = childTab:AddDropdown({"Select a player to chase", getChildPlayerNamesList(), "", function(selected)
+    if Players:FindFirstChild(selected) then
+        chasingplayer = selected
+    else
+        chasingplayer = nil
+    end
+end})
+
+childTab:AddButton({"Update Player List", function()
+    if childDropdown and childDropdown.Set then
+        childDropdown:Set(getChildPlayerNamesList())
+    end
+end})
+
+childTab:AddButton({"Send Child", function()
+    if not chasingplayer then return end
+    
+    notify("Child Actions", "Sending child...")
+
+    if not Workspace:FindFirstChild(LocalPlayer.Name) or not Workspace[LocalPlayer.Name]:FindFirstChild("FollowCharacter") then
+        local args = { "CharacterFollowSpawnPlayer", "BabyBoy" }
+        pcall(function()
+            ReplicatedStorage.RE:FindFirstChild("1Bab1yFollo1w"):FireServer(unpack(args))
+        end)
+    end
+    
+    task.wait(0.2)
+    
+    if Workspace:FindFirstChild(LocalPlayer.Name) then
+        for _, v in pairs(Workspace[LocalPlayer.Name]:GetChildren()) do
+            if v:IsA("BasePart") then
+                v.CanCollide = true
+            end
+        end
+    end
+
+    local target = chasingplayer
+    if Workspace:FindFirstChild(target) and Workspace:FindFirstChild(LocalPlayer.Name) and Workspace[LocalPlayer.Name]:FindFirstChild("FollowCharacter") then
+        Workspace[LocalPlayer.Name].FollowCharacter.Parent = Workspace[target]
+
+        if rawget(getgenv(), "ChildRunService") then return end
+
+        getgenv().ChildRunService = RunService.Heartbeat:Connect(function()
+            local targetWorkspace = Workspace:FindFirstChild(target)
+            if not targetWorkspace then return end
+            
+            local followCharacter = targetWorkspace:FindFirstChild("FollowCharacter")
+            if followCharacter and followCharacter:FindFirstChild("Torso") and followCharacter.Torso:FindFirstChild("BodyPosition") then
+                local humanoidRootPart = targetWorkspace:FindFirstChild("HumanoidRootPart")
+                if humanoidRootPart then
+                    followCharacter.Torso.BodyPosition.Position = humanoidRootPart.Position - (humanoidRootPart.CFrame.LookVector * 3)
+                    followCharacter.Torso.BodyGyro.CFrame = humanoidRootPart.CFrame
+                end
+            end
+        end)
+    end
+end})
+
+childTab:AddButton({"Return Child", function()
+    if rawget(getgenv(), "ChildRunService") then
+        getgenv().ChildRunService:Disconnect()
+        getgenv().ChildRunService = nil
+    end
+
+    local args = { "DeleteFollowCharacter" }
+    pcall(function()
+        ReplicatedStorage.RE:FindFirstChild("1Bab1yFollo1w"):FireServer(unpack(args))
+    end)
+
+    local args1 = { "CharacterFollowSpawnPlayer", "BabyBoy" }
+    pcall(function()
+        ReplicatedStorage.RE:FindFirstChild("1Bab1yFollo1w"):FireServer(unpack(args1))
+    end)
+end})
+
+childTab:AddToggle({"Spectate Player", false, function(Value)
+    local Camera = Workspace.CurrentCamera
+
+    if Value then
+        if not chasingplayer then return end
+
+        if not rawget(getgenv(), "ChildCameraConnection") then
+            getgenv().ChildCameraConnection = RunService.Heartbeat:Connect(function()
+                local targetPlayer = Players:FindFirstChild(chasingplayer)
+                if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+                    Camera.CameraSubject = targetPlayer.Character.Humanoid
+                else
+                    if rawget(getgenv(), "ChildCameraConnection") then
+                        getgenv().ChildCameraConnection:Disconnect()
+                        getgenv().ChildCameraConnection = nil
+                    end
+                    Camera.CameraSubject = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") or nil
+                end
+            end)
+        end
+    else
+        if rawget(getgenv(), "ChildCameraConnection") then
+            getgenv().ChildCameraConnection:Disconnect()
+            getgenv().ChildCameraConnection = nil
+        end
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            Camera.CameraSubject = LocalPlayer.Character.Humanoid
+        end
+    end
+end})
