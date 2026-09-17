@@ -555,6 +555,32 @@ avatarTab:AddButton({"Equip Accessory", function()
     AvatarManager:EquipAvatar(_G.SelectedAvatar)
 end})
 
+avatarTab:AddSection({"Head Accessories"})
+
+local headItems = {
+    ["blaze burner head"] = 3210773801,
+    ["korblox blue eye"] = 16580493236,
+    ["headless"] = 134082579
+}
+
+local selectedHeadItem = nil
+
+avatarTab:AddDropdown({"Head Items List", {"blaze burner head", "korblox blue eye", "headless"}, "", function(Value)
+    selectedHeadItem = Value
+end})
+
+avatarTab:AddButton({"Wear Head Item", function()
+    if selectedHeadItem and headItems[selectedHeadItem] then
+        local id = headItems[selectedHeadItem]
+        pcall(function()
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(id)
+        end)
+        notify("Avatar", "Use.. " .. selectedHeadItem)
+    else
+        notify("Error", "Select the item first!")
+    end
+end})
+
 avatarTab:AddSection({"Avatar Editor"})
 
 avatarTab:AddParagraph({"Warning: Reset Avatar", "Using these options will override your current body parts."})
@@ -4236,7 +4262,7 @@ teleportsTab:AddButton({"Teleport", function()
     end
 end})
 
-fireTab:AddSection({"Fire"})
+fireTab:AddSection({"Effect"})
 
 local fireColors = {
     ["White"] = { id = "18637074370", code = "030FireWhite" },
