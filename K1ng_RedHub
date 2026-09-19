@@ -1085,6 +1085,180 @@ espTab:AddToggle({"ESP Item", false, function(Value)
     end
 end})
 
+espTab:AddSection({"ESP Prop Player"})
+
+local TAG_COLOR = Color3.fromRGB(255, 0, 0)
+local SHOW_OWN_PROP = true
+
+local propTags = {}
+local knownProps = {}
+local isScanningProps = false
+local propScanConnection = nil
+
+local function getConesFolder()
+    local wsCom = workspace:FindFirstChild("WorkspaceCom")
+    return wsCom and wsCom:FindFirstChild("001_TrafficCones")
+end
+
+local function getAllProps()
+    local list = {}
+    local conesFolder = getConesFolder()
+    if conesFolder then
+        for _, v in ipairs(conesFolder:GetChildren()) do
+            table.insert(list, v)
+        end
+    end
+    return list
+end
+
+local function getPropOwner(prop)
+    local name = prop.Name
+    if name:find("Prop") then
+        local ownerName = name:match("Prop(.+)")
+        if ownerName then
+            return ownerName
+        end
+    end
+    return nil
+end
+
+local function createPropTag(prop, ownerName)
+    if not prop or not prop.Parent then return nil end
+    
+    local part = prop:FindFirstChildWhichIsA("BasePart")
+    if not part then return nil end
+    
+    if propTags[prop] then
+        pcall(function() propTags[prop]:Destroy() end)
+        propTags[prop] = nil
+    end
+    
+    local tag = Instance.new("BillboardGui")
+    tag.Size = UDim2.new(0, 150, 0, 30)
+    tag.Adornee = part
+    tag.AlwaysOnTop = true
+    tag.StudsOffset = Vector3.new(0, 3, 0)
+    tag.MaxDistance = 100
+    tag.Parent = prop
+    
+    local bg = Instance.new("Frame")
+    bg.Size = UDim2.new(1, 0, 1, 0)
+    bg.BackgroundColor3 = Color3.fromRGB(20, 0, 0)
+    bg.BackgroundTransparency = 0.4
+    bg.BorderSizePixel = 1
+    bg.BorderColor3 = Color3.fromRGB(255, 0, 0)
+    bg.Parent = tag
+    
+    local bgCorner = Instance.new("UICorner")
+    bgCorner.CornerRadius = UDim.new(0, 4)
+    bgCorner.Parent = bg
+    
+    local displayText = ownerName
+    if string.lower(ownerName) == string.lower(LocalPlayer.Name) or string.find(string.lower(LocalPlayer.Name), string.lower(ownerName)) then
+        displayText = "You"
+    end
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.Text = displayText
+    label.TextColor3 = TAG_COLOR
+    label.TextScaled = true
+    label.Font = Enum.Font.SourceSansBold
+    label.Parent = tag
+    
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = Color3.fromRGB(0, 0, 0)
+    stroke.Thickness = 1.5
+    stroke.Transparency = 0.2
+    stroke.Parent = label
+    
+    propTags[prop] = tag
+    return tag
+end
+
+local function removePropTag(prop)
+    if propTags[prop] then
+        pcall(function() propTags[prop]:Destroy() end)
+        propTags[prop] = nil
+    end
+    knownProps[prop] = nil
+end
+
+local function clearAllPropTags()
+    for prop, tag in pairs(propTags) do
+        pcall(function() tag:Destroy() end)
+    end
+    propTags = {}
+    knownProps = {}
+end
+
+local function scanProps()
+    local props = getAllProps()
+    local currentProps = {}
+    
+    for _, prop in ipairs(props) do
+        currentProps[prop] = true
+    end
+    
+    for prop, tag in pairs(propTags) do
+        if not currentProps[prop] or not prop.Parent then
+            removePropTag(prop)
+        end
+    end
+    
+    for _, prop in ipairs(props) do
+        local owner = getPropOwner(prop)
+        if owner then
+            local isSelf = (string.lower(owner) == string.lower(LocalPlayer.Name) or string.find(string.lower(LocalPlayer.Name), string.lower(owner)))
+            if not SHOW_OWN_PROP and isSelf then
+                continue
+            end
+            
+            if not knownProps[prop] then
+                local tag = createPropTag(prop, owner)
+                if tag then
+                    knownProps[prop] = true
+                end
+            end
+        end
+    end
+end
+
+local function startPropScan()
+    if isScanningProps then return end
+    isScanningProps = true
+    scanProps()
+    
+    propScanConnection = RunService.Heartbeat:Connect(function()
+        if not isScanningProps then
+            if propScanConnection then
+                propScanConnection:Disconnect()
+                propScanConnection = nil
+            end
+            return
+        end
+        scanProps()
+    end)
+end
+
+local function stopPropScan()
+    isScanningProps = false
+    if propScanConnection then
+        propScanConnection:Disconnect()
+        propScanConnection = nil
+    end
+    clearAllPropTags()
+end
+
+espTab:AddToggle({"ESP Prop Player Name", false, function(Value)
+    if Value then
+        startPropScan()
+    else
+        stopPropScan()
+    end
+end})
+
 housesTab:AddSection({"Anti Prop"})
 
 local antiPropActive = false
