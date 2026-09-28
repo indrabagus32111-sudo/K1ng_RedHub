@@ -23,7 +23,7 @@ local function notify(title, text)
     end)
 end
 
-notify("Kenz Hub", "script di remake oleh: D_ForDeath1")
+notify("Kenz Hub", "Thank you for using Kenz Hub")
 
 local Window = Libary:MakeWindow({
     Title = "Kenz Hub | Brookhaven RP🏡",
@@ -46,7 +46,7 @@ local worldTab = Window:MakeTab({"Protection", "shield"})
 local teleportsTab = Window:MakeTab({"Teleports", "map"})
 local espTab = Window:MakeTab({"ESP", "eye"})
 local itemsTab = Window:MakeTab({"Items", "package"})
-local fireTab = Window:MakeTab({"Fire", "flame"})
+local fireTab = Window:MakeTab({"Effect", "sparkle"})
 local rgbTab = Window:MakeTab({"RGB", "palette"})
 local childTab = Window:MakeTab({"Child", "baby"})
 
@@ -575,7 +575,7 @@ avatarTab:AddButton({"Wear Head Item", function()
         pcall(function()
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(id)
         end)
-        notify("Avatar", "Use.. " .. selectedHeadItem)
+        notify("Avatar", "Use" .. selectedHeadItem)
     else
         notify("Error", "Select the item first!")
     end
@@ -4436,7 +4436,7 @@ teleportsTab:AddButton({"Teleport", function()
     end
 end})
 
-fireTab:AddSection({"Effect"})
+effectTab:AddSection({"Fire"})
 
 local fireColors = {
     ["White"] = { id = "18637074370", code = "030FireWhite" },
@@ -4459,13 +4459,11 @@ local smokeColors = {
 }
 
 _G.selectedColor = "White"
-_G.selectedSmokeColor = "White"
-
-fireTab:AddDropdown({"Fire Colors", {"White", "Orange", "Green", "Blue", "Purple", "Black"}, "White", function(Value)
+_G.selectedSmokeColor = WaitForChildTab:AddDropdown({"Fire Colors", {"White", "Orange", "Green", "Blue", "Purple", "Black"}, "White", function(Value)
     _G.selectedColor = Value
 end})
 
-fireTab:AddButton({"Equip Fire Color", function()
+effectTab:AddButton({"Equip Fire Color", function()
     local selectedColor = _G.selectedColor
     if selectedColor and fireColors[selectedColor] then
         local colorData = fireColors[selectedColor]
@@ -4485,13 +4483,11 @@ fireTab:AddButton({"Equip Fire Color", function()
     end
 end})
 
-fireTab:AddSection({"Smoke"})
-
-fireTab:AddDropdown({"Smoke Colors", {"White", "Yellow", "Orange", "Green", "Blue", "Purple", "Red", "Black"}, "White", function(Value)
+effectTab:AddSectiChangeCharacterTab:AddDropdown({"Smoke Colors", {"White", "Yellow", "Orange", "Green", "Blue", "Purple", "Red", "Black"}, "White", function(Value)
     _G.selectedSmokeColor = Value
 end})
 
-fireTab:AddButton({"Equip Smoke Color", function()
+effectTab:AddButton({"Equip Smoke Color", function()
     local selectedSmokeColor = _G.selectedSmokeColor
     if selectedSmokeColor and smokeColors[selectedSmokeColor] then
         local colorData = smokeColors[selectedSmokeColor]
@@ -4511,7 +4507,7 @@ fireTab:AddButton({"Equip Smoke Color", function()
     end
 end})
 
-worldTab:AddSection({"Kenz Hub Protection Scripts"})
+worldTab:AddSection({"Protection"})
 
 worldTab:AddButton({"Anti-Bug", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/Antglitch/refs/heads/main/Main.txt"))()
