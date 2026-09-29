@@ -46,7 +46,7 @@ local worldTab = Window:MakeTab({"Protection", "shield"})
 local teleportsTab = Window:MakeTab({"Teleports", "map"})
 local espTab = Window:MakeTab({"ESP", "eye"})
 local itemsTab = Window:MakeTab({"Items", "package"})
-local fireTab = Window:MakeTab({"Effect", "sparkle"})
+local effectTab = Window:MakeTab({"Effect", "sparkles"})
 local rgbTab = Window:MakeTab({"RGB", "palette"})
 local childTab = Window:MakeTab({"Child", "baby"})
 
