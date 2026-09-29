@@ -4459,7 +4459,9 @@ local smokeColors = {
 }
 
 _G.selectedColor = "White"
-_G.selectedSmokeColor = WaitForChildTab:AddDropdown({"Fire Colors", {"White", "Orange", "Green", "Blue", "Purple", "Black"}, "White", function(Value)
+_G.selectedSmokeColor = "White"
+
+effectTab:AddDropdown({"Fire Colors", {"White", "Orange", "Green", "Blue", "Purple", "Black"}, "White", function(Value)
     _G.selectedColor = Value
 end})
 
@@ -4483,7 +4485,9 @@ effectTab:AddButton({"Equip Fire Color", function()
     end
 end})
 
-effectTab:AddSectiChangeCharacterTab:AddDropdown({"Smoke Colors", {"White", "Yellow", "Orange", "Green", "Blue", "Purple", "Red", "Black"}, "White", function(Value)
+effectTab:AddSection({"Smoke"})
+
+effectTab:AddDropdown({"Smoke Colors", {"White", "Yellow", "Orange", "Green", "Blue", "Purple", "Red", "Black"}, "White", function(Value)
     _G.selectedSmokeColor = Value
 end})
 
