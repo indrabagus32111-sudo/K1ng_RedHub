@@ -5645,3 +5645,105 @@ Tab:AddButton({
         end)
     end
 })
+
+local musicTab = Window:MakeTab({"Music", "disc"})
+
+local function playMusic(id)
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    
+    local argsRadio = {
+        [1] = "ToolMusicText",
+        [2] = id
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("PlayerToolEvent"):FireServer(unpack(argsRadio))
+    
+    local argsHouse = {
+        [1] = "PickHouseMusicText",
+        [2] = id
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sHous1e"):FireServer(unpack(argsHouse))
+
+    local argsCar = {
+        [1] = "PickingCarMusicText",
+        [2] = id
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sCa1r"):FireServer(unpack(argsCar))
+
+    local argsScooter = {
+        [1] = "PickingScooterMusicText",
+        [2] = id
+    }
+    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer(unpack(argsScooter))
+end
+
+musicTab:AddSection({"Custom Music ID"})
+
+musicTab:AddTextBox({"Music ID", "", function(value)
+    if value and value ~= "" then
+        playMusic(tostring(value))
+    end
+end})
+
+musicTab:AddSection({"Music Playlists"})
+
+local function createMusicDropdown(title, musicOptions, defaultOption)
+    local musicNames = {}
+    local categoryMap = {}
+    for category, sounds in pairs(musicOptions) do
+        for _, music in ipairs(sounds) do
+            if music.name ~= "" then
+                table.insert(musicNames, music.name)
+                categoryMap[music.name] = {id = music.id, category = category}
+            end
+        end
+    end
+
+    musicTab:AddDropdown({title, musicNames, defaultOption or "", function(selectedSound)
+        if selectedSound and categoryMap[selectedSound] then
+            local soundId = categoryMap[selectedSound].id
+            if soundId and soundId ~= "" and soundId ~= "4354908569" then
+                playMusic(soundId)
+            end
+        end
+    end})
+end
+
+createMusicDropdown("Forro Songs", {
+    ["forro"] = {
+        {name = "forro tired", id = "74812784884330"},
+        {name = "remember till today", id = "71531533552899"},
+        {name = "right choice", id = "107088620814881"},
+    }
+}, "")
+
+createMusicDropdown("Random Songs & Memes", {
+    ["random"] = {
+        {name = "ANXIETY (Amapiano Re-fix)", id = "101483901475189"}, 
+        {name = "My body my rules", id = "127587901595282"},
+        {name = "$$$$gg$$$$gg", id = "137471775091253"},
+        {name = "Megalovania but its only the melodies", id = "104500091160463"},
+        {name = "androphono strikes back", id = "78312089943968"},
+    }
+}, "")
+
+createMusicDropdown("Funk Songs", {
+    ["Funk"] = {
+        {name = "your woman funk", id = "90844637105538"},
+        {name = "police chase", id = "131891110268352"},
+        {name = "funkphonk smoking green", id = "112143944982807"},
+   }
+}, "")
+
+createMusicDropdown("Phonk Songs", {
+    ["phonk"] = {
+        {name = "wyles", id = "85385155970460"},
+        {name = "phonk kawai", id = "91502410121438"},
+        {name = "phonk mix", id = "72720721570850"},
+    }
+}, "")
+
+musicTab:AddSection({"Music Controls"})
+
+musicTab:AddButton({"Stop All Music", function()
+    playMusic("")
+end})
