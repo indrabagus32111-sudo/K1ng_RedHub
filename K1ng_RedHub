@@ -5646,63 +5646,44 @@ Tab:AddButton({
     end
 })
 
-local musicTab = Window:MakeTab({"Music", "disc"})
+local musicTab = Window:MakeTab({"Music", "music"})
 
-local function playMusic(id)
-    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+musicTab:AddSection({"Music Player"})
+
+local function PlayMusic(musicId)
+    local replicatedStorage = game:GetService("ReplicatedStorage")
     
-    local argsRadio = {
-        [1] = "ToolMusicText",
-        [2] = id
-    }
-    ReplicatedStorage:WaitForChild("RE"):WaitForChild("PlayerToolEvent"):FireServer(unpack(argsRadio))
-    
-    local argsHouse = {
-        [1] = "PickHouseMusicText",
-        [2] = id
-    }
-    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sHous1e"):FireServer(unpack(argsHouse))
-
-    local argsCar = {
-        [1] = "PickingCarMusicText",
-        [2] = id
-    }
-    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sCa1r"):FireServer(unpack(argsCar))
-
-    local argsScooter = {
-        [1] = "PickingScooterMusicText",
-        [2] = id
-    }
-    ReplicatedStorage:WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer(unpack(argsScooter))
+    replicatedStorage:WaitForChild("RE"):WaitForChild("PlayerToolEvent"):FireServer("ToolMusicText", musicId)
+    replicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sHous1e"):FireServer("PickHouseMusicText", musicId)
+    replicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sCa1r"):FireServer("PickingCarMusicText", musicId)
+    replicatedStorage:WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer("PickingScooterMusicText", musicId)
 end
 
-musicTab:AddSection({"Custom Music ID"})
-
-musicTab:AddTextBox({"Music ID", "", function(value)
+musicTab:AddTextBox({"Music ID", "Enter the ID and press Enter", function(value)
     if value and value ~= "" then
-        playMusic(tostring(value))
+        PlayMusic(tostring(value))
     end
 end})
 
-musicTab:AddSection({"Music Playlists"})
+local function CreateMusicDropdown(dropdownName, musicData, defaultOption)
+    local optionNames = {}
+    local optionMap = {}
 
-local function createMusicDropdown(title, musicOptions, defaultOption)
-    local musicNames = {}
-    local categoryMap = {}
-    for category, sounds in pairs(musicOptions) do
-        for _, music in ipairs(sounds) do
-            if music.name ~= "" then
-                table.insert(musicNames, music.name)
-                categoryMap[music.name] = {id = music.id, category = category}
+    for category, items in pairs(musicData) do
+        for _, item in ipairs(items) do
+            if item.name ~= "" then
+                table.insert(optionNames, item.name)
+                optionMap[item.name] = { id = item.id, category = category }
             end
         end
     end
 
-    musicTab:AddDropdown({title, musicNames, defaultOption or "", function(selectedSound)
-        if selectedSound and categoryMap[selectedSound] then
-            local soundId = categoryMap[selectedSound].id
-            if soundId and soundId ~= "" and soundId ~= "4354908569" then
-                playMusic(soundId)
+    musicTab:AddDropdown({dropdownName, optionNames, defaultOption, function(selectedValue)
+        if selectedValue and optionMap[selectedValue] then
+            local id = optionMap[selectedValue].id
+            
+            if id and id ~= "" and id ~= "4354908569" then
+                PlayMusic(id)
             end
         end
     end})
