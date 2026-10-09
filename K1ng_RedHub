@@ -5650,102 +5650,73 @@ local musicTab = Window:MakeTab({"Music", "music"})
 
 musicTab:AddSection({"Music Player"})
 
-local function f64(p46)
-  replicatedStorage:WaitForChild("RE"):WaitForChild("PlayerToolEvent"):FireServer(unpack({
-    "ToolMusicText", p46,
-  }))
-
-  replicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sHous1e"):FireServer(unpack({
-    "PickHouseMusicText", p46,
-  }))
-
-  replicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sCa1r"):FireServer(unpack({
-    "PickingCarMusicText", p46,
-  }))
-
-  replicatedStorage:WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer(unpack({
-    "PickingScooterMusicText", p46,
-  }))
+local function playMusic(musicID)
+    pcall(function()
+        ReplicatedStorage:WaitForChild("RE"):WaitForChild("PlayerToolEvent"):FireServer("ToolMusicText", musicID)
+    end)
+    pcall(function()
+        ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sHous1e"):FireServer("PickHouseMusicText", musicID)
+    end)
+    pcall(function()
+        ReplicatedStorage:WaitForChild("RE"):WaitForChild("1Player1sCa1r"):FireServer("PickingCarMusicText", musicID)
+    end)
+    pcall(function()
+        ReplicatedStorage:WaitForChild("RE"):WaitForChild("1NoMoto1rVehicle1s"):FireServer("PickingScooterMusicText", musicID)
+    end)
 end
 
-tab10:AddTextBox({
-  Name = "ID music",
-  PlaceholderText = "Digite o ID e pressione Enter",
-  Callback = function(value92)
-    if value92 and value92 ~= "" then
-      f64(tostring(value92))
+musicTab:AddTextBox({"ID Music", "Enter ID and press Enter", function(value)
+    if value and value ~= "" then
+        playMusic(tostring(value))
     end
-  end,
-})
+end})
 
-local function f65(name2, p47, default)
-  local v140 = {}
-  local v141 = {}
+local function createMusicDropdown(name, songs)
+    local options = {}
+    local songMap = {}
 
-  for key17, value93 in pairs(p47) do
-    for index42, value94 in ipairs(value93) do
-      if value94.name ~= "" then
-        table.insert(v140, value94.name)
-        v141[value94.name] = { id = value94.id, category = key17 }
-      end
-    end
-  end
-
-  local function f66(p48)
-    f64(tostring(p48))
-  end
-
-  tab10:AddDropdown({
-    Name = name2,
-    Description = "all",
-    Default = default,
-    Multi = false,
-    Options = v140,
-    Callback = function(value95)
-      if value95 and v141[value95] then
-        local id = v141[value95].id
-
-        if id and id ~= "" and id ~= "4354908569" then
-          f66(id)
+    for _, songData in ipairs(songs) do
+        if songData.name ~= "" then
+            table.insert(options, songData.name)
+            songMap[songData.name] = songData.id
         end
-      end
-    end,
-  })
+    end
+
+    musicTab:AddDropdown({name, options, "", function(selectedValue)
+        if selectedValue and songMap[selectedValue] then
+            local id = songMap[selectedValue]
+            if id and id ~= "" then
+                playMusic(id)
+            end
+        end
+    end})
 end
 
 createMusicDropdown("Forro Songs", {
-    ["forro"] = {
-        {name = "forro tired", id = "74812784884330"},
-        {name = "remember till today", id = "71531533552899"},
-        {name = "right choice", id = "107088620814881"},
-    }
-}, "")
+    {name = "forro tired", id = "74812784884330"},
+    {name = "remember till today", id = "71531533552899"},
+    {name = "right choice", id = "107088620814881"}
+})
 
 createMusicDropdown("Random Songs & Memes", {
-    ["random"] = {
-        {name = "ANXIETY (Amapiano Re-fix)", id = "101483901475189"}, 
-        {name = "My body my rules", id = "127587901595282"},
-        {name = "$$$$gg$$$$gg", id = "137471775091253"},
-        {name = "Megalovania but its only the melodies", id = "104500091160463"},
-        {name = "androphono strikes back", id = "78312089943968"},
-    }
-}, "")
+    {name = "ANXIETY (Amapiano Re-fix)", id = "101483901475189"}, 
+    {name = "My body my rules", id = "127587901595282"},
+    {name = "$$$$gg$$$$gg", id = "137471775091253"},
+    {name = "Megalovania but its only the melodies", id = "104500091160463"},
+    {name = "androphono strikes back", id = "78312089943968"}
+})
 
 createMusicDropdown("Funk Songs", {
-    ["Funk"] = {
-        {name = "your woman funk", id = "90844637105538"},
-        {name = "police chase", id = "131891110268352"},
-        {name = "funkphonk smoking green", id = "112143944982807"},
-   }
-}, "")
+    {name = "your woman funk", id = "90844637105538"},
+    {name = "police chase", id = "131891110268352"},
+    {name = "funkphonk smoking green", id = "112143944982807"}
+})
 
 createMusicDropdown("Phonk Songs", {
-    ["phonk"] = {
-        {name = "wyles", id = "85385155970460"},
-        {name = "phonk kawai", id = "91502410121438"},
-        {name = "phonk mix", id = "72720721570850"},
-    }
-}, "")
+    {name = "wyles", id = "85385155970460"},
+    {name = "phonk kawai", id = "91502410121438"},
+    {name = "phonk mix", id = "72720721570850"}
+})
 
 musicTab:AddSection({"Music Controls"})
 
